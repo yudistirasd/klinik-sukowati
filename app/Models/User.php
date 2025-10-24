@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Avatar;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasUuids, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -19,8 +20,11 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'email',
+        'username',
         'password',
+        'role',
+        'nik',
+        'ihs_id',
     ];
 
     /**
@@ -41,8 +45,18 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function generateAvatar()
+    {
+        if (!Storage::disk('public')->exists('avatars')) {
+            Storage::disk('public')->makeDirectory('avatars');
+        }
+
+        Avatar::create($this->name)->save(storage_path('app/public/avatars/' . $this->id . '.png'), 100);
+        $this->avatar = $this->id . '.png';
+        $this->save();
     }
 }
