@@ -434,6 +434,9 @@
                 <a class="dropdown-item" href="{{ route('master.departemen.index') }}">
                   Departemen
                 </a>
+                <a class="dropdown-item" href="{{ route('master.ruangan.index') }}">
+                  Ruangan
+                </a>
               </div>
             </div>
           </div>
