@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\Master\DepartemenController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [AuthenticationController::class, 'showLoginForm'])
@@ -21,4 +22,5 @@ Route::middleware('auth')->group(function () {
 
 Route::group(['prefix' => 'master', 'as' => 'master.', 'middleware' => 'auth'], function () {
     Route::get('pengguna', [UserController::class, 'index'])->name('pengguna.index');
+    Route::get('departemen', [DepartemenController::class, 'index'])->name('departemen.index');
 });

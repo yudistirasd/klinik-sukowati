@@ -60,4 +60,13 @@ class User extends Authenticatable
         $this->avatar = $this->id . '.png';
         $this->save();
     }
+
+    public function hasRole(string|array $roles)
+    {
+        if (is_array($roles)) {
+            return in_array($this->role, $roles, true);
+        }
+
+        return $this->role === $roles;
+    }
 }

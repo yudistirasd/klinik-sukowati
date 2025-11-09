@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use Illuminate\Http\Request;
+
 use Satusehat\Integration\OAuth2Client;
 
 class UserController extends Controller

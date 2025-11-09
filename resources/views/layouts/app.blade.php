@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Dashboard - {{ config('app.name') }}</title>
+    <title>@yield('title') - {{ config('app.name') }}</title>
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
     <link href="{{ asset('css/tabler.min.css') }}?{{ config('app.version') }}" rel="stylesheet" />
     <link href="{{ asset('css/app.css') }}?{{ config('app.version') }}" rel="stylesheet" />

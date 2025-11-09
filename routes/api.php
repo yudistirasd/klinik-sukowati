@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Master\DepartemenController;
 use App\Http\Controllers\Master\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -12,12 +13,17 @@ Route::get('/user', function (Request $request) {
 Route::group(['as' => 'api.'], function () {
     Route::group(['prefix' => 'master', 'as' => 'master.'], function () {
         Route::get('pengguna/dt', [UserController::class, 'dt'])->name('pengguna.dt');
+        Route::get('departemen/dt', [DepartemenController::class, 'dt'])->name('departemen.dt');
 
 
         Route::apiResources([
-            'pengguna' => UserController::class
+            'pengguna' => UserController::class,
+            'departemen' => DepartemenController::class,
         ], [
-            'only' => ['store', 'edit', 'update', 'destroy']
+            'only' => ['store', 'edit', 'update', 'destroy'],
+            'parameters' => [
+                'departemen' => 'departemen'
+            ]
         ]);
     });
 });

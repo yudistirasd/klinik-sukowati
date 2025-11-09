@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Pengguna')
+@section('title', 'Departemen')
 @section('subtitle', 'Setting')
 
 @push('css')
@@ -10,9 +10,9 @@
 @endpush
 
 @section('action-page')
-  <a href="#" class="btn btn-primary btn-5" onclick="handleModal('create', 'Tambah Pengguna')">
+  <a href="#" class="btn btn-primary btn-5" onclick="handleModal('create', 'Tambah Departemen')">
     <div class="ti ti-plus me-1"></div>
-    Pengguna
+    Departemen
   </a>
 @endsection
 
@@ -21,15 +21,12 @@
   <div class="card">
     <div class="card-body">
       <div class="table-responsive">
-        <table class="table table-hover table-bordered" id="user-table">
+        <table class="table table-bordered table-hover" id="departemen-table">
           <thead>
             <tr>
               <th class="text-center">#</th>
               <th class="text-center">Nama</th>
-              <th class="text-center">Username</th>
-              <th class="text-center">Level Akses</th>
-              <th class="text-center">NIK</th>
-              <th class="text-center">IHS ID</th>
+              <th class="text-center" style="width: 24%">IHS ID</th>
               <th class="text-center">Aksi</th>
             </tr>
           </thead>
@@ -40,7 +37,7 @@
 
   <!-- Modal Form -->
   <div x-data="form">
-    <div class="modal modal-blur fade" id="modal-user" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal modal-blur fade" id="modal-departemen" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -50,60 +47,9 @@
           <form @submit.prevent="handleSubmit" autocomplete="off">
             <div class="modal-body">
               <div class="mb-3">
-                <label class="form-label required">Nama</label>
+                <label class="form-label required">Nama Departemen</label>
                 <input type="text" class="form-control" autocomplete="off" x-model="form.name" :class="{ 'is-invalid': errors.name }">
                 <div class="invalid-feedback" x-text="errors.name"></div>
-              </div>
-              <div class="mb-3">
-                <label class="form-label required">Username</label>
-                <input type="text" class="form-control" autocomplete="off" x-model="form.username" :class="{ 'is-invalid': errors.username }">
-                <div class="invalid-feedback" x-text="errors.username"></div>
-              </div>
-              <div class="row">
-                <div class="col-12" x-show="form.id">
-                  <div class="alert alert-info" role="alert">
-                    <div class="alert-icon">
-                      <i class="ti ti-info-circle"></i>
-                    </div>
-                    Jika sedang tidak mengubah password pengguna, silahkan dikosongkan.
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="mb-3">
-                    <label class="form-label required">Password</label>
-                    <input type="password" class="form-control" autocomplete="off" x-model="form.password" :class="{ 'is-invalid': errors.password }">
-                    <div class="invalid-feedback" x-text="errors.password"></div>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="mb-3">
-                    <label class="form-label required">Konfirmasi Password</label>
-                    <input type="password" class="form-control" autocomplete="off" x-model="form.password_confirmation" :class="{ 'is-invalid': errors.password }">
-                    <div class="invalid-feedback" x-text="errors.password"></div>
-                  </div>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label class="form-label required">Level Akses</label>
-                <select class="form-select" x-model="form.role" :class="{ 'is-invalid': errors.role }" x-on:change="onChangeRole">
-                  <option value="">Pilih Level</option>
-                  @foreach ($roles as $role)
-                    <option value="{{ $role->id }}" data-nakes="{{ $role->nakes }}">{{ $role->name }}</option>
-                  @endforeach
-                </select>
-                <div class="invalid-feedback" x-text="errors.role"></div>
-              </div>
-              <div class="mb-3" x-show="form.nakes" x-transition>
-                <label class="form-label">NIK</label>
-                <input type="text" class="form-control" autocomplete="off" x-model="form.nik" :class="{ 'is-invalid': errors.nik }">
-                <div class="invalid-feedback" x-text="errors.nik"></div>
-              </div>
-              <div class="mb-3" x-show="form.nakes" x-transition>
-                <label class="form-label">IHS ID</label>
-                <input type="text" disabled class="form-control" autocomplete="off" x-model="form.ihs_id" :class="{ 'is-invalid': errors.ihs_id }">
-                <small class="form-hint">
-                  <i>Data akan diverifikasi ke Satu Sehat menggunakan NIK untuk mendapatkan IHS ID.</i>
-                </small>
               </div>
             </div>
             <div class="modal-footer">
@@ -129,13 +75,17 @@
   <script src="{{ asset('libs/datatables/dataTables.responsive.min.js') }}?{{ config('app.version') }}"></script>
   <script src="{{ asset('libs/datatables/responsive.bootstrap5.js') }}?{{ config('app.version') }}"></script>
   <script>
-    const roles = {!! $roles !!}
-    const table = new DataTable('#user-table', {
+    const table = new DataTable('#departemen-table', {
       processing: true,
       serverSide: true,
       autoWidth: false,
       destroy: true,
-      ajax: route('api.master.pengguna.dt'),
+      ajax: route('api.master.departemen.dt'),
+      order: [
+        [
+          1, 'asc'
+        ]
+      ],
       columns: [{
           data: 'DT_RowIndex',
           name: 'DT_RowIndex',
@@ -148,21 +98,6 @@
           data: 'name',
           name: 'name',
           sClass: 'text-start'
-        },
-        {
-          data: 'username',
-          name: 'username',
-          sClass: 'text-start'
-        },
-        {
-          data: 'role',
-          name: 'role',
-          sClass: 'text-center'
-        },
-        {
-          data: 'nik',
-          name: 'nik',
-          sClass: 'text-center'
         },
         {
           data: 'ihs_id',
@@ -184,22 +119,11 @@
         form: {
           id: null,
           name: '',
-          username: '',
-          password: '',
-          password_confirmation: '',
-          role: '',
-          nakes: '',
-          nik: '',
           ihs_id: ''
         },
         endPoint: '',
         errors: {},
         loading: false,
-
-        onChangeRole(event) {
-          const opt = event.target.selectedOptions[0];
-          this.form.nakes = opt ? opt.dataset.nakes : '';
-        },
 
         modalControl(action, title, data = null) {
           this.resetForm();
@@ -207,23 +131,19 @@
 
           if (action == 'create') {
             delete this.form._method;
-            this.endPoint = route('api.master.pengguna.store')
+            this.endPoint = route('api.master.departemen.store')
           }
 
           if (action == 'edit') {
-            let selectedRole = roles.find((row) => row.id == data.role);
-
-
             this.form = {
               ...data,
-              nakes: selectedRole.nakes,
               _method: 'PUT'
             };
 
-            this.endPoint = route('api.master.pengguna.update', data.id);
+            this.endPoint = route('api.master.departemen.update', data.id);
           }
 
-          $('#modal-user').modal('show');
+          $('#modal-departemen').modal('show');
 
         },
 
@@ -243,7 +163,7 @@
               this.loading = false;
             }
           }).done((response) => {
-            $('#modal-user').modal('hide');
+            $('#modal-departemen').modal('hide');
             this.resetForm();
             table.ajax.reload();
             Toast.fire({
@@ -266,12 +186,6 @@
         resetForm() {
           this.form = {
             name: '',
-            username: '',
-            password: '',
-            password_confirmation: '',
-            role: '',
-            nakes: '',
-            nik: '',
             ihs_id: ''
           };
           this.errors = {};
