@@ -3,6 +3,7 @@
 use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\Master\DepartemenController;
+use App\Http\Controllers\Master\ProdukController;
 use App\Http\Controllers\Master\RuanganController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,4 +26,5 @@ Route::group(['prefix' => 'master', 'as' => 'master.', 'middleware' => 'auth'], 
     Route::get('pengguna', [UserController::class, 'index'])->name('pengguna.index');
     Route::get('departemen', [DepartemenController::class, 'index'])->name('departemen.index');
     Route::get('ruangan', [RuanganController::class, 'index'])->name('ruangan.index');
+    Route::get('produk/{jenis}', [ProdukController::class, 'index'])->name('produk.index');
 });

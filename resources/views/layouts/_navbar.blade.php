@@ -437,6 +437,9 @@
                 <a class="dropdown-item" href="{{ route('master.ruangan.index') }}">
                   Ruangan
                 </a>
+                <a class="dropdown-item" href="{{ route('master.produk.index', ['jenis' => 'tindakan']) }}">
+                  Tindakan
+                </a>
               </div>
             </div>
           </div>

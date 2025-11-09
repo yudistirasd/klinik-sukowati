@@ -29,3 +29,10 @@ if (! function_exists('roles')) {
         ]);
     }
 }
+
+if (!function_exists('formatUang')) {
+    function formatUang($nominal)
+    {
+        return number_format($nominal);
+    }
+}

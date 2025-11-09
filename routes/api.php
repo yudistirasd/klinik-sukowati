@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Master\DepartemenController;
+use App\Http\Controllers\Master\ProdukController;
 use App\Http\Controllers\Master\RuanganController;
 use App\Http\Controllers\Master\UserController;
 use Illuminate\Http\Request;
@@ -16,12 +17,13 @@ Route::group(['as' => 'api.'], function () {
         Route::get('pengguna/dt', [UserController::class, 'dt'])->name('pengguna.dt');
         Route::get('departemen/dt', [DepartemenController::class, 'dt'])->name('departemen.dt');
         Route::get('ruangan/dt', [RuanganController::class, 'dt'])->name('ruangan.dt');
-
+        Route::get('produk/{jenis}', [ProdukController::class, 'dt'])->name('produk.dt');
 
         Route::apiResources([
             'pengguna' => UserController::class,
             'departemen' => DepartemenController::class,
             'ruangan' => RuanganController::class,
+            'produk' => ProdukController::class
         ], [
             'only' => ['store', 'edit', 'update', 'destroy'],
             'parameters' => [
