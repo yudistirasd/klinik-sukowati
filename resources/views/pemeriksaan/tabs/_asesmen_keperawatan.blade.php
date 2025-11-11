@@ -309,7 +309,7 @@
           this.errors = {};
 
           $.ajax({
-            url: route('api.pemeriksaanstore.asesmen-keperawatan'),
+            url: route('api.pemeriksaan.store.asesmen-keperawatan'),
             method: 'POST',
             data: this.form,
             dataType: 'json',

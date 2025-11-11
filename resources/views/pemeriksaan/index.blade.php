@@ -107,7 +107,11 @@
           <h3 class="card-title">Riwayat Pemeriksaan</h3>
         </div>
         <div class="card-body">
-          hehe
+          <ul class="steps steps-vertical">
+            <li class="step-item">
+              <div class="h4 m-0 text-secondary">Belum ada riwayat</div>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -116,13 +120,10 @@
         <div class="card-header">
           <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs" role="tablist">
             <li class="nav-item" role="presentation">
-              <a href="#tabs-riwayat" class="nav-link" data-bs-toggle="tab" aria-selected="true" role="tab">Riwayat</a>
+              <a href="#tabs-asesmen-medis" class="nav-link active" data-bs-toggle="tab" aria-selected="false" role="tab" tabindex="-1">Asesmen Medis</a>
             </li>
             <li class="nav-item" role="presentation">
-              <a href="#tabs-asesmen-dokter" class="nav-link" data-bs-toggle="tab" aria-selected="false" role="tab" tabindex="-1">Asesmen Medis</a>
-            </li>
-            <li class="nav-item" role="presentation">
-              <a href="#tabs-asesmen-perawat" class="nav-link active" data-bs-toggle="tab" aria-selected="false" role="tab" tabindex="-1">Asesmen Keperawatan</a>
+              <a href="#tabs-asesmen-perawat" class="nav-link" data-bs-toggle="tab" aria-selected="false" role="tab" tabindex="-1">Asesmen Keperawatan</a>
             </li>
             <li class="nav-item" role="presentation">
               <a href="#tabs-cppt" class="nav-link" data-bs-toggle="tab" aria-selected="false" role="tab" tabindex="-1">CPPT</a>
@@ -149,8 +150,11 @@
                 nibh
               </div>
             </div>
-            <div class="tab-pane active show" id="tabs-asesmen-perawat" role="tabpanel">
-              @include('pemeriksaan.tabs._asesmen_keperawtan')
+            <div class="tab-pane active show" id="tabs-asesmen-medis" role="tabpanel">
+              @include('pemeriksaan.tabs._asesmen_medis')
+            </div>
+            <div class="tab-pane" id="tabs-asesmen-perawat" role="tabpanel">
+              @include('pemeriksaan.tabs._asesmen_keperawatan')
             </div>
             <div class="tab-pane" id="tabs-settings-1" role="tabpanel">
               <h4>Settings tab</h4>
@@ -163,63 +167,6 @@
       </div>
     </div>
   </div>
-
-
-  {{-- <div class="card" x-data="form" x-init="init()">
-    <form @submit.prevent="handleSubmit" autocomplete="off">
-      <div class="card-header">
-        <h3 class="card-title">Kunjungan Pasien</h3>
-      </div>
-      <div class="card-body">
-        <input type="hidden" name="pasien_id" x-model="form.pasien_id">
-        <input type="hidden" name="icd10_id" x-model="form.icd10_id">
-        <div class="row">
-          <div class="col-md-2 col-sm-12">
-            <div class="mb-3">
-              <label class="form-label">No Kunjungan</label>
-              <input type="text" class="form-control" disabled placeholder="Otomatis dari sistem">
-            </div>
-          </div>
-          <div class="col-md-2 col-sm-12">
-            <div class="mb-3">
-              <label class="form-label">Tanggal Registrasi</label>
-              <input type="text" class="form-control" id="tanggal-registrasi" x-model="form.tanggal_registrasi" :class="{ 'is-invalid': errors.tanggal_registrasi }">
-              <div class="invalid-feedback" x-text="errors.tanggal_registrasi"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-4 col-sm-12">
-            <div class="mb-3">
-              <label class="form-label">Jenis Penyakit</label>
-              <div class="row g-2">
-                <div class="col">
-                  <input type="text" class="form-control" x-model="icd10_selected" readonly placeholder="Pilih Jenis Penyakit" :class="{ 'is-invalid': errors.icd10_id }">
-                  <div class="invalid-feedback" x-text="errors.icd10_id"></div>
-
-                </div>
-                <div class="col-auto">
-                  <a href="#" class="btn btn-2 btn-icon" aria-label="Button" data-bs-toggle="modal" data-bs-target="#modal-icd10">
-                    <!-- Download SVG icon from http://tabler.io/icons/icon/search -->
-                    <div class="ti ti-search"></div>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-2 col-sm-12">
-            <label for="" class="form-label text-white">x</label>
-            <button type="submit" class="btn btn-primary ms-auto" x-bind:disabled="loading">
-              <span x-show="loading" class="spinner-border spinner-border-sm me-2"></span>
-              Simpan
-            </button>
-          </div>
-        </div>
-      </div>
-    </form>
-  </div> --}}
 
   <div class="modal modal-blur fade" id="modal-icd10" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
@@ -262,6 +209,7 @@
     let pasien = {!! json_encode($pasien) !!};
     let kunjungan = {!! json_encode($kunjungan) !!}
     let asesmenPerawat = {!! json_encode($asesmenKeperawatan) !!};
+    let asesmenMedis = {!! json_encode($asesmenMedis) !!};
 
     const table = new DataTable('#diagnosa-table', {
       processing: true,

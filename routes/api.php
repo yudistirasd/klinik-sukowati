@@ -62,8 +62,8 @@ Route::group(['as' => 'api.'], function () {
         ]);
     });
 
-    Route::group(['prefix' => 'pemeriksaan', 'as' => 'pemeriksaan'], function () {
+    Route::group(['prefix' => 'pemeriksaan', 'as' => 'pemeriksaan.'], function () {
         Route::post('asesmen-keperawatan', [PemeriksaanController::class, 'storeAsesmenKeperawatan'])->name('store.asesmen-keperawatan');
-        Route::post('asesmen-medis', [PemeriksaanController::class, 'asesmenMedis'])->name('store.asesmen-perawat');
+        Route::post('asesmen-medis', [PemeriksaanController::class, 'storeAsesmenMedis'])->name('store.asesmen-medis');
     });
 });

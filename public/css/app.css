@@ -79,3 +79,13 @@ a:hover:has(.ti) {
 .avatar-xl {
     --tblr-avatar-size: 8rem;
 }
+
+.steps {
+    --tblr-steps-padding: 2rem;
+    --tblr-steps-item-size: 1.5rem;
+    margin-left: 1rem;
+    padding-left: 0px;
+    counter-reset: step;
+    border-left: none;
+    margin-bottom: 2rem;
+}
