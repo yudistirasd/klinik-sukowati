@@ -334,7 +334,10 @@
       serverSide: true,
       autoWidth: false,
       destroy: true,
-      ajax: route('api.pemeriksaan.get.diagnosa-pasien'),
+      ajax: route('api.pemeriksaan.get.diagnosa-pasien', {
+        pasien_id: pasien.id,
+        kunjungan_id: kunjungan.id
+      }),
       columns: [{
           data: 'DT_RowIndex',
           name: 'DT_RowIndex',
@@ -367,7 +370,10 @@
       serverSide: true,
       autoWidth: false,
       destroy: true,
-      ajax: route('api.pemeriksaan.get.prosedure-pasien'),
+      ajax: route('api.pemeriksaan.get.prosedure-pasien', {
+        pasien_id: pasien.id,
+        kunjungan_id: kunjungan.id
+      }),
       columns: [{
           data: 'DT_RowIndex',
           name: 'DT_RowIndex',

@@ -5,16 +5,18 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AsesmenKeperawatanRequest;
 use App\Models\AsesmenKeperawatan;
 use App\Models\AsesmenMedis;
+use App\Models\CPPT;
 use App\Models\DiagnosaPasien;
 use App\Models\Kunjungan;
 use App\Models\ProsedurePasien;
+use Auth;
 use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class PemeriksaanController extends Controller
 {
-    public function dtDiagnosa()
+    public function dtDiagnosa(Request $request)
     {
         $data = DB::table('diagnosa_pasien as dp')
             ->join('icd10', 'icd10.id', '=', 'dp.icd10_id')
@@ -23,7 +25,9 @@ class PemeriksaanController extends Controller
                 'icd10.code',
                 'icd10.display_en',
                 'icd10.display_id',
-            ]);
+            ])
+            ->where('dp.pasien_id', $request->pasien_id)
+            ->where('dp.kunjungan_id', $request->kunjungan_id);
 
 
         return DataTables::of($data)
@@ -42,7 +46,7 @@ class PemeriksaanController extends Controller
             ->make(true);
     }
 
-    public function dtProsedure()
+    public function dtProsedure(Request $request)
     {
         $data = DB::table('prosedure_pasien as pp')
             ->join('icd9', 'icd9.id', '=', 'pp.icd9_id')
@@ -51,12 +55,16 @@ class PemeriksaanController extends Controller
                 'icd9.code',
                 'icd9.display_en',
                 'icd9.display_id',
-            ]);
+            ])
+            ->where('pp.pasien_id', $request->pasien_id)
+            ->where('pp.kunjungan_id', $request->kunjungan_id);
 
 
         return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('action', function ($row) {
+
+
                 return "
                                 <button type='button' class='btn btn-danger btn-icon' onclick='confirmDelete(`" . route('api.pemeriksaan.destroy.prosedure-pasien', $row->id) . "`, prosedurePasienTable.ajax.reload)'>
                                     <i class='ti ti-trash'></i>
@@ -66,6 +74,57 @@ class PemeriksaanController extends Controller
             ->rawColumns([
                 'action',
                 'noregistrasi'
+            ])
+            ->make(true);
+    }
+
+    public function dtCppt(Request $request)
+    {
+        $data = DB::table('cppt as a')
+            ->join('users as b', 'b.id', '=', 'a.created_by')
+            ->select([
+                'a.*',
+                'b.name as petugas'
+            ])
+            ->where('a.pasien_id', $request->pasien_id);
+
+        $currentUser = Auth::user();
+
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('keterangan', function ($row) {
+                $soap = "
+                 <p><b>S</b> : {$row->subjective}</p>
+                 <p><b>O</b> : {$row->objective}</p>
+                 <p><b>A</b> : {$row->asesmen}</p>
+                 <p><b>P</b> : {$row->asesmen}</p>
+                ";
+
+                if (!empty($row->edukasi)) {
+                    $soap .= "<p><b>Edukasi Pasien</b> : {$row->edukasi}</p>";
+                }
+
+                $soap .= "<p><i class='ti ti-stethoscope fs-4'></i> <b>{$row->petugas}</b></p>";
+
+                return $soap;
+            })
+            ->addColumn('action', function ($row) use ($currentUser) {
+                $btn = "";
+                if ($currentUser->id == $row->created_by) {
+                    $btn =  "<button type='button' class='btn btn-warning btn-icon' onclick='editCppt(`" . json_encode($row) . "`, cpptPasienTable.ajax.reload)'>
+                                <i class='ti ti-edit'></i>
+                            </button>
+                            <button type='button' class='btn btn-danger btn-icon' onclick='confirmDelete(`" . route('api.pemeriksaan.destroy.cppt', $row->id) . "`, cpptPasienTable.ajax.reload)'>
+                                <i class='ti ti-trash'></i>
+                            </button>
+                        ";
+                }
+
+                return $btn;
+            })
+            ->rawColumns([
+                'action',
+                'keterangan'
             ])
             ->make(true);
     }
@@ -148,5 +207,24 @@ class PemeriksaanController extends Controller
         $prosedure->delete();
 
         return $this->sendResponse(message: __('http-response.success.delete', ['Attribute' => 'Prosedure Pasien']));
+    }
+
+    public function storeCppt(Request $request)
+    {
+        if ($request->filled('id')) {
+            CPPT::find($request->id)
+                ->update($request->except('id'));
+        } else {
+            CPPT::create($request->except('id'));
+        }
+
+        return $this->sendResponse(message: __('http-response.success.store', ['Attribute' => 'CPPT']));
+    }
+
+    public function destroyCppt(CPPT $cppt)
+    {
+        $cppt->delete();
+
+        return $this->sendResponse(message: __('http-response.success.delete', ['Attribute' => 'CPPT']));
     }
 }

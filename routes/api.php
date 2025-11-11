@@ -17,7 +17,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-Route::group(['as' => 'api.'], function () {
+Route::group(['as' => 'api.', 'middleware' => ['web', 'auth']], function () {
     Route::group(['prefix' => 'master', 'as' => 'master.'], function () {
         Route::get('pengguna/dt', [UserController::class, 'dt'])->name('pengguna.dt');
         Route::get('departemen/dt', [DepartemenController::class, 'dt'])->name('departemen.dt');
@@ -75,5 +75,9 @@ Route::group(['as' => 'api.'], function () {
         Route::get('prosedure-pasien', [PemeriksaanController::class, 'dtProsedure'])->name('get.prosedure-pasien');
         Route::post('prosedure-pasien', [PemeriksaanController::class, 'storeProsedurePasien'])->name('store.prosedure-pasien');
         Route::delete('prosedure-pasien/{prosedure}', [PemeriksaanController::class, 'destroyProsedurePasien'])->name('destroy.prosedure-pasien');
+
+        Route::get('cppt', [PemeriksaanController::class, 'dtCppt'])->name('get.cppt');
+        Route::post('cppt', [PemeriksaanController::class, 'storeCppt'])->name('store.cppt');
+        Route::delete('cppt/{cppt}', [PemeriksaanController::class, 'destroyCppt'])->name('destroy.cppt');
     });
 });

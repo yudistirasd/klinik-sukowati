@@ -120,13 +120,13 @@
         <div class="card-header">
           <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs" role="tablist">
             <li class="nav-item" role="presentation">
-              <a href="#tabs-asesmen-medis" class="nav-link active" data-bs-toggle="tab" aria-selected="false" role="tab" tabindex="-1">Asesmen Medis</a>
+              <a href="#tabs-asesmen-medis" class="nav-link" data-bs-toggle="tab" aria-selected="false" role="tab" tabindex="-1">Asesmen Medis</a>
             </li>
             <li class="nav-item" role="presentation">
               <a href="#tabs-asesmen-perawat" class="nav-link" data-bs-toggle="tab" aria-selected="false" role="tab" tabindex="-1">Asesmen Keperawatan</a>
             </li>
             <li class="nav-item" role="presentation">
-              <a href="#tabs-cppt" class="nav-link" data-bs-toggle="tab" aria-selected="false" role="tab" tabindex="-1">CPPT</a>
+              <a href="#tabs-cppt" class="nav-link active" data-bs-toggle="tab" aria-selected="false" role="tab" tabindex="-1">CPPT</a>
             </li>
             <li class="nav-item" role="presentation">
               <a href="#tabs-tindakan" class="nav-link" data-bs-toggle="tab" aria-selected="false" role="tab" tabindex="-1">Billing / Tindakan</a>
@@ -143,18 +143,14 @@
         </div>
         <div class="card-body">
           <div class="tab-content">
-            <div class="tab-pane" id="tabs-riwayat" role="tabpanel">
-              <h4>Riwayat Pemeriksaan</h4>
-              <div>
-                Cursus turpis vestibulum, dui in pharetra vulputate id sed non turpis ultricies fringilla at sed facilisis lacus pellentesque purus
-                nibh
-              </div>
-            </div>
-            <div class="tab-pane active show" id="tabs-asesmen-medis" role="tabpanel">
+            <div class="tab-pane" id="tabs-asesmen-medis" role="tabpanel">
               @include('pemeriksaan.tabs._asesmen_medis')
             </div>
             <div class="tab-pane" id="tabs-asesmen-perawat" role="tabpanel">
               @include('pemeriksaan.tabs._asesmen_keperawatan')
+            </div>
+            <div class="tab-pane active show" id="tabs-cppt" role="tabpanel">
+              @include('pemeriksaan.tabs._cppt')
             </div>
             <div class="tab-pane" id="tabs-settings-1" role="tabpanel">
               <h4>Settings tab</h4>
