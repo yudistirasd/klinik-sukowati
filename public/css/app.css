@@ -49,6 +49,7 @@ a:hover:has(.ti) {
 }
 
 .col-form-label,
+.datagrid-title,
 .form-label {
     font-weight: var(--tblr-font-weight-black);
 }
@@ -56,4 +57,25 @@ a:hover:has(.ti) {
 .ts-wrapper {
     display: flex;
     min-height: calc(1.8em + 0.75rem + var(--bs-border-width) * 2);
+}
+
+.datagrid-title {
+    font-size: 0.875rem;
+    font-weight: var(--tblr-font-weight-medium);
+    letter-spacing: normal;
+    text-transform: none;
+    line-height: 1rem;
+    color: var(--tblr-black);
+    margin-bottom: 0.25rem;
+}
+
+.tempus-dominus-widget .calendar-header {
+    display: grid;
+    font-weight: 700;
+    grid-template-areas: "a a a";
+    margin-bottom: 10px;
+    justify-content: space-between;
+}
+.avatar-xl {
+    --tblr-avatar-size: 8rem;
 }

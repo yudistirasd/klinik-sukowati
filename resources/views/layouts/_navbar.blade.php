@@ -64,7 +64,10 @@
           <div class="dropdown-menu-columns">
             <div class="dropdown-menu-column">
               <a class="dropdown-item" href="{{ route('registrasi.pasien.index') }}">
-                Daftar Pasien Lama / Baru
+                Daftar Pasien
+              </a>
+              <a class="dropdown-item" href="{{ route('registrasi.kunjungan.index') }}">
+                Daftar Kunjungan Pasien
               </a>
             </div>
           </div>

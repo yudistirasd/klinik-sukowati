@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\Master\DepartemenController;
+use App\Http\Controllers\Master\ICDController;
 use App\Http\Controllers\Master\ProdukController;
 use App\Http\Controllers\Master\RuanganController;
 use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\Master\WilayahController;
+use App\Http\Controllers\Registrasi\KunjunganController;
 use App\Http\Controllers\Registrasi\PasienController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +28,8 @@ Route::group(['as' => 'api.'], function () {
         Route::get('wilayah/kecamatan', [WilayahController::class, 'kecamatan'])->name('wilayah.kecamatan');
         Route::get('wilayah/kelurahan', [WilayahController::class, 'kelurahan'])->name('wilayah.kelurahan');
 
+        Route::get('icd10/dt', [ICDController::class, 'icd10dt'])->name('icd10.dt');
+
 
         Route::apiResources([
             'pengguna' => UserController::class,
@@ -44,8 +48,10 @@ Route::group(['as' => 'api.'], function () {
     Route::group(['prefix' => 'registrasi', 'as' => 'registrasi.'], function () {
         Route::get('pasien/dt', [PasienController::class, 'dt'])->name('pasien.dt');
 
+
         Route::apiResources([
             'pasien' => PasienController::class,
+            'kunjungan' => KunjunganController::class,
         ], [
             'only' => ['store', 'edit', 'update', 'destroy'],
             'parameters' => [

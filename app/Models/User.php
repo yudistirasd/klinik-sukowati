@@ -69,4 +69,9 @@ class User extends Authenticatable
 
         return $this->role === $roles;
     }
+
+    public function scopeDokter($query)
+    {
+        return $query->where('role', 'dokter');
+    }
 }

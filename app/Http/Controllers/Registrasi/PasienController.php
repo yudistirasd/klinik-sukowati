@@ -52,7 +52,7 @@ class PasienController extends Controller
             })
             ->addColumn('action', function ($row) {
                 return "
-                                <a class='btn btn-primary btn-icon' href='" . route('registrasi.create', $row->id) . "'>
+                                <a class='btn btn-primary btn-icon' href='" . route('registrasi.kunjungan.create', $row->id) . "'>
                                     <i class='ti ti-calendar-user'></i>
                                 </a>
                                 <a class='btn btn-warning btn-icon' href='" . route('registrasi.pasien.edit', $row->id) . "'>

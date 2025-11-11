@@ -8,6 +8,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title') - {{ config('app.name') }}</title>
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.9.4/dist/css/tempus-dominus.min.css" crossorigin="anonymous">
     <link href="{{ asset('css/tabler.min.css') }}?{{ config('app.version') }}" rel="stylesheet" />
     <link href="{{ asset('css/app.css') }}?{{ config('app.version') }}" rel="stylesheet" />
     <link href="{{ asset('css/tabler-icons.min.css') }}?{{ config('app.version') }}" rel="stylesheet" />
@@ -78,6 +80,10 @@
     </div>
     @routes()
     <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
+    <!-- Popperjs -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <!-- Tempus Dominus JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.9.4/dist/js/tempus-dominus.min.js" crossorigin="anonymous"></script>
     <script src="{{ asset('js/tabler-theme.min.js') }}?{{ config('app.version') }}" defer></script>
     <script src="{{ asset('js/tabler.min.js') }}?{{ config('app.version') }}" defer></script>
     <script src="{{ asset('libs/jquery/jquery-3.7.0.min.js') }}?{{ config('app.version') }}"></script>

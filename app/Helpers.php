@@ -30,6 +30,25 @@ if (! function_exists('roles')) {
     }
 }
 
+if (! function_exists('jenisPembayaran')) {
+    function jenisPembayaran(): Collection
+    {
+        return collect(['UMUM']);
+    }
+}
+
+if (! function_exists('jenisLayanan')) {
+    function jenisLayanan(): Collection
+    {
+        return collect([
+            (object) [
+                'id' => 'RJ',
+                'name' => 'Rawat Jalan'
+            ]
+        ]);
+    }
+}
+
 if (!function_exists('formatUang')) {
     function formatUang($nominal)
     {

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -12,7 +13,68 @@ class Pasien extends Model
     use HasUuids, SoftDeletes;
 
     protected $table = 'pasien';
+    protected $appends = ['usia', 'jenis_kelamin_text '];
     public $guarded = [];
+
+    /**
+     * Hitung Usia dinamis (berdasarkan tanggal tertentu atau hari ini)
+     *
+     * @param  string|null  $tanggalKunjungan
+     * @return string|null
+     */
+    public function getUsia($tanggalKunjungan = null)
+    {
+        if (!$this->tanggal_lahir) {
+            return null;
+        }
+
+        $tglLahir = Carbon::parse($this->tanggal_lahir);
+        $tglAcuan = $tanggalKunjungan
+            ? Carbon::parse($tanggalKunjungan)
+            : Carbon::now();
+
+        // Hindari error kalau tanggal kunjungan < tanggal lahir
+        if ($tglAcuan->lt($tglLahir)) {
+            return '0 hari';
+        }
+
+        $diff = $tglLahir->diff($tglAcuan);
+
+        $parts = [];
+        if ($diff->y > 0) {
+            $parts[] = "{$diff->y} tahun";
+        }
+        if ($diff->m > 0) {
+            $parts[] = "{$diff->m} bulan";
+        }
+        if ($diff->d > 0) {
+            $parts[] = "{$diff->d} hari";
+        }
+
+        return implode(' ', $parts) ?: '0 hari';
+    }
+
+    /**
+     * Accessor untuk menampilkan jenis kelamin dalam bentuk teks lengkap
+     *
+     * @return string|null
+     */
+    public function getJenisKelaminTextAttribute()
+    {
+        return match ($this->jenis_kelamin) {
+            'L' => 'Laki-laki',
+            'P' => 'Perempuan',
+            default => null,
+        };
+    }
+
+    /**
+     * Accessor default -> Usia berdasarkan hari ini
+     */
+    public function getUsiaAttribute()
+    {
+        return $this->getUsia();
+    }
 
     /**
      * Get the user that owns the Pasien
