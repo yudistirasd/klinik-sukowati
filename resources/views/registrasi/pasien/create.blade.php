@@ -204,7 +204,7 @@
               cancelButtonText: "Kembali"
             }).then((result) => {
               if (result.isConfirmed) {
-                window.location.href = route('registrasi.create', response.data.id)
+                window.location.href = route('registrasi.kunjungan.create', response.data.id)
               } else {
                 window.location.href = route('registrasi.pasien.index');
               }
