@@ -190,11 +190,11 @@
 
         resetForm() {
           this.form = {
+            id: '',
+            pasien_id: pasien.id,
             kunjungan_id: kunjungan.id,
             created_by: '{{ Auth::user()->id }}',
             jenis_user: '{{ Auth::user()->role }}',
-            created_by: '',
-            jenis_user: '',
             subjective: '',
             objective: '',
             asesmen: '',
