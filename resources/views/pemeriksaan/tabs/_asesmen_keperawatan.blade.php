@@ -344,31 +344,35 @@
         },
 
         init() {
-          this.petugas = asesmenPerawat.petugas.name ?? '{{ Auth::user()->name }}';
           this.form.pasien_id = pasien.id;
           this.form.kunjungan_id = kunjungan.id;
-          this.form.created_by = asesmenPerawat.created_by ?? '{{ Auth::id() }}';
-          this.form.berat = asesmenPerawat.berat;
-          this.form.tinggi = asesmenPerawat.tinggi;
-          this.form.nadi = asesmenPerawat.nadi;
-          this.form.suhu = asesmenPerawat.suhu;
-          this.form.respirasi = asesmenPerawat.respirasi;
-          this.form.tekanan_darah = asesmenPerawat.tekanan_darah;
-          this.form.riwayat_ranap = asesmenPerawat.riwayat_ranap;
-          this.form.riwayat_penyakit_keluarga = asesmenPerawat.riwayat_penyakit_keluarga;
-          this.form.alergi = asesmenPerawat.alergi;
-          this.form.alergi_ket = asesmenPerawat.alergi_ket;
-          this.form.keluhan = asesmenPerawat.keluhan;
-          this.form.sempoyongan = asesmenPerawat.sempoyongan;
-          this.form.pegangan_kursi = asesmenPerawat.pegangan_kursi;
-          this.form.skrining_nyeri = asesmenPerawat.skrining_nyeri;
-          this.form.penyebab_nyeri = asesmenPerawat.penyebab_nyeri;
-          this.form.lokasi_nyeri = asesmenPerawat.lokasi_nyeri;
-          this.form.kualitas_nyeri = asesmenPerawat.kualitas_nyeri;
-          this.form.skala_nyeri = asesmenPerawat.skala_nyeri;
-          this.form.waktu_nyeri = asesmenPerawat.waktu_nyeri;
-          this.form.kehilangan_bb = asesmenPerawat.kehilangan_bb;
-          this.form.penurunan_nafsu_makan = asesmenPerawat.penurunan_nafsu_makan;
+
+          if (asesmenPerawat) {
+
+            this.petugas = asesmenPerawat?.petugas?.name ?? '{{ Auth::user()->name }}';
+            this.form.created_by = asesmenPerawat?.created_by ?? '{{ Auth::id() }}';
+            this.form.berat = asesmenPerawat.berat;
+            this.form.tinggi = asesmenPerawat.tinggi;
+            this.form.nadi = asesmenPerawat.nadi;
+            this.form.suhu = asesmenPerawat.suhu;
+            this.form.respirasi = asesmenPerawat.respirasi;
+            this.form.tekanan_darah = asesmenPerawat.tekanan_darah;
+            this.form.riwayat_ranap = asesmenPerawat.riwayat_ranap;
+            this.form.riwayat_penyakit_keluarga = asesmenPerawat.riwayat_penyakit_keluarga;
+            this.form.alergi = asesmenPerawat.alergi;
+            this.form.alergi_ket = asesmenPerawat.alergi_ket;
+            this.form.keluhan = asesmenPerawat.keluhan;
+            this.form.sempoyongan = asesmenPerawat.sempoyongan;
+            this.form.pegangan_kursi = asesmenPerawat.pegangan_kursi;
+            this.form.skrining_nyeri = asesmenPerawat.skrining_nyeri;
+            this.form.penyebab_nyeri = asesmenPerawat.penyebab_nyeri;
+            this.form.lokasi_nyeri = asesmenPerawat.lokasi_nyeri;
+            this.form.kualitas_nyeri = asesmenPerawat.kualitas_nyeri;
+            this.form.skala_nyeri = asesmenPerawat.skala_nyeri;
+            this.form.waktu_nyeri = asesmenPerawat.waktu_nyeri;
+            this.form.kehilangan_bb = asesmenPerawat.kehilangan_bb;
+            this.form.penurunan_nafsu_makan = asesmenPerawat.penurunan_nafsu_makan;
+          }
         }
       }))
     })

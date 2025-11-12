@@ -469,21 +469,26 @@
           this.form.pasien_id = pasien.id;
           this.form.kunjungan_id = kunjungan.id;
           this.form.created_by = kunjungan.dokter_id;
-          this.form.berat = asesmenPerawat.berat;
-          this.form.tinggi = asesmenPerawat.tinggi;
-          this.form.nadi = asesmenPerawat.nadi;
-          this.form.suhu = asesmenPerawat.suhu;
-          this.form.respirasi = asesmenPerawat.respirasi;
-          this.form.tekanan_darah = asesmenPerawat.tekanan_darah;
 
-          this.form.keluhan_utama = asesmenMedis.keluhan_utama;
-          this.form.penyakit_dahulu = asesmenMedis.penyakit_dahulu;
-          this.form.penyakit_sekarang = asesmenMedis.penyakit_sekarang;
-          this.form.keadaan_umum = asesmenMedis.keadaan_umum;
-          this.form.diagnosis_sementara = asesmenMedis.diagnosis_sementara;
-          this.form.indikasi_medis = asesmenMedis.indikasi_medis;
-          this.form.tindak_lanjut = asesmenMedis.tindak_lanjut;
-          this.form.tindak_lanjut_ket = asesmenMedis.tindak_lanjut_ket;
+          if (asesmenPerawat) {
+            this.form.berat = asesmenPerawat.berat;
+            this.form.tinggi = asesmenPerawat.tinggi;
+            this.form.nadi = asesmenPerawat.nadi;
+            this.form.suhu = asesmenPerawat.suhu;
+            this.form.respirasi = asesmenPerawat.respirasi;
+            this.form.tekanan_darah = asesmenPerawat.tekanan_darah;
+          }
+
+          if (asesmenMedis) {
+            this.form.keluhan_utama = asesmenMedis.keluhan_utama;
+            this.form.penyakit_dahulu = asesmenMedis.penyakit_dahulu;
+            this.form.penyakit_sekarang = asesmenMedis.penyakit_sekarang;
+            this.form.keadaan_umum = asesmenMedis.keadaan_umum;
+            this.form.diagnosis_sementara = asesmenMedis.diagnosis_sementara;
+            this.form.indikasi_medis = asesmenMedis.indikasi_medis;
+            this.form.tindak_lanjut = asesmenMedis.tindak_lanjut;
+            this.form.tindak_lanjut_ket = asesmenMedis.tindak_lanjut_ket;
+          }
         },
 
         selectIcd10(row) {
