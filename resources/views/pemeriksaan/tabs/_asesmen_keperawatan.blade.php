@@ -346,11 +346,11 @@
         init() {
           this.form.pasien_id = pasien.id;
           this.form.kunjungan_id = kunjungan.id;
+          this.form.created_by = asesmenPerawat?.created_by ?? '{{ Auth::id() }}';
 
           if (asesmenPerawat) {
 
             this.petugas = asesmenPerawat?.petugas?.name ?? '{{ Auth::user()->name }}';
-            this.form.created_by = asesmenPerawat?.created_by ?? '{{ Auth::id() }}';
             this.form.berat = asesmenPerawat.berat;
             this.form.tinggi = asesmenPerawat.tinggi;
             this.form.nadi = asesmenPerawat.nadi;
