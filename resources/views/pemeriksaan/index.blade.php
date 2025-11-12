@@ -126,13 +126,13 @@
               <a href="#tabs-asesmen-perawat" class="nav-link" data-bs-toggle="tab" aria-selected="false" role="tab" tabindex="-1">Asesmen Keperawatan</a>
             </li>
             <li class="nav-item" role="presentation">
-              <a href="#tabs-cppt" class="nav-link active" data-bs-toggle="tab" aria-selected="false" role="tab" tabindex="-1">CPPT</a>
+              <a href="#tabs-cppt" class="nav-link" data-bs-toggle="tab" aria-selected="false" role="tab" tabindex="-1">CPPT</a>
             </li>
             <li class="nav-item" role="presentation">
-              <a href="#tabs-tindakan" class="nav-link" data-bs-toggle="tab" aria-selected="false" role="tab" tabindex="-1">Billing / Tindakan</a>
+              <a href="#tabs-tindakan" class="nav-link active" data-bs-toggle="tab" aria-selected="false" role="tab" tabindex="-1">Tindakan</a>
             </li>
             <li class="nav-item" role="presentation">
-              <a href="#tabs-tindakan" class="nav-link" data-bs-toggle="tab" aria-selected="false" role="tab" tabindex="-1">Resep</a>
+              <a href="#tabs-resep" class="nav-link" data-bs-toggle="tab" aria-selected="false" role="tab" tabindex="-1">Resep</a>
             </li>
             <li class="nav-item ms-auto" role="presentation">
               <a href="#tabs-settings-1" class="nav-link" title="Settings" data-bs-toggle="tab" aria-selected="false" tabindex="-1" role="tab"><!-- Download SVG icon from http://tabler.io/icons/icon/settings -->
@@ -149,8 +149,11 @@
             <div class="tab-pane" id="tabs-asesmen-perawat" role="tabpanel">
               @include('pemeriksaan.tabs._asesmen_keperawatan')
             </div>
-            <div class="tab-pane active show" id="tabs-cppt" role="tabpanel">
+            <div class="tab-pane" id="tabs-cppt" role="tabpanel">
               @include('pemeriksaan.tabs._cppt')
+            </div>
+            <div class="tab-pane active show" id="tabs-tindakan" role="tabpanel">
+              @include('pemeriksaan.tabs._tindakan')
             </div>
             <div class="tab-pane" id="tabs-settings-1" role="tabpanel">
               <h4>Settings tab</h4>

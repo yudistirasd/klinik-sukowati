@@ -36,6 +36,21 @@ class ProdukController extends Controller
             ->make(true);
     }
 
+    public function json(Request $request, $jenis)
+    {
+        $data = Produk::{$request->jenis}()
+            ->when($request->filled('keyword'), fn($q) => $q->where('name', 'ilike', "%{$request->keyword}%"))
+            ->limit(30)
+            ->get(['id', 'name as text', '*'])
+            ->map(function ($row) {
+                $row->text = "{$row->text} - " . formatUang($row->tarif);
+
+                return $row;
+            });
+
+        return $this->sendResponse(data: $data);
+    }
+
     public function index($jenis)
     {
         return view('master.produk.' . $jenis);

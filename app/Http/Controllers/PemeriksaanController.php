@@ -8,6 +8,7 @@ use App\Models\AsesmenMedis;
 use App\Models\CPPT;
 use App\Models\DiagnosaPasien;
 use App\Models\Kunjungan;
+use App\Models\PelayananPasien;
 use App\Models\ProsedurePasien;
 use Auth;
 use DataTables;
@@ -142,6 +143,30 @@ class PemeriksaanController extends Controller
             ->make(true);
     }
 
+    public function dtTindakan(Request $request)
+    {
+        $data = PelayananPasien::query()->with('produk')
+            ->where('kunjungan_id', $request->kunjungan_id);
+
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->editColumn('harga', function ($row) {
+                return formatUang($row->harga);
+            })
+            ->addColumn('action', function ($row) {
+
+                return "
+                                <button type='button' class='btn btn-danger btn-icon' onclick='confirmDelete(`" . route('api.pemeriksaan.destroy.tindakan', $row->id) . "`, tindakanPasienTable.ajax.reload)'>
+                                    <i class='ti ti-trash'></i>
+                                </button>
+                            ";
+            })
+            ->rawColumns([
+                'action',
+            ])
+            ->make(true);
+    }
+
     public function index(Kunjungan $kunjungan)
     {
         $kunjungan->load(['pasien', 'ruangan', 'dokter']);
@@ -241,5 +266,25 @@ class PemeriksaanController extends Controller
         $cppt->delete();
 
         return $this->sendResponse(message: __('http-response.success.delete', ['Attribute' => 'CPPT']));
+    }
+
+    public function storeTindakan(Request $request)
+    {
+        PelayananPasien::updateOrCreate([
+            'pasien_id' => $request->pasien_id,
+            'kunjungan_id' => $request->kunjungan_id,
+            'produk_id' => $request->produk_id,
+        ], [
+            'harga' => $request->tarif
+        ]);
+
+        return $this->sendResponse(message: __('http-response.success.store', ['Attribute' => 'Tindakan']));
+    }
+
+    public function destroyTindakan(PelayananPasien $tindakan)
+    {
+        $tindakan->delete();
+
+        return $this->sendResponse(message: __('http-response.success.delete', ['Attribute' => 'Tindakan']));
     }
 }

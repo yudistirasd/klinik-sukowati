@@ -23,6 +23,7 @@ Route::group(['as' => 'api.', 'middleware' => ['web', 'auth']], function () {
         Route::get('departemen/dt', [DepartemenController::class, 'dt'])->name('departemen.dt');
         Route::get('ruangan/dt', [RuanganController::class, 'dt'])->name('ruangan.dt');
         Route::get('produk/{jenis}', [ProdukController::class, 'dt'])->name('produk.dt');
+        Route::get('produk/json/{jenis}', [ProdukController::class, 'json'])->name('produk.json');
 
         Route::get('wilayah/provinsi', [WilayahController::class, 'provinsi'])->name('wilayah.provinsi');
         Route::get('wilayah/kabupaten', [WilayahController::class, 'kabupaten'])->name('wilayah.kabupaten');
@@ -79,5 +80,9 @@ Route::group(['as' => 'api.', 'middleware' => ['web', 'auth']], function () {
         Route::get('cppt', [PemeriksaanController::class, 'dtCppt'])->name('get.cppt');
         Route::post('cppt', [PemeriksaanController::class, 'storeCppt'])->name('store.cppt');
         Route::delete('cppt/{cppt}', [PemeriksaanController::class, 'destroyCppt'])->name('destroy.cppt');
+
+        Route::get('tindakan', [PemeriksaanController::class, 'dtTindakan'])->name('get.tindakan');
+        Route::post('tindakan', [PemeriksaanController::class, 'storeTindakan'])->name('store.tindakan');
+        Route::delete('tindakan/{tindakan}', [PemeriksaanController::class, 'destroyTindakan'])->name('destroy.tindakan');
     });
 });
