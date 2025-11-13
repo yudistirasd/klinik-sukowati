@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateProdukRequest;
 use App\Models\Produk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Str;
 
 class ProdukController extends Controller
 {
@@ -88,11 +89,11 @@ class ProdukController extends Controller
 
             DB::commit();
 
-            return $this->sendResponse(message: __('http-response.success.update', ['Attribute' => $produk->jenis]));
+            return $this->sendResponse(message: __('http-response.success.update', ['Attribute' => Str::ucfirst($produk->jenis)]));
         } catch (\Throwable $th) {
             DB::rollBack();
 
-            return $this->sendError(message: __('http-response.success.update', ['Attribute' => $produk->jenis]), errors: $th->getMessage(), traces: $th->getTrace());
+            return $this->sendError(message: __('http-response.success.update', ['Attribute' => Str::ucfirst($produk->jenis)]), errors: $th->getMessage(), traces: $th->getTrace());
         }
     }
 
@@ -100,6 +101,6 @@ class ProdukController extends Controller
     {
         $produk->delete();
 
-        return $this->sendResponse(message: __('http-response.success.delete', ['Attribute' => $produk->jenis]));
+        return $this->sendResponse(message: __('http-response.success.delete', ['Attribute' => Str::ucfirst($produk->jenis)]));
     }
 }
