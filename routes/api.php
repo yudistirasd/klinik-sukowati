@@ -38,6 +38,10 @@ Route::group(['as' => 'api.', 'middleware' => ['web', 'auth']], function () {
         Route::post('farmasi/satuan-dosis', [FarmasiController::class, 'storeSatuanDosis'])->name('farmasi.satuan-dosis.store');
         Route::get('farmasi/sediaan-obat', [FarmasiController::class, 'sediaan'])->name('farmasi.sediaan.get');
         Route::post('farmasi/sediaan-obat', [FarmasiController::class, 'storeSediaan'])->name('farmasi.sediaan.store');
+        Route::get('farmasi/takaran-obat', [FarmasiController::class, 'takaran'])->name('farmasi.takaran.get');
+        Route::post('farmasi/takaran-obat', [FarmasiController::class, 'storeTakaran'])->name('farmasi.takaran.store');
+        Route::get('farmasi/aturan-pakai-obat', [FarmasiController::class, 'aturanPakai'])->name('farmasi.aturan-pakai.get');
+        Route::post('farmasi/aturan-pakai-obat', [FarmasiController::class, 'storeAturanPakai'])->name('farmasi.aturan-pakai.store');
 
         Route::apiResources([
             'pengguna' => UserController::class,
@@ -89,5 +93,9 @@ Route::group(['as' => 'api.', 'middleware' => ['web', 'auth']], function () {
         Route::get('tindakan', [PemeriksaanController::class, 'dtTindakan'])->name('get.tindakan');
         Route::post('tindakan', [PemeriksaanController::class, 'storeTindakan'])->name('store.tindakan');
         Route::delete('tindakan/{tindakan}', [PemeriksaanController::class, 'destroyTindakan'])->name('destroy.tindakan');
+
+        Route::get('resep', [PemeriksaanController::class, 'dtResep'])->name('get.resep');
+        Route::post('resep', [PemeriksaanController::class, 'storeResep'])->name('store.resep');
+        Route::delete('resep/{detail}', [PemeriksaanController::class, 'destroyResepDetail'])->name('destroy.resep-detail');
     });
 });

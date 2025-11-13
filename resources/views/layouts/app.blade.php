@@ -88,6 +88,7 @@
     <script src="{{ asset('js/tabler.min.js') }}?{{ config('app.version') }}" defer></script>
     <script src="{{ asset('libs/jquery/jquery-3.7.0.min.js') }}?{{ config('app.version') }}"></script>
     <script src="{{ asset('libs/sweetalert2/sweetalert2.all.min.js') }}?{{ config('app.version') }}"></script>
+    <script src="https://unpkg.com/imask"></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
     <script>
       const Toast = Swal.mixin({

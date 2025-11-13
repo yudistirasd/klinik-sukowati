@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AsesmenKeperawatanRequest;
+use App\Http\Requests\StoreResepRequest;
 use App\Models\AsesmenKeperawatan;
 use App\Models\AsesmenMedis;
 use App\Models\CPPT;
@@ -10,6 +11,8 @@ use App\Models\DiagnosaPasien;
 use App\Models\Kunjungan;
 use App\Models\PelayananPasien;
 use App\Models\ProsedurePasien;
+use App\Models\Resep;
+use App\Models\ResepDetail;
 use Auth;
 use DataTables;
 use Illuminate\Http\Request;
@@ -167,6 +170,42 @@ class PemeriksaanController extends Controller
             ->make(true);
     }
 
+    public function dtResep(Request $request)
+    {
+        $data = DB::table('resep as rs')
+            ->join('resep_detail as rd', 'rd.resep_id', '=', 'rs.id')
+            ->join('produk as pr', 'pr.id', '=', 'rd.produk_id')
+            ->join('takaran_obat as tr', 'tr.id', '=', 'rd.takaran_id')
+            ->join('aturan_pakai_obat as ap', 'ap.id', '=', 'rd.aturan_pakai_id')
+            ->select([
+                DB::raw("pr.name || ' ' || pr.dosis || ' ' || pr.satuan as obat"),
+                'rd.id',
+                'rd.signa',
+                'rd.qty',
+                'rd.lama_hari',
+                'tr.name as takaran',
+                'ap.name as aturan_pakai',
+                'rs.status'
+            ]);
+
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('action', function ($row) {
+                if ($row->status == 'VERIFIED') {
+                    return "";
+                }
+                return "
+                                <button type='button' class='btn btn-danger btn-icon' onclick='confirmDelete(`" . route('api.pemeriksaan.destroy.resep-detail', $row->id) . "`, resepObat.ajax.reload)'>
+                                    <i class='ti ti-trash'></i>
+                                </button>
+                            ";
+            })
+            ->rawColumns([
+                'action',
+            ])
+            ->make(true);
+    }
+
     public function index(Kunjungan $kunjungan)
     {
         $kunjungan->load(['pasien', 'ruangan', 'dokter']);
@@ -286,5 +325,55 @@ class PemeriksaanController extends Controller
         $tindakan->delete();
 
         return $this->sendResponse(message: __('http-response.success.delete', ['Attribute' => 'Tindakan']));
+    }
+
+    public function storeResep(StoreResepRequest $request)
+    {
+        DB::beginTransaction();
+
+        try {
+
+            $resep = Resep::where('kunjungan_id', $request->kunjungan_id)
+                ->where('pasien_id', $request->pasien_id)
+                ->where('dokter_id', $request->dokter_id)
+                ->where('status', 'ORDER')
+                ->first();
+
+            if (empty($resep)) {
+                $resep = Resep::create([
+                    'tanggal' => $request->tanggal,
+                    'pasien_id' => $request->pasien_id,
+                    'kunjungan_id' => $request->kunjungan_id,
+                    'dokter_id' => $request->dokter_id
+                ]);
+            }
+
+            ResepDetail::create([
+                'resep_id' => $resep->id,
+                'produk_id' => $request->produk_id,
+                'signa' => $request->signa,
+                'frekuensi' => $request->frekuensi,
+                'unit_dosis' => $request->unit_dosis,
+                'lama_hari' => $request->lama_hari,
+                'qty' => $request->qty,
+                'takaran_id' => $request->takaran_id,
+                'aturan_pakai_id' => $request->aturan_pakai_id,
+            ]);
+
+            DB::commit();
+
+            return $this->sendResponse(message: __('http-response.success.store', ['Attribute' => 'Obat']), data: $resep);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            return $this->sendError(message: __('http-response.error.store', ['Attribute' => 'Obat']), errors: $th->getMessage(), traces: $th->getTrace());
+        }
+    }
+
+    public function destroyResepDetail(ResepDetail $detail)
+    {
+        $detail->delete();
+
+        return $this->sendResponse(message: __('http-response.success.delete', ['Attribute' => 'Obat']));
     }
 }
