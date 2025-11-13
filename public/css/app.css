@@ -89,3 +89,7 @@ a:hover:has(.ti) {
     border-left: none;
     margin-bottom: 2rem;
 }
+
+[x-cloak] {
+    display: none !important;
+}

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Master\DepartemenController;
 use App\Http\Controllers\Master\ProdukController;
 use App\Http\Controllers\Master\RuanganController;
@@ -18,9 +19,7 @@ Route::post('/login', [AuthenticationController::class, 'authenticate'])
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
-    Route::get('/dashboard', function () {
-        return view('layouts.app');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
 

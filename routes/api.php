@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Master\DepartemenController;
 use App\Http\Controllers\Master\FarmasiController;
 use App\Http\Controllers\Master\ICDController;
@@ -97,5 +98,9 @@ Route::group(['as' => 'api.', 'middleware' => ['web', 'auth']], function () {
         Route::get('resep', [PemeriksaanController::class, 'dtResep'])->name('get.resep');
         Route::post('resep', [PemeriksaanController::class, 'storeResep'])->name('store.resep');
         Route::delete('resep/{detail}', [PemeriksaanController::class, 'destroyResepDetail'])->name('destroy.resep-detail');
+    });
+
+    Route::group(['prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
+        Route::get('scorecard-admin', [DashboardController::class, 'scoreCardAdmin'])->name('scorecard.admin');
     });
 });
