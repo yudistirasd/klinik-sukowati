@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Master\DepartemenController;
 use App\Http\Controllers\Master\ProdukController;
 use App\Http\Controllers\Master\RuanganController;
+use App\Http\Controllers\Master\SuplierController;
 use App\Http\Controllers\PemeriksaanController;
 use App\Http\Controllers\Registrasi\PasienController;
 use App\Http\Controllers\Registrasi\KunjunganController;
@@ -29,6 +30,7 @@ Route::group(['prefix' => 'master', 'as' => 'master.', 'middleware' => 'auth'], 
     Route::get('departemen', [DepartemenController::class, 'index'])->name('departemen.index');
     Route::get('ruangan', [RuanganController::class, 'index'])->name('ruangan.index');
     Route::get('produk/{jenis}', [ProdukController::class, 'index'])->name('produk.index');
+    Route::get('suplier', [SuplierController::class, 'index'])->name('suplier.index');
 });
 
 

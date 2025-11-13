@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Obat')
-@section('subtitle', 'Setting')
+@section('subtitle', 'Master Data')
 
 @push('css')
   <link href="{{ asset('libs/select2/select2.css') }}" rel="stylesheet" />

@@ -6,6 +6,7 @@ use App\Http\Controllers\Master\FarmasiController;
 use App\Http\Controllers\Master\ICDController;
 use App\Http\Controllers\Master\ProdukController;
 use App\Http\Controllers\Master\RuanganController;
+use App\Http\Controllers\Master\SuplierController;
 use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\Master\WilayahController;
 use App\Http\Controllers\PemeriksaanController;
@@ -26,6 +27,7 @@ Route::group(['as' => 'api.', 'middleware' => ['web', 'auth']], function () {
         Route::get('ruangan/dt', [RuanganController::class, 'dt'])->name('ruangan.dt');
         Route::get('produk/{jenis}', [ProdukController::class, 'dt'])->name('produk.dt');
         Route::get('produk/json/{jenis}', [ProdukController::class, 'json'])->name('produk.json');
+        Route::get('suplier/dt', [SuplierController::class, 'dt'])->name('suplier.dt');
 
         Route::get('wilayah/provinsi', [WilayahController::class, 'provinsi'])->name('wilayah.provinsi');
         Route::get('wilayah/kabupaten', [WilayahController::class, 'kabupaten'])->name('wilayah.kabupaten');
@@ -50,6 +52,7 @@ Route::group(['as' => 'api.', 'middleware' => ['web', 'auth']], function () {
             'ruangan' => RuanganController::class,
             'produk' => ProdukController::class,
             'pasien' => PasienController::class,
+            'suplier' => SuplierController::class,
         ], [
             'only' => ['store', 'edit', 'update', 'destroy'],
             'parameters' => [

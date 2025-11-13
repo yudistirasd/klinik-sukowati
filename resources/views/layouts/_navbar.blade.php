@@ -89,14 +89,12 @@
                 <a class="dropdown-item" href="{{ route('master.produk.index', ['jenis' => 'tindakan']) }}">
                   Tindakan
                 </a>
-                <div class="dropend">
-                  <a class="dropdown-item dropdown-toggle" href="#sidebar-authentication" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false">
-                    Farmasi
-                  </a>
-                  <div class="dropdown-menu">
-                    <a href="{{ route('master.produk.index', ['jenis' => 'obat']) }}" class="dropdown-item"> Obat </a>
-                  </div>
-                </div>
+                <a class="dropdown-item" href="{{ route('master.produk.index', ['jenis' => 'obat']) }}">
+                  Obat
+                </a>
+                <a class="dropdown-item" href="{{ route('master.suplier.index') }}">
+                  Suplier
+                </a>
               </div>
             </div>
           </div>

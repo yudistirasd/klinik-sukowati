@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Departemen')
-@section('subtitle', 'Setting')
+@section('subtitle', 'Master Data')
 
 @push('css')
   <link href="{{ asset('libs/datatables/dataTables.bootstrap5.min.css') }}?{{ config('app.version') }}" rel="stylesheet">

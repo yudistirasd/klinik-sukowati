@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Ruangan')
+@section('title', 'Suplier')
 @section('subtitle', 'Master Data')
 
 @push('css')
@@ -10,9 +10,9 @@
 @endpush
 
 @section('action-page')
-  <a href="#" class="btn btn-primary btn-5" onclick="handleModal('create', 'Tambah Ruang')">
+  <a href="#" class="btn btn-primary btn-5" onclick="handleModal('create', 'Tambah Suplier')">
     <div class="ti ti-plus me-1"></div>
-    Ruang
+    Suplier
   </a>
 @endsection
 
@@ -21,13 +21,13 @@
   <div class="card">
     <div class="card-body">
       <div class="table-responsive">
-        <table class="table table-bordered table-hover" id="ruangan-table">
+        <table class="table table-bordered table-hover" id="suplier-table">
           <thead>
             <tr>
               <th class="text-center">#</th>
-              <th class="text-center">Nama Ruang</th>
-              <th class="text-center">Departemen</th>
-              <th class="text-center" style="width: 24%">IHS ID</th>
+              <th class="text-center">Nama</th>
+              <th class="text-center">Alamat</th>
+              <th class="text-center">Telp</th>
               <th class="text-center">Aksi</th>
             </tr>
           </thead>
@@ -38,7 +38,7 @@
 
   <!-- Modal Form -->
   <div x-data="form">
-    <div class="modal modal-blur fade" id="modal-ruangan" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal modal-blur fade" id="modal-suplier" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -48,19 +48,19 @@
           <form @submit.prevent="handleSubmit" autocomplete="off">
             <div class="modal-body">
               <div class="mb-3">
-                <label class="form-label required">Departemen</label>
-                <select class="form-select" x-model="form.departemen_id" :class="{ 'is-invalid': errors.departemen_id }">
-                  <option value="">Pilih Departemen</option>
-                  @foreach ($departemen as $item)
-                    <option value="{{ $item->id }}">{{ $item->name }}</option>
-                  @endforeach
-                </select>
-                <div class="invalid-feedback" x-text="errors.departemen_id"></div>
-              </div>
-              <div class="mb-3">
-                <label class="form-label required">Nama Ruangan</label>
+                <label class="form-label required">Nama Suplier</label>
                 <input type="text" class="form-control" autocomplete="off" x-model="form.name" :class="{ 'is-invalid': errors.name }">
                 <div class="invalid-feedback" x-text="errors.name"></div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label required">Alamat Suplier</label>
+                <input type="text" class="form-control" autocomplete="off" x-model="form.alamat" :class="{ 'is-invalid': errors.alamat }">
+                <div class="invalid-feedback" x-text="errors.alamat"></div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label required">Telp Suplier</label>
+                <input type="text" class="form-control" autocomplete="off" x-model="form.telp" :class="{ 'is-invalid': errors.telp }">
+                <div class="invalid-feedback" x-text="errors.telp"></div>
               </div>
             </div>
             <div class="modal-footer">
@@ -86,12 +86,12 @@
   <script src="{{ asset('libs/datatables/dataTables.responsive.min.js') }}?{{ config('app.version') }}"></script>
   <script src="{{ asset('libs/datatables/responsive.bootstrap5.js') }}?{{ config('app.version') }}"></script>
   <script>
-    const table = new DataTable('#ruangan-table', {
+    const table = new DataTable('#suplier-table', {
       processing: true,
       serverSide: true,
       autoWidth: false,
       destroy: true,
-      ajax: route('api.master.ruangan.dt'),
+      ajax: route('api.master.suplier.dt'),
       order: [
         [
           1, 'asc'
@@ -111,13 +111,13 @@
           sClass: 'text-start'
         },
         {
-          data: 'departemen.name',
-          name: 'departemen.name',
+          data: 'alamat',
+          name: 'alamat',
           sClass: 'text-start'
         },
         {
-          data: 'ihs_id',
-          name: 'ihs_id',
+          data: 'telp',
+          name: 'telp',
           sClass: 'text-center'
         },
         {
@@ -135,8 +135,8 @@
         form: {
           id: null,
           name: '',
-          ihs_id: '',
-          departemen_id: '',
+          telp: '',
+          alaamt: ''
         },
         endPoint: '',
         errors: {},
@@ -148,7 +148,7 @@
 
           if (action == 'create') {
             delete this.form._method;
-            this.endPoint = route('api.master.ruangan.store')
+            this.endPoint = route('api.master.suplier.store')
           }
 
           if (action == 'edit') {
@@ -157,10 +157,10 @@
               _method: 'PUT'
             };
 
-            this.endPoint = route('api.master.ruangan.update', data.id);
+            this.endPoint = route('api.master.suplier.update', data.id);
           }
 
-          $('#modal-ruangan').modal('show');
+          $('#modal-suplier').modal('show');
 
         },
 
@@ -180,7 +180,7 @@
               this.loading = false;
             }
           }).done((response) => {
-            $('#modal-ruangan').modal('hide');
+            $('#modal-suplier').modal('hide');
             this.resetForm();
             table.ajax.reload();
             Toast.fire({
@@ -203,8 +203,7 @@
         resetForm() {
           this.form = {
             name: '',
-            ihs_id: '',
-            departemen_id: '',
+            ihs_id: ''
           };
           this.errors = {};
         }
