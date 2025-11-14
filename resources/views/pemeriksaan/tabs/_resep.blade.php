@@ -1,4 +1,4 @@
-<div x-data="Resep" x-init="init()">
+<div x-data="Resep">
 
   <form @submit.prevent="handleSubmit" autocomplete="off" id="cppt" x-show="isUserDokter">
     <div class="row">
@@ -37,7 +37,7 @@
       <div class="col-md-2 col-sm-12">
         <div class="mb-3">
           <label class="form-label">Signa</label>
-          <input type="text" id="frekuensi" class="form-control" x-on:input="hitungJumlahObat" autocomplete="off" x-model="form.signa" :class="{ 'is-invalid': errors.signa }">
+          <input type="text" id="frekuensi" class="form-control" x-on:input="hitungJumlahObat" autocomplete="off" :class="{ 'is-invalid': errors.signa }">
           <div class="invalid-feedback" x-text="errors.signa"></div>
         </div>
       </div>
@@ -86,6 +86,7 @@
     <thead>
       <tr>
         <th class="text-center">No.</th>
+        <th class="text-center">Nomor Resep</th>
         <th class="text-center">Obat</th>
         <th class="text-center">Signa</th>
         <th class="text-center">Lama Hari</th>
@@ -117,6 +118,10 @@
           searchable: false,
           sClass: 'text-center',
           width: '5%'
+        },
+        {
+          data: "nomor",
+          sClass: 'text-center',
         },
         {
           data: "obat",
@@ -155,6 +160,7 @@
 
     document.addEventListener('alpine:init', () => {
       Alpine.data('Resep', () => ({
+        datePicker: {},
         dokter: '',
         mask: {},
         form: {
@@ -201,12 +207,11 @@
               title: response.message
             });
 
-            console.log(response);
+            this.resetForm();
 
             this.form.id = response.data.id;
             this.form.nomor = response.data.nomor;
-
-            this.resetForm();
+            this.datePicker.dates.setValue(new tempusDominus.DateTime(response.data.tanggal));
 
             resepObat.ajax.reload();
 
@@ -427,13 +432,31 @@
 
           const input = document.getElementById('frekuensi');
           this.mask = IMask(input, {
-            mask: '* X *.*',
+            mask: 'num1 X num2',
             lazy: false,
-            placeholderChar: '_'
+            placeholderChar: '_',
+            blocks: {
+              num1: {
+                mask: Number,
+                scale: 0,
+                min: 0,
+                max: 9
+              },
+              num2: {
+                mask: Number,
+                scale: 1,
+                radix: '.',
+                mapToRadix: ['.'],
+                min: 0,
+                max: 9.9,
+                normalizeZeros: true,
+                padFractionalZeros: true
+              }
+            }
           });
 
           let tanggal_resep = document.getElementById('tanggal');
-          let datePicker = new tempusDominus.TempusDominus(document.getElementById('tanggal'), {
+          this.datePicker = new tempusDominus.TempusDominus(document.getElementById('tanggal'), {
             display: {
               icons: {
                 type: 'icons',
@@ -447,13 +470,24 @@
                 clear: 'ti ti-trash',
                 close: 'ti ti-xmark'
               },
+              components: {
+                calendar: true,
+                date: true,
+                month: true,
+                year: true,
+                decades: true,
+                clock: false,
+                hours: false,
+                minutes: false,
+                seconds: false,
+                useTwentyfourHour: undefined
+              },
               viewMode: 'calendar',
               toolbarPlacement: 'bottom',
               theme: 'light',
             },
             localization: {
-              format: 'yyyy-MM-dd HH:mm',
-              hourCycle: 'h23',
+              format: 'yyyy-MM-dd',
             },
             restrictions: {
               maxDate: new Date()
@@ -461,19 +495,26 @@
           });
 
           tanggal_resep.addEventListener('change.td', (e) => {
-            let selected = e.detail.date.format('yyyy-MM-dd HH:mm')
+            let selected = e.detail.date.format('yyyy-MM-dd')
 
             this.form.tanggal = e.detail.date ?
-              e.detail.date.format('yyyy-MM-dd HH:mm') :
+              e.detail.date.format('yyyy-MM-dd') :
               '';
           });
 
-          datePicker.dates.setValue(new tempusDominus.DateTime(kunjungan.tanggal_registrasi));
-          //   datePicker.dates.setValue(new Date());
+          if (resep) {
+            this.form.tanggal = resep.tanggal;
+            this.form.nomor = resep.nomor;
+          } else {
+            this.form.tanggal = kunjungan.tanggal_registrasi;
+          }
+          this.datePicker.dates.setValue(new tempusDominus.DateTime(this.form.tanggal));
         },
 
         hitungJumlahObat() {
-          const [freq, dose] = this.mask.value.split('X');
+          let signa = this.mask.value;
+
+          const [freq, dose] = signa.split('X');
 
           let jumlahObat = 0;
 
@@ -481,6 +522,7 @@
             jumlahObat = freq * dose * this.form.lama_hari;
           }
 
+          this.form.signa = signa;
           this.form.frekuensi = freq;
           this.form.unit_dosis = dose;
           this.form.qty = jumlahObat;
@@ -505,6 +547,7 @@
           };
           this.errors = {};
 
+          this.mask.value = '';
           $('#aturan_pakai_id').val(null).trigger('change');
           $('#takaran_id').val(null).trigger('change');
           $('#obat').val(null).trigger('change');

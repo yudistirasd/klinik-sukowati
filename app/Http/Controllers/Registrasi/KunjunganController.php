@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateKunjunganRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\Kunjungan;
 use App\Models\Pasien;
+use App\Models\Resep;
 use App\Models\Ruangan;
 use App\Models\User;
 use Auth;

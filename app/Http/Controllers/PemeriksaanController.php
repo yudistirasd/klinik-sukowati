@@ -189,6 +189,7 @@ class PemeriksaanController extends Controller
             ->join('takaran_obat as tr', 'tr.id', '=', 'rd.takaran_id')
             ->join('aturan_pakai_obat as ap', 'ap.id', '=', 'rd.aturan_pakai_id')
             ->select([
+                'rs.nomor',
                 DB::raw("pr.name || ' ' || pr.dosis || ' ' || pr.satuan as obat"),
                 'rd.id',
                 'rd.signa',
@@ -224,12 +225,16 @@ class PemeriksaanController extends Controller
         $pasien = $kunjungan->pasien;
         $asesmenKeperawatan = AsesmenKeperawatan::where('kunjungan_id', $kunjungan->id)->with('petugas')->first();
         $asesmenMedis = AsesmenMedis::where('kunjungan_id', $kunjungan->id)->first();
+        $resep = Resep::where('kunjungan_id', $kunjungan->id)
+            ->where('status', 'ORDER')
+            ->first();
 
         return view('pemeriksaan.index', compact([
             'pasien',
             'kunjungan',
             'asesmenKeperawatan',
-            'asesmenMedis'
+            'asesmenMedis',
+            'resep'
         ]));
     }
 

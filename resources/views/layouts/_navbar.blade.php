@@ -66,23 +66,26 @@
           </div>
         </div>
       </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false">
-          <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler.io/icons/icon/package -->
-            <i class="ti ti-cash-register"></i>
-          </span>
-          <span class="nav-link-title"> Kasir </span>
-        </a>
-        <div class="dropdown-menu">
-          <div class="dropdown-menu-columns">
-            <div class="dropdown-menu-column">
-              <a class="dropdown-item" href="{{ route('kasir.tagihan-pasien') }}">
-                Daftar Tagihan Pasien
-              </a>
+      @if (Auth::user()->hasRole(['admin', 'apoteker']))
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false">
+            <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler.io/icons/icon/package -->
+              <i class="ti ti-cash-register"></i>
+            </span>
+            <span class="nav-link-title"> Kasir </span>
+          </a>
+          <div class="dropdown-menu">
+            <div class="dropdown-menu-columns">
+              <div class="dropdown-menu-column">
+                <a class="dropdown-item" href="{{ route('kasir.tagihan-pasien') }}">
+                  Daftar Tagihan Pasien
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-      </li>
+        </li>
+      @endif
+
       @if (Auth::user()->hasRole(['admin', 'apoteker']))
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false">

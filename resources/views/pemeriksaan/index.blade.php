@@ -186,6 +186,7 @@
     let kunjungan = {!! json_encode($kunjungan) !!}
     let asesmenPerawat = {!! json_encode($asesmenKeperawatan) !!};
     let asesmenMedis = {!! json_encode($asesmenMedis) !!};
+    let resep = {!! json_encode($resep) !!}
 
     document.addEventListener('alpine:init', () => {
       Alpine.data('form', () => ({
