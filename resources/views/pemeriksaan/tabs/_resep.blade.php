@@ -1,86 +1,88 @@
 <div x-data="Resep">
 
-  <form @submit.prevent="handleSubmit" autocomplete="off" id="cppt" x-show="isUserDokter">
-    <div class="row">
-      <div class="col-md-4 col-sm-12">
-        <div class="mb-3">
-          <label class="form-label">Tgl Resep</label>
-          <input type="text" class="form-control" autocomplete="off" id="tanggal" x-model="form.tanggal">
+  @if (Auth::user()->hasRole('dokter'))
+    <form @submit.prevent="handleSubmit" autocomplete="off" id="resep" x-show="isUserDokter">
+      <div class="row">
+        <div class="col-md-4 col-sm-12">
+          <div class="mb-3">
+            <label class="form-label">Tgl Resep</label>
+            <input type="text" class="form-control" autocomplete="off" id="tanggal" x-model="form.tanggal">
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+          <div class="mb-3">
+            <label class="form-label">No Resep</label>
+            <input type="number" disabled class="form-control" autocomplete="off" placeholder="Otomatis dari sistem" x-model="form.nomor" :class="{ 'is-invalid': errors.nomor }">
+            <div class="invalid-feedback" x-text="errors.nomor"></div>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+          <div class="mb-3">
+            <label class="form-label">DPJP</label>
+            <input type="text" disabled class="form-control" autocomplete="off" x-model="dokter">
+          </div>
         </div>
       </div>
-      <div class="col-md-4 col-sm-12">
-        <div class="mb-3">
-          <label class="form-label">No Resep</label>
-          <input type="number" disabled class="form-control" autocomplete="off" placeholder="Otomatis dari sistem" x-model="form.nomor" :class="{ 'is-invalid': errors.nomor }">
-          <div class="invalid-feedback" x-text="errors.nomor"></div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="mb-3">
+            <label class="form-label">Obat</label>
+            <select class="form-control" id="obat" name="obat_id" :class="{ 'is-invalid': errors.produk_id }">
+              <option value=""></option>
+            </select>
+            <div class="invalid-feedback" x-text="errors.produk_id"></div>
+          </div>
         </div>
       </div>
-      <div class="col-md-4 col-sm-12">
-        <div class="mb-3">
-          <label class="form-label">DPJP</label>
-          <input type="text" disabled class="form-control" autocomplete="off" x-model="dokter">
+      <div class="row">
+        <div class="col-md-2 col-sm-12">
+          <div class="mb-3">
+            <label class="form-label">Signa</label>
+            <input type="text" id="frekuensi" class="form-control" x-on:input="hitungJumlahObat" autocomplete="off" :class="{ 'is-invalid': errors.signa }">
+            <div class="invalid-feedback" x-text="errors.signa"></div>
+          </div>
+        </div>
+        <div class="col-md-2 col-sm-12">
+          <div class="mb-3">
+            <label class="form-label">Lama Hari</label>
+            <input type="number" min="1" class="form-control" x-on:input="hitungJumlahObat" autocomplete="off" x-model="form.lama_hari" :class="{ 'is-invalid': errors.lama_hari }">
+            <div class="invalid-feedback" x-text="errors.lama_hari"></div>
+          </div>
+        </div>
+        <div class="col-md-2 col-sm-12">
+          <div class="mb-3">
+            <label class="form-label">Jumlah Obat</label>
+            <input type="number" disabled class="form-control" autocomplete="off" x-model="form.qty" :class="{ 'is-invalid': errors.qty }">
+            <div class="invalid-feedback" x-text="errors.qty"></div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-12">
+          <div class="mb-3">
+            <label class="form-label">Takaran</label>
+            <select class="form-control" id="takaran_id" :class="{ 'is-invalid': errors.takaran_id }">
+              <option value=""></option>
+            </select>
+            <div class="invalid-feedback" x-text="errors.takaran_id"></div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-12">
+          <div class="mb-3">
+            <label class="form-label">Aturan Pakai</label>
+            <select class="form-control" id="aturan_pakai_id" :class="{ 'is-invalid': errors.aturan_pakai_id }">
+              <option value=""></option>
+            </select>
+            <div class="invalid-feedback" x-text="errors.aturan_pakai_id"></div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="mb-3">
-          <label class="form-label">Obat</label>
-          <select class="form-control" id="obat" name="obat_id" :class="{ 'is-invalid': errors.produk_id }">
-            <option value=""></option>
-          </select>
-          <div class="invalid-feedback" x-text="errors.produk_id"></div>
-        </div>
+      <div class="mb-3 text-end">
+        <button type="submit" class="btn btn-primary ms-auto" x-bind:disabled="loading">
+          <span x-show="loading" class="spinner-border spinner-border-sm me-2"></span>
+          Simpan
+        </button>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-md-2 col-sm-12">
-        <div class="mb-3">
-          <label class="form-label">Signa</label>
-          <input type="text" id="frekuensi" class="form-control" x-on:input="hitungJumlahObat" autocomplete="off" :class="{ 'is-invalid': errors.signa }">
-          <div class="invalid-feedback" x-text="errors.signa"></div>
-        </div>
-      </div>
-      <div class="col-md-2 col-sm-12">
-        <div class="mb-3">
-          <label class="form-label">Lama Hari</label>
-          <input type="number" min="1" class="form-control" x-on:input="hitungJumlahObat" autocomplete="off" x-model="form.lama_hari" :class="{ 'is-invalid': errors.lama_hari }">
-          <div class="invalid-feedback" x-text="errors.lama_hari"></div>
-        </div>
-      </div>
-      <div class="col-md-2 col-sm-12">
-        <div class="mb-3">
-          <label class="form-label">Jumlah Obat</label>
-          <input type="number" disabled class="form-control" autocomplete="off" x-model="form.qty" :class="{ 'is-invalid': errors.qty }">
-          <div class="invalid-feedback" x-text="errors.qty"></div>
-        </div>
-      </div>
-      <div class="col-md-3 col-sm-12">
-        <div class="mb-3">
-          <label class="form-label">Takaran</label>
-          <select class="form-control" id="takaran_id" :class="{ 'is-invalid': errors.takaran_id }">
-            <option value=""></option>
-          </select>
-          <div class="invalid-feedback" x-text="errors.takaran_id"></div>
-        </div>
-      </div>
-      <div class="col-md-3 col-sm-12">
-        <div class="mb-3">
-          <label class="form-label">Aturan Pakai</label>
-          <select class="form-control" id="aturan_pakai_id" :class="{ 'is-invalid': errors.aturan_pakai_id }">
-            <option value=""></option>
-          </select>
-          <div class="invalid-feedback" x-text="errors.aturan_pakai_id"></div>
-        </div>
-      </div>
-    </div>
-    <div class="mb-3 text-end">
-      <button type="submit" class="btn btn-primary ms-auto" x-bind:disabled="loading">
-        <span x-show="loading" class="spinner-border spinner-border-sm me-2"></span>
-        Simpan
-      </button>
-    </div>
-  </form>
+    </form>
+  @endif
 
   <table id="resep-pasien-table" aria-label="diagnosa" class="table table-bordered table-striped table-sm mt-3" style="width: 100%;">
     <thead>
