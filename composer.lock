@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f28c5712d41a885cc54262213546e42f",
+    "content-hash": "5126bf5479ce8000409a5bba601d0b80",
     "packages": [
         {
             "name": "archtechx/enums",
@@ -8759,12 +8759,18 @@
             "time": "2025-02-26T13:54:38+00:00"
         },
         {
-            "name": "yudistirasd/satusehat-api",
-            "version": "dev-main",
-            "dist": {
-                "type": "path",
-                "url": "../satusehat-api",
+            "name": "yudistira/satusehat-api",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yudistirasd/satusehat-api.git",
                 "reference": "d5341a4dfdcaad1ee8958701f2a6b7dc9d41d03e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yudistirasd/satusehat-api/zipball/d5341a4dfdcaad1ee8958701f2a6b7dc9d41d03e",
+                "reference": "d5341a4dfdcaad1ee8958701f2a6b7dc9d41d03e",
+                "shasum": ""
             },
             "require": {
                 "guzzlehttp/guzzle": "^7.8",
@@ -8796,19 +8802,7 @@
                     "Satusehat\\Integration\\": "src"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Satusehat\\Integration\\Tests\\": "tests"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "vendor/bin/phpunit"
-                ],
-                "format": [
-                    "vendor/bin/pint"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -8828,10 +8822,16 @@
                 "satusehat-rest-api",
                 "yudistirasd"
             ],
-            "transport-options": {
-                "symlink": true,
-                "relative": true
-            }
+            "support": {
+                "source": "https://github.com/yudistirasd/satusehat-api/tree/v1.1.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/yudistirasd",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-11-12T00:49:34+00:00"
         }
     ],
     "packages-dev": [
@@ -12256,9 +12256,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "yudistirasd/satusehat-api": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
