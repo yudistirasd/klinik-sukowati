@@ -112,7 +112,7 @@
       const confirmDelete = (endpoint, callback) => {
         Swal.fire({
           title: "Apakah anda yakin akan menghapus data ini?",
-          html: "anda tidak dapat mengembalikan data yang sudah dihapus!",
+          html: "Anda tidak dapat mengembalikan data yang sudah dihapus!",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",

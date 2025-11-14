@@ -377,6 +377,8 @@ class PemeriksaanController extends Controller
                 'aturan_pakai_id' => $request->aturan_pakai_id,
             ]);
 
+            $resep = $resep->refresh();
+
             DB::commit();
 
             return $this->sendResponse(message: __('http-response.success.store', ['Attribute' => 'Obat']), data: $resep);
