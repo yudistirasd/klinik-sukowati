@@ -12,9 +12,8 @@
 @endpush
 
 @section('action-page')
-  <a href="{{ route('transaksi.pembelian.index') }}" class="btn btn-primary btn-5">
-    <div class="ti ti-plus me-1"></div>
-    Kembali
+  <a href="{{ route('transaksi.pembelian.index') }}" class="btn btn-dark btn-5 btn-icon">
+    <div class="ti ti-arrow-left me-1"></div>
   </a>
 @endsection
 
@@ -25,6 +24,13 @@
       <div class="card">
         <div class="card-header">
           <h3 class="card-title">Rincian Pembelian Obat</h3>
+          <div class="card-actions">
+            @if ($pembelian->insert_stok == 'belum')
+              <button type="button" class="btn btn-primary" onclick="insertStok()">
+                <i class="ti ti-device-floppy me-1"></i> Tambahkan ke stok
+              </button>
+            @endif
+          </div>
         </div>
         <div class="card-body">
           <div class="row">
@@ -558,6 +564,57 @@
     const handleModal = (action, title, data = null) => {
       const alpineComponent = Alpine.$data(document.querySelector('[x-data="form"]'));
       alpineComponent.modalControl(action, title, data);
+    }
+
+    const insertStok = () => {
+      Swal.fire({
+        title: "Apakah anda yakin menambahkan data pembelian obat ke stok?",
+        html: "Ketika Proses sedang berjalan. Jangan menutup atau berpindah tab/browser hingga selesai.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya",
+        cancelButtonText: "Tidak, batalkan",
+        showLoaderOnConfirm: true,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        preConfirm: async (login) => {
+          return $.ajax({
+            url: route('api.transaksi.pembelian.store-stok', pembelian.id),
+            method: 'POST',
+            headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+          }).done((response) => {
+            Swal.fire({
+              icon: 'success',
+              title: 'Sukses !',
+              text: response.message
+            }).then(() => {
+              window.location.reload();
+            });
+
+
+          }).fail((error) => {
+            let response = error.responseJSON;
+
+            Swal.fire({
+              icon: 'error',
+              title: 'Terjadi kesalahan !',
+              message: response.message
+            })
+          })
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+      }).then(async (result) => {
+        if (!result.value) {
+          Swal.fire({
+            icon: 'info',
+            title: 'Aksi dibatalkan !',
+          })
+        }
+      });
     }
   </script>
 @endpush

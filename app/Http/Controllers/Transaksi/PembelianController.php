@@ -8,6 +8,8 @@ use App\Http\Requests\StorePembelianRequest;
 use App\Http\Requests\UpdatePembelianRequest;
 use Auth;
 use DataTables;
+use DB;
+use Str;
 
 class PembelianController extends Controller
 {
@@ -19,6 +21,11 @@ class PembelianController extends Controller
 
         return DataTables::of($data)
             ->addIndexColumn()
+            ->editColumn('insert_stok', function ($row) {
+                $color = $row->insert_stok == 'sudah' ? 'green' : 'orange';
+                $text = Str::upper($row->insert_stok);
+                return "<span class='badge bg-{$color} text-{$color}-fg'>{$text}</span>";
+            })
             ->addColumn('action', function ($row) {
                 $btn = "<a class='btn btn-primary btn-icon' href='" . route('transaksi.pembelian.show', $row->id) . "'>
                                     <i class='ti ti-search'></i>
@@ -37,6 +44,7 @@ class PembelianController extends Controller
                 return $btn;
             })
             ->rawColumns([
+                'insert_stok',
                 'action',
             ])
             ->make(true);
@@ -50,14 +58,6 @@ class PembelianController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(StorePembelianRequest $request)
@@ -67,6 +67,69 @@ class PembelianController extends Controller
         $pembelian = Pembelian::create($request->only(['tanggal', 'suplier_id', 'created_by']));
 
         return $this->sendResponse(data: $pembelian, message: __('http-response.success.store', ['Attribute' => 'Pembelian']));
+    }
+
+    public function storeStok(Pembelian $pembelian)
+    {
+        $userId = Auth::id();
+
+        DB::beginTransaction();
+        try {
+            DB::select("
+                INSERT INTO produk_stok (
+                    id,
+                    produk_id,
+                    pembelian_id,
+                    pembelian_detail_id,
+                    tanggal_stok,
+                    barcode,
+                    expired_date,
+                    harga_beli,
+                    harga_jual,
+                    keuntungan,
+                    masuk,
+                    keluar,
+                    ready,
+                    created_by,
+                    created_at,
+                    updated_at
+                )
+                select
+                    gen_random_uuid(),
+                    a.produk_id,
+                    a.pembelian_id,
+                    a.id as pembelian_detail_id,
+                    b.tanggal as tanggal_stok,
+                    a.barcode,
+                    a.expired_date,
+                    a.harga_beli_satuan as harga_beli,
+                    a.harga_jual_satuan as harga_jual,
+                    a.keuntungan_satuan as keuntungan,
+                    a.qty,
+                    0,
+                    a.qty,
+                    '$userId',
+                    CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Jakarta' as created_at,
+                    CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Jakarta' as updated_at
+                from pembelian_detail a
+                    join pembelian b
+                        on b.id = a.pembelian_id
+                where a.pembelian_id = ?
+                ON CONFLICT (produk_id, pembelian_id, pembelian_detail_id) DO NOTHING;
+            ", [$pembelian->id]);
+            $pembelian->insert_stok = 'sudah';
+            $pembelian->save();
+
+            DB::commit();
+
+
+            return $this->sendResponse(message: 'Obat berhasil ditambahkan ke stok');
+        } catch (\Exception $ex) {
+            DB::rollback();
+            \Log::error($ex);
+
+            return $this->sendError(message: 'Obat gagal ditambahkan ke stok', errors: $ex->getMessage(), traces: $ex->getTrace());
+        }
     }
 
     /**

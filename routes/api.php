@@ -120,6 +120,7 @@ Route::group(['as' => 'api.', 'middleware' => ['web', 'auth']], function () {
 
     Route::group(['prefix' => 'transaksi', 'as' => 'transaksi.'], function () {
         Route::get('pembelian/dt', [PembelianController::class, 'dt'])->name('pembelian.dt');
+        Route::post('pembelian/{pembelian}', [PembelianController::class, 'storeStok'])->name('pembelian.store-stok');
         Route::get('pembelian/{pembelian}/detail/dt', [PembelianDetailController::class, 'dt'])->name('pembelian.detail.dt');
 
         Route::apiResource('pembelian', PembelianController::class)->only(['store', 'update', 'destroy']);

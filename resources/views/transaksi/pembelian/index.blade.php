@@ -30,6 +30,7 @@
               <th class="text-center">Nama</th>
               <th class="text-center">Alamat</th>
               <th class="text-center">Telp</th>
+              <th class="text-center">Status</th>
               <th class="text-center">Aksi</th>
             </tr>
           </thead>
