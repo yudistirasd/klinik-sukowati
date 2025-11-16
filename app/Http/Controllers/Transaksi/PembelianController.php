@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Pembelian;
 use App\Http\Requests\StorePembelianRequest;
 use App\Http\Requests\UpdatePembelianRequest;
+use App\Models\LogPerubahanHarga;
+use App\Models\PembelianDetail;
+use App\Models\ProdukStok;
 use Auth;
 use DataTables;
 use DB;
@@ -75,6 +78,37 @@ class PembelianController extends Controller
 
         DB::beginTransaction();
         try {
+
+            $detail = PembelianDetail::where('pembelian_id', $pembelian->id)->get();
+
+            foreach ($detail as $item) {
+                $keuntungan = $item->harga_jual_satuan - $item->harga_beli_satuan;
+
+                $oldStok = ProdukStok::where('produk_id', $item->produk_id)
+                    ->whereRaw('ready > 0')
+                    ->get();
+
+                if ($oldStok->count() > 0) {
+                    foreach ($oldStok as  $stok) {
+                        $data = [
+                            'stok_id' => $stok->id,
+                            'harga_jual_lama' => $stok->harga_jual,
+                            'keuntungan_lama' => $stok->keuntungan,
+                            'harga_jual_baru' => $item->harga_jual_satuan,
+                            'keuntungan_baru' => $keuntungan,
+                            'keterangan' => 'Update harga terakhir otomatis oleh sistem.'
+                        ];
+                        LogPerubahanHarga::create($data);
+                        $stok->harga_jual = $item->harga_jual_satuan;
+                        $stok->keuntungan = $item->harga_jual - $stok->harga_beli;
+                        $stok->harga_terakhir_id = $item->id;
+                        $stok->save();
+                    }
+                }
+            }
+
+
+
             DB::select("
                 INSERT INTO produk_stok (
                     id,
