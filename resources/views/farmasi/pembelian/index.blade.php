@@ -98,7 +98,7 @@
       serverSide: true,
       autoWidth: false,
       destroy: true,
-      ajax: route('api.transaksi.pembelian.dt'),
+      ajax: route('api.farmasi.pembelian.dt'),
       order: [
         [
           1, 'asc'
@@ -238,7 +238,7 @@
 
           if (action == 'create') {
             delete this.form._method;
-            this.endPoint = route('api.transaksi.pembelian.store')
+            this.endPoint = route('api.farmasi.pembelian.store')
           }
 
           if (action == 'edit') {
@@ -247,7 +247,7 @@
               _method: 'PUT'
             };
 
-            this.endPoint = route('api.transaksi.pembelian.update', data.id);
+            this.endPoint = route('api.farmasi.pembelian.update', data.id);
           }
 
           $('#modal-pembelian').modal('show');
@@ -277,7 +277,7 @@
             });
 
             setTimeout(() => {
-              window.location.href = route('transaksi.pembelian.show', response.data.id);
+              window.location.href = route('farmasi.pembelian.show', response.data.id);
             }, 500);
           }).fail((error) => {
             if (error.status === 422) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Stok;
+namespace App\Http\Controllers\Farmasi;
 
 use App\Http\Controllers\Controller;
 use DataTables;
@@ -43,6 +43,6 @@ class ProdukStokController extends Controller
     }
     public function index()
     {
-        return view('stok.index');
+        return view('farmasi.stok.index');
     }
 }

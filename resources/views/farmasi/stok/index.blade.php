@@ -50,7 +50,7 @@
       serverSide: true,
       autoWidth: false,
       destroy: true,
-      ajax: route('api.stok.dt'),
+      ajax: route('api.farmasi.stok-obat.dt'),
       order: [
         [
           1, 'asc'

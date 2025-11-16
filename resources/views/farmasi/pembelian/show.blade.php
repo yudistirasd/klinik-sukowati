@@ -12,7 +12,7 @@
 @endpush
 
 @section('action-page')
-  <a href="{{ route('transaksi.pembelian.index') }}" class="btn btn-dark btn-5 btn-icon">
+  <a href="{{ route('farmasi.pembelian.index') }}" class="btn btn-dark btn-5 btn-icon">
     <div class="ti ti-arrow-left me-1"></div>
   </a>
 @endsection
@@ -219,7 +219,7 @@
       serverSide: true,
       autoWidth: false,
       destroy: true,
-      ajax: route('api.transaksi.pembelian.detail.dt', pembelian.id),
+      ajax: route('api.farmasi.pembelian.detail.dt', pembelian.id),
       order: [
         [
           1, 'asc'
@@ -441,7 +441,7 @@
 
           if (action == 'create') {
             delete this.form._method;
-            this.endPoint = route('api.transaksi.pembelian.store')
+            this.endPoint = route('api.farmasi.pembelian.store')
           }
 
           if (action == 'edit') {
@@ -450,7 +450,7 @@
               _method: 'PUT'
             };
 
-            this.endPoint = route('api.transaksi.pembelian.update', data.id);
+            this.endPoint = route('api.farmasi.pembelian.update', data.id);
           }
 
           $('#modal-pembelian').modal('show');
@@ -470,7 +470,7 @@
           this.errors = {};
 
           $.ajax({
-            url: route('api.transaksi.pembelian.detail.store', pembelian.id),
+            url: route('api.farmasi.pembelian.detail.store', pembelian.id),
             method: 'POST',
             data: this.form,
             dataType: 'json',
@@ -581,7 +581,7 @@
         allowEscapeKey: false,
         preConfirm: async (login) => {
           return $.ajax({
-            url: route('api.transaksi.pembelian.store-stok', pembelian.id),
+            url: route('api.farmasi.pembelian.store-stok', pembelian.id),
             method: 'POST',
             headers: {
               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Transaksi;
+namespace App\Http\Controllers\Farmasi;
 
 use App\Http\Controllers\Controller;
 use App\Models\PembelianDetail;
@@ -65,7 +65,7 @@ class PembelianDetailController extends Controller
                     return "";
                 }
                 return "
-                    <button class='btn btn-danger btn-icon' onclick='confirmDelete(`" . route('api.transaksi.pembelian.detail.destroy', ['pembelian' => $row->pembelian_id, 'detail' => $row->id]) . "`, table.ajax.reload)'>
+                    <button class='btn btn-danger btn-icon' onclick='confirmDelete(`" . route('api.farmasi.pembelian.detail.destroy', ['pembelian' => $row->pembelian_id, 'detail' => $row->id]) . "`, table.ajax.reload)'>
                         <i class='ti ti-trash'></i>
                     </button>
                 ";

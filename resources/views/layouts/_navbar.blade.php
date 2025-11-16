@@ -94,10 +94,10 @@
           <div class="dropdown-menu">
             <div class="dropdown-menu-columns">
               <div class="dropdown-menu-column">
-                <a class="dropdown-item" href="{{ route('stok.index') }}">
+                <a class="dropdown-item" href="{{ route('farmasi.stok-obat.index') }}">
                   Stok Obat
                 </a>
-                <a class="dropdown-item" href="{{ route('transaksi.pembelian.index') }}">
+                <a class="dropdown-item" href="{{ route('farmasi.pembelian.index') }}">
                   Pembelian Obat
                 </a>
               </div>

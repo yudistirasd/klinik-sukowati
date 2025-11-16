@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Transaksi;
+namespace App\Http\Controllers\Farmasi;
 
 use App\Http\Controllers\Controller;
 use App\Models\Pembelian;
@@ -30,7 +30,7 @@ class PembelianController extends Controller
                 return "<span class='badge bg-{$color} text-{$color}-fg'>{$text}</span>";
             })
             ->addColumn('action', function ($row) {
-                $btn = "<a class='btn btn-primary btn-icon' href='" . route('transaksi.pembelian.show', $row->id) . "'>
+                $btn = "<a class='btn btn-primary btn-icon' href='" . route('farmasi.pembelian.show', $row->id) . "'>
                                     <i class='ti ti-search'></i>
                                 </a>";
 
@@ -39,7 +39,7 @@ class PembelianController extends Controller
                                 <button class='btn btn-warning btn-icon' onclick='handleModal(`edit`, `Ubah Pembelian`, " . json_encode($row) . ")'>
                                     <i class='ti ti-edit'></i>
                                 </button>
-                                <button class='btn btn-danger btn-icon' onclick='confirmDelete(`" . route('api.transaksi.pembelian.destroy', $row->id) . "`, table.ajax.reload)'>
+                                <button class='btn btn-danger btn-icon' onclick='confirmDelete(`" . route('api.farmasi.pembelian.destroy', $row->id) . "`, table.ajax.reload)'>
                                     <i class='ti ti-trash'></i>
                                 </button>
                             ";
@@ -57,7 +57,7 @@ class PembelianController extends Controller
      */
     public function index()
     {
-        return view('transaksi.pembelian.index');
+        return view('farmasi.pembelian.index');
     }
 
     /**
@@ -173,7 +173,7 @@ class PembelianController extends Controller
     {
         $pembelian->load('suplier');
 
-        return view('transaksi.pembelian.show', compact('pembelian'));
+        return view('farmasi.pembelian.show', compact('pembelian'));
     }
 
     /**

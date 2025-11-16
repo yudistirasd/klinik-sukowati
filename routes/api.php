@@ -13,9 +13,9 @@ use App\Http\Controllers\Master\WilayahController;
 use App\Http\Controllers\PemeriksaanController;
 use App\Http\Controllers\Registrasi\KunjunganController;
 use App\Http\Controllers\Registrasi\PasienController;
-use App\Http\Controllers\Stok\ProdukStokController;
-use App\Http\Controllers\Transaksi\PembelianController;
-use App\Http\Controllers\Transaksi\PembelianDetailController;
+use App\Http\Controllers\Farmasi\PembelianController;
+use App\Http\Controllers\Farmasi\PembelianDetailController;
+use App\Http\Controllers\Farmasi\ProdukStokController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -119,16 +119,14 @@ Route::group(['as' => 'api.', 'middleware' => ['web', 'auth']], function () {
         Route::post('tagihan-pasien/{kunjungan}', [TagihanPasienController::class, 'bayar'])->name('tagihan.bayar');
     });
 
-    Route::group(['prefix' => 'transaksi', 'as' => 'transaksi.'], function () {
+    Route::group(['prefix' => 'farmasi', 'as' => 'farmasi.'], function () {
         Route::get('pembelian/dt', [PembelianController::class, 'dt'])->name('pembelian.dt');
         Route::post('pembelian/{pembelian}', [PembelianController::class, 'storeStok'])->name('pembelian.store-stok');
         Route::get('pembelian/{pembelian}/detail/dt', [PembelianDetailController::class, 'dt'])->name('pembelian.detail.dt');
 
         Route::apiResource('pembelian', PembelianController::class)->only(['store', 'update', 'destroy']);
         Route::apiResource('pembelian.detail', PembelianDetailController::class)->only(['store', 'update', 'destroy']);
-    });
 
-    Route::group(['prefix' => 'stok', 'as' => 'stok.'], function () {
-        Route::get('/dt', [ProdukStokController::class, 'dt'])->name('dt');
+        Route::get('stok-obat/dt', [ProdukStokController::class, 'dt'])->name('stok-obat.dt');
     });
 });
