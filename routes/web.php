@@ -12,6 +12,7 @@ use App\Http\Controllers\Master\SuplierController;
 use App\Http\Controllers\PemeriksaanController;
 use App\Http\Controllers\Registrasi\PasienController;
 use App\Http\Controllers\Registrasi\KunjunganController;
+use App\Http\Controllers\Transaksi\PembelianController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [AuthenticationController::class, 'showLoginForm'])
@@ -50,4 +51,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('kasir/tagihan-pasien', [TagihanPasienController::class, 'index'])->name('kasir.tagihan-pasien');
     Route::get('kasir/tagihan-pasien/cetak/{kunjungan}', [CetakTagihanPasienController::class, 'index'])->name('kasir.tagihan-pasien.cetak');
+
+    Route::group(['prefix' => 'transaksi', 'as' => 'transaksi.'], function () {
+        Route::get('pembelian', [PembelianController::class, 'index'])->name('pembelian.index');
+        Route::get('pembelian/{pembelian}', [PembelianController::class, 'show'])->name('pembelian.show');
+    });
 });

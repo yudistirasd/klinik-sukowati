@@ -50,8 +50,8 @@ if (! function_exists('jenisLayanan')) {
 }
 
 if (!function_exists('formatUang')) {
-    function formatUang($nominal)
+    function formatUang($nominal, $digit = false)
     {
-        return number_format($nominal);
+        return number_format($nominal, $digit ? 2 : 0);
     }
 }

@@ -54,7 +54,7 @@
               </div>
               <div class="mb-3">
                 <label class="form-label required">Tarif Tindakan</label>
-                <input type="text" x-model="tarif_view" x-bind:input="formatUang()" class="form-control" autocomplete="off" :class="{ 'is-invalid': errors.tarif }" placeholder="0">
+                <input type="text" x-model="tarif_view" x-bind:input="formatUangTindakan()" class="form-control" autocomplete="off" :class="{ 'is-invalid': errors.tarif }" placeholder="0">
                 <div class="invalid-feedback" x-text="errors.tarif"></div>
 
               </div>
@@ -197,7 +197,7 @@
           })
         },
 
-        formatUang() {
+        formatUangTindakan() {
           // Hilangkan karakter non-digit (misal koma, titik, huruf)
           let angka = this.tarif_view.replace(/[^0-9]/g, '');
 

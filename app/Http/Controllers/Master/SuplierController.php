@@ -34,6 +34,19 @@ class SuplierController extends Controller
             ->make(true);
     }
 
+    public function json(Request $request)
+    {
+        $data = Suplier::select([
+            'id',
+            'name as text'
+        ])
+            ->when($request->filled('keyword'), fn($q) => $q->where('name', 'ilike', "%{$request->keyword}%"))
+            ->limit(30)
+            ->get();
+
+        return $this->sendResponse(data: $data);
+    }
+
     public function index()
     {
         return view('master.suplier.index');
@@ -41,9 +54,9 @@ class SuplierController extends Controller
 
     public function store(StoreSuplierRequest $request)
     {
-        Suplier::create($request->only(['name', 'alamat', 'telp']));
+        $suplier = Suplier::create($request->only(['name', 'alamat', 'telp']));
 
-        return $this->sendResponse(message: __('http-response.success.store', ['Attribute' => 'Suplier']));
+        return $this->sendResponse(message: __('http-response.success.store', ['Attribute' => 'Suplier']), data: $suplier);
     }
 
     public function update(UpdateSuplierRequest $request, Suplier $suplier)

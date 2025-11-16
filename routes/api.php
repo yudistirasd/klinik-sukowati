@@ -13,6 +13,8 @@ use App\Http\Controllers\Master\WilayahController;
 use App\Http\Controllers\PemeriksaanController;
 use App\Http\Controllers\Registrasi\KunjunganController;
 use App\Http\Controllers\Registrasi\PasienController;
+use App\Http\Controllers\Transaksi\PembelianController;
+use App\Http\Controllers\Transaksi\PembelianDetailController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -29,6 +31,7 @@ Route::group(['as' => 'api.', 'middleware' => ['web', 'auth']], function () {
         Route::get('produk/{jenis}', [ProdukController::class, 'dt'])->name('produk.dt');
         Route::get('produk/json/{jenis}', [ProdukController::class, 'json'])->name('produk.json');
         Route::get('suplier/dt', [SuplierController::class, 'dt'])->name('suplier.dt');
+        Route::get('suplier/json', [SuplierController::class, 'json'])->name('suplier.json');
 
         Route::get('wilayah/provinsi', [WilayahController::class, 'provinsi'])->name('wilayah.provinsi');
         Route::get('wilayah/kabupaten', [WilayahController::class, 'kabupaten'])->name('wilayah.kabupaten');
@@ -46,6 +49,8 @@ Route::group(['as' => 'api.', 'middleware' => ['web', 'auth']], function () {
         Route::post('farmasi/takaran-obat', [FarmasiController::class, 'storeTakaran'])->name('farmasi.takaran.store');
         Route::get('farmasi/aturan-pakai-obat', [FarmasiController::class, 'aturanPakai'])->name('farmasi.aturan-pakai.get');
         Route::post('farmasi/aturan-pakai-obat', [FarmasiController::class, 'storeAturanPakai'])->name('farmasi.aturan-pakai.store');
+        Route::get('farmasi/satuan-kemasan-obat', [FarmasiController::class, 'satuanKemasan'])->name('farmasi.satuan-kemasan.get');
+        Route::post('farmasi/satuan-kemasan-obat', [FarmasiController::class, 'storeSatuanKemasan'])->name('farmasi.satuan-kemasan.store');
 
         Route::apiResources([
             'pengguna' => UserController::class,
@@ -111,5 +116,13 @@ Route::group(['as' => 'api.', 'middleware' => ['web', 'auth']], function () {
     Route::group(['prefix' => 'kasir', 'as' => 'kasir.'], function () {
         Route::get('tagihan-pasien/dt', [TagihanPasienController::class, 'dt'])->name('tagihan.dt');
         Route::post('tagihan-pasien/{kunjungan}', [TagihanPasienController::class, 'bayar'])->name('tagihan.bayar');
+    });
+
+    Route::group(['prefix' => 'transaksi', 'as' => 'transaksi.'], function () {
+        Route::get('pembelian/dt', [PembelianController::class, 'dt'])->name('pembelian.dt');
+        Route::get('pembelian/{pembelian}/detail/dt', [PembelianDetailController::class, 'dt'])->name('pembelian.detail.dt');
+
+        Route::apiResource('pembelian', PembelianController::class)->only(['store', 'update', 'destroy']);
+        Route::apiResource('pembelian.detail', PembelianDetailController::class)->only(['store', 'update', 'destroy']);
     });
 });

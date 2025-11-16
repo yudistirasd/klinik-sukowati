@@ -136,7 +136,7 @@
           id: null,
           name: '',
           telp: '',
-          alaamt: ''
+          alamat: ''
         },
         endPoint: '',
         errors: {},
