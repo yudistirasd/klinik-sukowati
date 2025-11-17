@@ -131,12 +131,14 @@ class ResepPasienController extends Controller
             $details = ResepDetail::where('resep_id', $resep->id)->get();
 
             $penjualan = Penjualan::where('resep_id', $resep->id)
+                ->where('kunjungan_id', $resep->kunjungan_id)
                 ->where('status', 'belum')
                 ->first();
 
             if (empty($penjualan)) {
                 $penjualan = Penjualan::create([
                     'resep_id' => $resep->id,
+                    'kunjungan_id' => $resep->kunjungan_id,
                     'jenis' => 'resep_in',
                     'tanggal' => date('Y-m-d'),
                     'created_by' => Auth::id()
@@ -188,6 +190,8 @@ class ResepPasienController extends Controller
                         'penjualan_id' => $penjualan->id,
                         'produk_id' => $detail->produk_id,
                         'produk_stok_id' => $stok->id,
+                        'kunjungan_id' => $resep->kunjungan_id,
+                        'resep_id' => $resep->id,
                         'resep_detail_id' => $detail->id,
                         'harga_jual' => $hargaJual,
                         'harga_beli' => $stok->harga_beli,

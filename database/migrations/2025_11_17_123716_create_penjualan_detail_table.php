@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignUuid('penjualan_id');
             $table->foreignUuid('produk_id');
             $table->foreignUuid('produk_stok_id');
+            $table->foreignUuid('kunjungan_id')->nullable();
+            $table->foreignUuid('resep_id')->nullable();
             $table->foreignUuid('resep_detail_id')->nullable();
             $table->decimal('harga_beli', 16, 2);
             $table->decimal('harga_jual', 16, 2);

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nomor');
             $table->enum('jenis', ['resep_in', 'resep_ex', 'ecer']);
             $table->date('tanggal');
+            $table->foreignUuid('kunjungan_id')->nullable();
             $table->foreignUuid('resep_id')->nullable();
             $table->enum('status', ['lunas', 'belum'])->default('belum');
             $table->foreignUuid('created_by');

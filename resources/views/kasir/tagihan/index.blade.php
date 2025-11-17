@@ -12,6 +12,13 @@
 @section('content')
   <!-- Table -->
   <div class="card">
+    <div class="card-header">
+      <div class="card-actions">
+        <button type="button" onclick="refreshTable()" class="btn btn-dark btn-sm">
+          <i class="ti ti-refresh me-1"></i> Refresh
+        </button>
+      </div>
+    </div>
     <div class="card-body">
       <div class="table-responsive">
         <table class="table dataTable table-striped table-sm table-hover" id="pasien-table">
@@ -122,7 +129,7 @@
                     <tr>
                       <td class="text-center">2</td>
                       <td>Obat</td>
-                      <td class="text-end">0</td>
+                      <td class="text-end" x-text="form.tagihan.obat">0</td>
                     </tr>
                     <tr>
                       <td class="text-end fw-bolder" colspan="2">Total</td>
@@ -251,9 +258,11 @@
           ruang: '',
           dokter: '',
           tagihan: {
-            jumlah_tagihan: 0,
-            layanan: 0
-          }
+            jumlah_tagihan: '0',
+            layanan: '0',
+            obat: '0',
+          },
+          resep_id: '',
         },
         endPoint: '',
         errors: {},
@@ -271,9 +280,20 @@
           this.form.ruang = row.ruangan;
           this.form.dokter = row.dokter;
           this.form.tagihan = {
-            jumlah_tagihan: row.jumlah_tagihan ? row.jumlah_tagihan.toLocaleString('en-US') : 0,
-            layanan: row.layanan ? row.layanan.toLocaleString('en-US') : 0
+            jumlah_tagihan: row.jumlah_tagihan ? Number(row.jumlah_tagihan).toLocaleString('en-US', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            }) : 0,
+            layanan: row.layanan ? Number(row.layanan).toLocaleString('en-US', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            }) : 0,
+            obat: row.obat ? Number(row.obat).toLocaleString('en-US', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            }) : 0
           }
+          this.form.resep_id = row.resep_id;
 
           this.endPoint = route('api.kasir.tagihan.bayar', row.id);
 
@@ -328,9 +348,11 @@
             ruang: '',
             dokter: '',
             tagihan: {
-              jumlah_tagihan: 0,
-              layanan: 0
-            }
+              jumlah_tagihan: '0',
+              layanan: '0',
+              obat: '0',
+            },
+            resep_id: '',
           };
           this.errors = {};
         }
@@ -340,6 +362,10 @@
     const handleModalBayar = (row) => {
       const alpineComponent = Alpine.$data(document.querySelector('[x-data="form"]'));
       alpineComponent.modalControl(row);
+    }
+
+    const refreshTable = () => {
+      table.ajax.reload();
     }
   </script>
 @endpush
