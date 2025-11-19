@@ -135,7 +135,7 @@
       <div class="card-body">
         <div class="row mb-3">
           <div class="col-12">
-            <button href="javascript:;" class="btn btn-sm" {{ !Auth::user()->hasRole('dokter') ? 'disabled' : '' }} data-bs-toggle="modal" data-bs-target="#modal-icd10">
+            <button href="javascript:;" type="button" class="btn btn-sm" {{ !Auth::user()->hasRole('dokter') ? 'disabled' : '' }} data-bs-toggle="modal" data-bs-target="#modal-icd10">
               <div class="ti ti-search"></div> Cari Diagnosa
             </button>
           </div>
@@ -165,7 +165,7 @@
       <div class="card-body">
         <div class="row mb-3">
           <div class="col-12">
-            <button href="javascript:;" class="btn btn-sm" {{ !Auth::user()->hasRole('dokter') ? 'disabled' : '' }} data-bs-toggle="modal" data-bs-target="#modal-icd9">
+            <button href="javascript:;" type="button" class="btn btn-sm" {{ !Auth::user()->hasRole('dokter') ? 'disabled' : '' }} data-bs-toggle="modal" data-bs-target="#modal-icd9">
               <div class="ti ti-search"></div> Cari Prosedure
             </button>
           </div>
@@ -202,7 +202,7 @@
   <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" x-text="title">Pencarian ICD 10 </h5>
+        <h5 class="modal-title">Pencarian ICD 10 </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -229,7 +229,7 @@
   <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" x-text="title">Pencarian ICD 9 </h5>
+        <h5 class="modal-title">Pencarian ICD 9 </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
