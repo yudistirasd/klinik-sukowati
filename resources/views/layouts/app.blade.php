@@ -150,7 +150,7 @@
               Swal.fire({
                 icon: 'error',
                 title: 'Terjadi kesalahan !',
-                message: response.message
+                text: response.message
               })
             })
           },

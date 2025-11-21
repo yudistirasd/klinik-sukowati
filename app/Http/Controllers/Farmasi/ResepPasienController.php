@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Farmasi;
 
 use App\Http\Controllers\Controller;
+use App\Models\Kunjungan;
+use App\Models\Pasien;
 use App\Models\Penjualan;
 use App\Models\PenjualanDetail;
 use App\Models\ProdukStok;
@@ -57,12 +59,9 @@ class ResepPasienController extends Controller
                 return "<span class='badge bg-{$color} text-{$color}-fg'>{$text}</span>";
             })
             ->addColumn('action', function ($row) {
-                if ($row->status == 'VERIFIED') {
-                    return "";
-                }
-                return " <button class='btn btn-dark btn-sm' onclick='handleModalVerif(" . json_encode($row) . ")'>
-                                    <i class='ti ti-credit-card-pay me-1'></i> Verifikasi
-                                </button>
+                return " <a class='btn btn-primary btn-icon' target='_blank' href='" . route('farmasi.resep-pasien.show', $row->resep_id) . "'>
+                                    <i class='ti ti-search'></i>
+                                </a>
                             ";
             })
             ->rawColumns([
@@ -72,12 +71,7 @@ class ResepPasienController extends Controller
             ->make(true);
     }
 
-    public function index()
-    {
-        return view('farmasi.resep-pasien.index');
-    }
-
-    public function show(Resep $resep)
+    public function obat(Resep $resep)
     {
         $data = DB::select("
             WITH obat_stok AS (
@@ -164,6 +158,18 @@ class ResepPasienController extends Controller
         $view = view('farmasi.resep-pasien._resep_table', compact('resep'))->render();
 
         return $this->sendResponse(data: $view);
+    }
+
+    public function index()
+    {
+        return view('farmasi.resep-pasien.index');
+    }
+
+    public function show(Resep $resep)
+    {
+        $pasien = Pasien::find($resep->pasien_id);
+        $kunjungan = Kunjungan::find($resep->kunjungan_id);
+        return view('farmasi.resep-pasien.show', compact(['pasien', 'kunjungan', 'resep']));
     }
 
     public function verifikasi(Resep $resep)

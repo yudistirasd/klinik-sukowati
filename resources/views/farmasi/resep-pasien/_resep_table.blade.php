@@ -111,12 +111,12 @@
   </style>
   <!-- Resep 1: Verified -->
   <div class="card resep-card shadow-sm mb-3">
-    <div class="resep-header p-3" data-bs-toggle="collapse" data-bs-target="#resep1">
+    <div class="resep-header p-3">
       <div class="row align-items-center">
-        <div class="col-auto">
+        <div class="col-auto" data-bs-toggle="collapse" data-bs-target="#resep1">
           <i class="ti ti-chevron-down chevron-icon text-muted"></i>
         </div>
-        <div class="col">
+        <div class="col" data-bs-toggle="collapse" data-bs-target="#resep1">
           <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
             <span class="resep-number"><i class="bi bi-file-earmark-medical me-1"></i>{{ $resep->nomor }}</span>
             @if ($resep->status == 'verified')
@@ -134,6 +134,10 @@
             <span><i class="ti ti-calendar me-1"></i>{{ $resep->tanggal }}</span>
             <span><i class="ti ti-pill me-1"></i>{{ $resep->items->count() }} Item</span>
           </div>
+        </div>
+        <div class="col-auto d-flex gap-2">
+          <button class="btn btn-icon btn-outline-primary" onclick="event.stopPropagation()" x-show="resep.status == 'VERIFIED'"><i class="ti ti-printer"></i></button>
+          <button class="btn btn-icon btn-outline-dark" onclick="handleVerifikasiResep(event)"><i class="ti ti-credit-card"></i></button>
         </div>
       </div>
     </div>
@@ -241,7 +245,7 @@
                 <td class="text-muted fst-italic">-</td>
                 <td>
                   @if ($resep->status == 'ORDER')
-                    <button type='button' class='btn btn-danger btn-icon' onclick="confirmDelete(`{{ route('api.pemeriksaan.destroy.resep-detail', ['resep' => $resep->id, 'receipt_number' => $item->receipt_number]) }}`, resepObat)">
+                    <button type='button' class='btn btn-danger btn-icon' onclick="confirmDelete(`{{ route('api.pemeriksaan.destroy.resep-detail', ['resep' => $resep->id, 'receipt_number' => $item->receipt_number]) }}`, handleResepObat.bind(null, '{{ $resep->id }}'))">
                       <i class='ti ti-trash'></i>
                     </button>
                   @endif

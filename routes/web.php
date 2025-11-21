@@ -59,6 +59,8 @@ Route::middleware('auth')->group(function () {
         Route::get('pembelian', [PembelianController::class, 'index'])->name('pembelian.index');
         Route::get('pembelian/{pembelian}', [PembelianController::class, 'show'])->name('pembelian.show');
         Route::get('stok-obat', [ProdukStokController::class, 'index'])->name('stok-obat.index');
-        Route::get('resep', [ResepPasienController::class, 'index'])->name('resep-pasien.index');
+
+        Route::get('resep-pasien', [ResepPasienController::class, 'index'])->name('resep-pasien.index');
+        Route::get('resep-pasien/{resep}', [ResepPasienController::class, 'show'])->name('resep-pasien.show');
     });
 });

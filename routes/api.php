@@ -134,7 +134,7 @@ Route::group(['as' => 'api.', 'middleware' => ['web', 'auth']], function () {
 
         Route::get('stok-obat/dt', [ProdukStokController::class, 'dt'])->name('stok-obat.dt');
         Route::get('resep-pasien/dt', [ResepPasienController::class, 'dt'])->name('resep-pasien.dt');
-        Route::get('resep-pasien/{resep}', [ResepPasienController::class, 'show'])->name('resep-pasien.show');
-        Route::post('resep-pasien/verifikasi/{resep}', [ResepPasienController::class, 'verifikasi'])->name('resep-pasien.verifikasi');
+        Route::get('resep-pasien/{resep}/obat', [ResepPasienController::class, 'obat'])->name('resep-pasien.obat');
+        Route::post('resep-pasien/{resep}/verifikasi', [ResepPasienController::class, 'verifikasi'])->name('resep-pasien.verifikasi');
     });
 });

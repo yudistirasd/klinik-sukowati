@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Resep Pasien')
-@section('subtitle', 'Farmasi')
+@section('title', 'Tagihan Pasien')
+@section('subtitle', 'Kasir')
 
 @push('css')
   <link href="{{ asset('libs/datatables/dataTables.bootstrap5.min.css') }}?{{ config('app.version') }}" rel="stylesheet">
@@ -12,6 +12,13 @@
 @section('content')
   <!-- Table -->
   <div class="card">
+    <div class="card-header">
+      <div class="card-actions">
+        <button type="button" onclick="refreshTable()" class="btn btn-dark btn-sm">
+          <i class="ti ti-refresh me-1"></i> Refresh
+        </button>
+      </div>
+    </div>
     <div class="card-body">
       <div class="table-responsive">
         <table class="table dataTable table-striped table-sm table-hover" id="pasien-table">
@@ -25,11 +32,11 @@
               <th class="text-center">Alamat</th>
               <th class="text-center">Ruangan / Klinik</th>
               <th class="text-center">Dokter</th>
-              <th class="text-center">No Resep</th>
+              <th class="text-center">Jumlah Tagihan</th>
               <th class="text-center">Status</th>
               <th class="text-center">Aksi</th>
             </tr>
-            {{-- <tr class="filter-row">
+            <tr class="filter-row">
               <th></th>
               <th><input type="date" class="form-control form-control-sm" value="{{ date('Y-m-d') }}"></th>
               <th><input type="text" class="form-control form-control-sm" placeholder="Cari"></th>
@@ -41,7 +48,7 @@
               <th></th>
               <th><input type="text" class="form-control form-control-sm" placeholder="Cari"></th>
               <th></th>
-            </tr> --}}
+            </tr>
           </thead>
         </table>
       </div>
@@ -49,14 +56,14 @@
   </div>
 
   <div x-data="form">
-    <form @submit.prevent="handleSubmit" autocomplete="off">
-      <div class="modal modal-blur fade" id="modal-verifikasi" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
-        <div class="modal-dialog modal-fullscreen" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Resep Pasien</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+    <div class="modal modal-blur fade" id="modal-bayar" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
+      <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Bayar Tagihan</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form @submit.prevent="handleSubmit" autocomplete="off">
             <div class="modal-body">
               <div class="row">
                 <div class="col-md-2 col-sm-12">
@@ -104,21 +111,32 @@
                 </div>
               </div>
 
+              <div class="row">
+                <table class="table table-bordered table-striped" id="table-tagihan">
+                  <thead>
+                    <tr>
+                      <th class="text-center fw-bolder" style="width: 5%">#</th>
+                      <th class="text-center fw-bolder">Uraian</th>
+                      <th class="text-center fw-bolder" style="width: 20%">Harga</th>
+                    </tr>
+                  </thead>
+                  <tbody>
 
-              <div id="resep-container">
+                  </tbody>
+                </table>
               </div>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">Batal</button>
               <button type="submit" class="btn btn-primary ms-auto" x-bind:disabled="loading">
                 <span x-show="loading" class="spinner-border spinner-border-sm me-2"></span>
-                Verifikasi Resep
+                Bayar
               </button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
-    </form>
+    </div>
   </div>
 @endsection
 
@@ -136,7 +154,7 @@
       autoWidth: false,
       destroy: true,
       searchDelay: 500,
-      ajax: route('api.farmasi.resep-pasien.dt'),
+      ajax: route('api.kasir.tagihan-tindakan.dt'),
       orderCellsTop: true,
       initComplete: function() {
         this.api()
@@ -195,13 +213,15 @@
           sClass: 'text-start'
         },
         {
-          data: 'nomor',
-          name: 'nomor',
-          sClass: 'text-center'
+          data: 'jumlah_tagihan',
+          name: 'jumlah_tagihan',
+          sClass: 'text-end',
+          searchable: false,
+          orderable: false
         },
         {
-          data: 'status',
-          name: 'status',
+          data: 'status_bayar',
+          name: 'status_bayar',
           sClass: 'text-center'
         },
         {
@@ -224,6 +244,12 @@
           alamat: '',
           ruang: '',
           dokter: '',
+          tagihan: {
+            jumlah_tagihan: '0',
+            layanan: '0',
+            obat: '0',
+          },
+          resep_id: '',
         },
         endPoint: '',
         errors: {},
@@ -240,29 +266,14 @@
           this.form.alamat = row.alamat_lengkap;
           this.form.ruang = row.ruangan;
           this.form.dokter = row.dokter;
+          this.form.resep_id = row.resep_id;
 
-          this.endPoint = route('api.farmasi.resep-pasien.verifikasi', row.resep_id);
+          this.endPoint = route('api.kasir.tagihan-tindakan.bayar', row.id);
 
-          $('#modal-verifikasi').modal('show');
+          $('#modal-bayar').modal('show');
 
-          this.resepObat(row.resep_id);
+          this.tagihan(row.id);
 
-        },
-
-        resepObat(resep_id) {
-          container = $('#resep-container');
-
-          $.ajax({
-            url: route('api.farmasi.resep-pasien.detail', {
-              resep: resep_id
-            }),
-            method: 'GET',
-            beforeSend: () => {
-              container.html('<div class="text-center"><span class="spinner-border spinner-border-sm me-2"></span>Loading...</div>');
-            },
-          }).done((response) => {
-            container.html(response.data);
-          })
         },
 
         handleSubmit() {
@@ -272,6 +283,7 @@
           $.ajax({
             url: this.endPoint,
             method: 'POST',
+            data: this.form,
             dataType: 'json',
             headers: {
               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -280,7 +292,7 @@
               this.loading = false;
             }
           }).done((response) => {
-            $('#modal-verifikasi').modal('hide');
+            $('#modal-bayar').modal('hide');
             this.resetForm();
             table.ajax.reload();
             Toast.fire({
@@ -300,6 +312,23 @@
           })
         },
 
+
+        tagihan(kunjungan_id) {
+          container = $('#table-tagihan tbody');
+
+          $.ajax({
+            url: route('api.kasir.tagihan-tindakan.show', {
+              kunjungan: kunjungan_id,
+            }),
+            method: 'GET',
+            beforeSend: () => {
+              container.html('<tr><td colspan="3" class="text-center"><span class="spinner-border spinner-border-sm me-2"></span>Loading...</td></tr>');
+            },
+          }).done((response) => {
+            container.html(response.data);
+          })
+        },
+
         resetForm() {
           this.form = {
             kunjungan_id: null,
@@ -310,20 +339,25 @@
             alamat: '',
             ruang: '',
             dokter: '',
+            tagihan: {
+              jumlah_tagihan: '0',
+              layanan: '0',
+              obat: '0',
+            },
+            resep_id: '',
           };
           this.errors = {};
         }
       }))
     })
 
-    const handleModalVerif = (row) => {
+    const handleModalBayar = (row) => {
       const alpineComponent = Alpine.$data(document.querySelector('[x-data="form"]'));
       alpineComponent.modalControl(row);
     }
 
-    const handleResepObat = (resep_id) => {
-      const alpineComponent = Alpine.$data(document.querySelector('[x-data="form"]'));
-      alpineComponent.resepObat(resep_id);
+    const refreshTable = () => {
+      table.ajax.reload();
     }
   </script>
 @endpush
