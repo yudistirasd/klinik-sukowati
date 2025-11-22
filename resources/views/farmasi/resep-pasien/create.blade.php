@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Resep ' . $resep->nomor)
+@section('title', 'Buat Resep Luar')
 
-@section('subtitle', 'Rincian')
+@section('subtitle', 'Resep Pasien')
 
 @push('css')
   <link href="{{ asset('libs/select2/select2.css') }}" rel="stylesheet" />
@@ -29,11 +29,6 @@
                 <div class="datagrid-title">No RM</div>
                 <div class="datagrid-content">{{ $pasien->norm }}</div>
               </div>
-              <div class="datagrid-item">
-                <div class="datagrid-title">No Registrasi</div>
-                <div class="datagrid-content">{{ $kunjungan->noregistrasi }}</div>
-              </div>
-
               <div class="datagrid-item">
                 <div class="datagrid-title">Nama</div>
                 <div class="datagrid-content">{{ $pasien->nama }}</div>
@@ -74,18 +69,6 @@
                   {{ $pasien->alamat }}, {{ $pasien->kelurahan->name }}, {{ $pasien->kecamatan->name }}, {{ $pasien->kabupaten->name }}, {{ $pasien->provinsi->name }}
                 </div>
               </div>
-              <div class="datagrid-item">
-                <div class="datagrid-title">Ruang/Klinik</div>
-                <div class="datagrid-content">
-                  {{ $kunjungan->ruangan->name }}
-                </div>
-              </div>
-              <div class="datagrid-item">
-                <div class="datagrid-title">Dokter</div>
-                <div class="datagrid-content">
-                  {{ $kunjungan->dokter->name }}
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -124,8 +107,23 @@
               </div>
               <div class="col-md-3 col-sm-12">
                 <div class="mb-3">
-                  <label class="form-label">DPJP</label>
-                  <input type="text" disabled class="form-control" autocomplete="off" x-model="dokter">
+                  <label class="form-label">Dokter</label>
+                  <div class="row">
+                    <div class="col">
+                      <select x-model="form.dokter_id" id="dokter" class="form-select" :class="{ 'is-invalid': errors.dokter_id }">
+                        <option value=""></option>
+                        @foreach ($dokter as $item)
+                          <option value="{{ $item->id }}">{{ $item->name }}</option>
+                        @endforeach
+                      </select>
+                      <div class="invalid-feedback" x-text="errors.dokter_id"></div>
+                    </div>
+                    <div class="col-auto">
+                      <button type="button" data-bs-toggle="modal" data-bs-target="#modal-dokter-external" class="btn btn-2 btn-icon" aria-label="Button">
+                        <i class="ti ti-plus"></i>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -211,7 +209,6 @@
 
             </div>
 
-
             <div class="row" x-show="form.jenis_resep === 'racikan' && form.tipe_racikan">
               <div class="col-md-12 col-sm-12">
                 <label class="form-label fw-bold">Komposisi Obat Racikan <span x-text="getTipeRacikan()"></span> </label>
@@ -292,15 +289,41 @@
         </div>
       </div>
     </div>
+
+    <div class="modal modal-blur fade" id="modal-dokter-external" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Tambah Dokter External</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form @submit.prevent="handleSubmiDokterExternal" autocomplete="off">
+            <div class="modal-body">
+              <div class="mb-3">
+                <label class="form-label required">Nama Dokter</label>
+                <input type="text" class="form-control" autocomplete="off" x-model="formDokterExternal.name" :class="{ 'is-invalid': errorsDokterExternal.name }">
+                <div class="invalid-feedback" x-text="errorsDokterExternal.name"></div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">Batal</button>
+              <button type="submit" class="btn btn-primary ms-auto" x-bind:disabled="loading">
+                <span x-show="loading" class="spinner-border spinner-border-sm me-2"></span>
+                Simpan
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
+
 @endsection
 @push('js')
   <script src="{{ asset('libs/select2/select2.min.js') }}?{{ config('app.version') }}"></script>
   <script src="{{ asset('libs/select2/select2-searchInputPlaceholder.js') }}?{{ config('app.version') }}"></script>
   <script>
-    let kunjungan = @json($kunjungan);
     let pasien = @json($pasien);
-    let resep = @json($resep);
     const resepObat = function() {
       container = $('#resep-container');
       $.ajax({
@@ -321,10 +344,9 @@
         form: {
           id: '',
           nomor: '',
-          tanggal: kunjungan.tanggal_registrasi,
+          tanggal: '{{ date('Y-m-d') }}',
           pasien_id: pasien.id,
-          kunjungan_id: kunjungan.id,
-          dokter_id: kunjungan.dokter_id,
+          dokter_id: '',
           produk_id: '',
           signa: '',
           unit_dosis: '',
@@ -339,6 +361,10 @@
           jumlah_racikan: 0,
           komposisi_racikan: []
         },
+        formDokterExternal: {
+          name: '',
+        },
+        errorsDokterExternal: {},
         sediaan: '',
         satuan: '',
         dosis: '',
@@ -504,14 +530,58 @@
           })
         },
 
+        handleSubmiDokterExternal() {
+          this.loading = true;
+          this.errorsDokterExternal = {};
+
+          $.ajax({
+            url: route('api.master.pengguna.dokter-external.store'),
+            method: 'POST',
+            data: this.formDokterExternal,
+            dataType: 'json',
+            headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            complete: () => {
+              this.loading = false;
+            }
+          }).done((response) => {
+            Toast.fire({
+              icon: 'success',
+              title: response.message
+            });
+
+            this.updateOptionDokter(response.data);
+
+            this.resetFormDokterExternal();
+
+            this.form.dokter_id = response.data.dokter_external.id;
+
+          }).fail((error) => {
+            if (error.status === 422) {
+              this.errors = error.responseJSON.errors;
+
+              Toast.fire({
+                icon: 'error',
+                title: error.responseJSON.message
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Terjadi Kesalahan !',
+                text: error.responseJSON.message
+              });
+            }
+          })
+        },
+
         resetForm() {
           this.form = {
             id: '',
             nomor: '',
             tanggal: '',
             pasien_id: pasien.id,
-            kunjungan_id: kunjungan.id,
-            dokter_id: kunjungan.dokter_id,
+            dokter_id: '',
             produk_id: '',
             signa: '',
             unit_dosis: '',
@@ -534,11 +604,24 @@
           $('#obat').val(null).trigger('change');
         },
 
-        init() {
-          this.tambahKomposisi();
-          resepObat();
-          this.dokter = kunjungan.dokter.name;
+        resetFormDokterExternal() {
+          this.formDokterExternal = {
+            name: '',
+          };
+          this.errorsDokterExternal = {};
+        },
 
+        updateOptionDokter(data) {
+          let options = '';
+          $.each(data.options_dokter, function(index, item) {
+            let selected = data.dokter_external.id == item.id ? 'selected' : '';
+            options += `<option value="${item.id}" ${selected}>${item.name}</option>`;
+          });
+
+          $('#dokter').html(options);
+        },
+
+        init() {
           let selectProduk = $('#obat').select2({
             theme: 'bootstrap-5',
             placeholder: "Pilih Obat",
@@ -804,14 +887,6 @@
               e.detail.date.format('yyyy-MM-dd') :
               '';
           });
-
-          if (resep) {
-            this.form.tanggal = resep.tanggal;
-            this.form.nomor = resep.nomor;
-          } else {
-            this.form.nomor = '';
-            this.form.tanggal = kunjungan.tanggal_registrasi;
-          }
           this.datePicker.dates.setValue(new tempusDominus.DateTime(this.form.tanggal));
         },
 
@@ -894,6 +969,7 @@
     })
 
     const handleVerifikasiResep = (e) => {
+      console.log(e);
       e.preventDefault();
       Swal.fire({
         title: `Apakah anda yakin akan <br> verifikasi Resep ${resep.nomor}?`,

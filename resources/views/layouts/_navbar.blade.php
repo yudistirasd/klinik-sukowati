@@ -59,14 +59,16 @@
                   Daftar Pasien
                 </a>
               @endif
-              <a class="dropdown-item" href="{{ route('registrasi.kunjungan.index') }}">
-                Daftar Kunjungan Pasien
-              </a>
+              @if (Auth::user()->hasRole(['admin', 'dokter', 'loket']))
+                <a class="dropdown-item" href="{{ route('registrasi.kunjungan.index') }}">
+                  Daftar Kunjungan Pasien
+                </a>
+              @endif
             </div>
           </div>
         </div>
       </li>
-      @if (Auth::user()->hasRole(['admin', 'apoteker', 'loket']))
+      @if (Auth::user()->hasRole(['admin', 'loket']))
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false">
             <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler.io/icons/icon/package -->
@@ -80,11 +82,6 @@
                 @if (Auth::user()->hasRole(['admin', 'loket']))
                   <a class="dropdown-item" href="{{ route('kasir.tagihan-pasien') }}">
                     Tagihan Tindakan Pasien
-                  </a>
-                @endif
-                @if (Auth::user()->hasRole(['apoteker']))
-                  <a class="dropdown-item" href="{{ route('kasir.tagihan-pasien') }}">
-                    Tagihan Resep
                   </a>
                 @endif
               </div>
@@ -103,14 +100,14 @@
           <div class="dropdown-menu">
             <div class="dropdown-menu-columns">
               <div class="dropdown-menu-column">
-                <a class="dropdown-item" href="{{ route('farmasi.pembelian.index') }}">
-                  Pembelian Obat
+                <a class="dropdown-item" href="{{ route('farmasi.resep-pasien.index') }}">
+                  Resep Pasien
                 </a>
                 <a class="dropdown-item" href="{{ route('farmasi.stok-obat.index') }}">
                   Stok Obat
                 </a>
-                <a class="dropdown-item" href="{{ route('farmasi.resep-pasien.index') }}">
-                  Resep Pasien
+                <a class="dropdown-item" href="{{ route('farmasi.pembelian.index') }}">
+                  Pembelian Obat
                 </a>
               </div>
             </div>

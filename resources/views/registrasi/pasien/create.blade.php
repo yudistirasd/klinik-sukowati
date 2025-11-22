@@ -154,6 +154,7 @@
   <script src="{{ asset('libs/select2/select2.min.js') }}?{{ config('app.version') }}"></script>
   <script src="{{ asset('libs/select2/select2-searchInputPlaceholder.js') }}?{{ config('app.version') }}"></script>
   <script>
+    let user = @json(auth()->user());
     document.addEventListener('alpine:init', () => {
       Alpine.data('form', () => ({
         form: {
@@ -193,22 +194,14 @@
             }
           }).done((response) => {
             this.resetForm();
-            Swal.fire({
-              icon: 'success',
-              title: 'Sukses !',
-              text: response.message,
-              showCancelButton: true,
-              confirmButtonColor: "#3085d6",
-              cancelButtonColor: "#202020",
-              confirmButtonText: "Lanjut registrasi",
-              cancelButtonText: "Kembali"
-            }).then((result) => {
-              if (result.isConfirmed) {
-                window.location.href = route('registrasi.kunjungan.create', response.data.id)
-              } else {
-                window.location.href = route('registrasi.pasien.index');
-              }
-            });
+
+            if (['admin', 'loket'].includes(user.role)) {
+              this.redirectToRegistrasi(response);
+            }
+
+            if (user.role == 'apoteker') {
+              this.redirectToCreateResep(response);
+            }
           }).fail((error) => {
             if (error.status === 422) {
               this.errors = error.responseJSON.errors;
@@ -390,6 +383,44 @@
 
           const option = new Option(defaultProvinsi.text, defaultProvinsi.id, true, true);
           selectProvinsi.append(option).trigger('change');
+        },
+
+        redirectToRegistrasi(response) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Sukses !',
+            text: response.message,
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#202020",
+            confirmButtonText: "Lanjut registrasi",
+            cancelButtonText: "Kembali"
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.href = route('registrasi.kunjungan.create', response.data.id)
+            } else {
+              window.location.href = route('registrasi.pasien.index');
+            }
+          });
+        },
+
+        redirectToCreateResep(response) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Sukses !',
+            text: response.message,
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#202020",
+            confirmButtonText: "Lanjut Entry Resep",
+            cancelButtonText: "Kembali"
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.href = route('farmasi.resep-pasien.create', response.data.id)
+            } else {
+              window.location.href = route('registrasi.pasien.index');
+            }
+          });
         },
 
         resetForm() {

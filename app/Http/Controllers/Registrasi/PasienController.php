@@ -9,6 +9,7 @@ use App\Http\Requests\StorePasienRequest;
 use App\Http\Requests\UpdatePasienRequest;
 use App\Models\Agama;
 use App\Models\Pekerjaan;
+use Auth;
 use Illuminate\Support\Facades\DB;
 
 class PasienController extends Controller
@@ -16,6 +17,8 @@ class PasienController extends Controller
 
     public function dt()
     {
+        $currentUser = Auth::user();
+
         $data = Pasien::query()
             ->select([
                 '*',
@@ -50,18 +53,27 @@ class PasienController extends Controller
             ->editColumn('tempat_lahir', function ($row) {
                 return "{$row->tempat_lahir}, {$row->tanggal_lahir}";
             })
-            ->addColumn('action', function ($row) {
-                return "
-                                <a class='btn btn-primary btn-icon' href='" . route('registrasi.kunjungan.create', $row->id) . "'>
-                                    <i class='ti ti-calendar-user'></i>
-                                </a>
-                                <a class='btn btn-warning btn-icon' href='" . route('registrasi.pasien.edit', $row->id) . "'>
+            ->addColumn('action', function ($row) use ($currentUser) {
+                $btn = "";
+                if ($currentUser->hasRole(['admin', 'loket'])) {
+                    $btn .= "<a class='btn btn-primary btn-icon me-1' href='" . route('registrasi.kunjungan.create', $row->id) . "'>
+                                <i class='ti ti-calendar-user'></i>
+                            </a>";
+                }
+
+                if ($currentUser->hasRole(['apoteker'])) {
+                    $btn .= "<a class='btn btn-primary btn-icon me-1' href='" . route('farmasi.resep-pasien.create', $row->id) . "'>
+                                <i class='ti ti-checkup-list'></i>
+                            </a>";
+                }
+
+                $btn .= "<a class='btn btn-warning btn-icon' href='" . route('registrasi.pasien.edit', $row->id) . "'>
                                     <i class='ti ti-edit'></i>
                                 </a>
                                 <button class='btn btn-danger btn-icon' onclick='confirmDelete(`" . route('api.registrasi.pasien.destroy', $row->id) . "`, table.ajax.reload)'>
                                     <i class='ti ti-trash'></i>
-                                </button>
-                            ";
+                                </button>";
+                return $btn;
             })
             ->rawColumns([
                 'action',

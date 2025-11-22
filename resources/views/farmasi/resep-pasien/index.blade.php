@@ -9,6 +9,14 @@
   <link href="{{ asset('libs/datatables/responsive.bootstrap5.min.css') }}?{{ config('app.version') }}" rel="stylesheet">
 @endpush
 
+@section('action-page')
+  <a href="javascript:;" onclick="cariPasien(event)" class="btn btn-primary btn-5">
+    <div class="ti ti-plus me-1"></div>
+    Resep Luar
+  </a>
+@endsection
+
+
 @section('content')
   <!-- Table -->
   <div class="card">
@@ -324,6 +332,30 @@
     const handleResepObat = (resep_id) => {
       const alpineComponent = Alpine.$data(document.querySelector('[x-data="form"]'));
       alpineComponent.resepObat(resep_id);
+    }
+
+    const cariPasien = (e) => {
+      e.preventDefault();
+      Swal.fire({
+        title: "Pilih pasien untuk membuat resep luar.",
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Cari pasien",
+        cancelButtonText: "Tidak, batalkan",
+        showLoaderOnConfirm: true,
+        allowOutsideClick: () => !Swal.isLoading()
+      }).then(async (result) => {
+        if (!result.value) {
+          Swal.fire({
+            icon: 'info',
+            title: 'Aksi dibatalkan !',
+          })
+        } else {
+          window.location.href = route('registrasi.pasien.index');
+        }
+      });
     }
   </script>
 @endpush

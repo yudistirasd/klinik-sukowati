@@ -10,6 +10,7 @@ use App\Models\PenjualanDetail;
 use App\Models\ProdukStok;
 use App\Models\Resep;
 use App\Models\ResepDetail;
+use App\Models\User;
 use Auth;
 use Carbon\Carbon;
 use DataTables;
@@ -163,6 +164,22 @@ class ResepPasienController extends Controller
     public function index()
     {
         return view('farmasi.resep-pasien.index');
+    }
+
+    public function create(Pasien $pasien)
+    {
+        $pasien->load([
+            'agama',
+            'pekerjaan',
+            'provinsi',
+            'kabupaten',
+            'kecamatan',
+            'kelurahan',
+        ]);
+
+        $dokter = User::dokter()->get();
+
+        return view('farmasi.resep-pasien.create', compact(['pasien', 'dokter']));
     }
 
     public function show(Resep $resep)

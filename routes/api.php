@@ -30,6 +30,7 @@ Route::group(['as' => 'api.', 'middleware' => ['web', 'auth']], function () {
         Route::get('pengguna/dt', [UserController::class, 'dt'])->name('pengguna.dt');
         Route::get('pengguna/{pengguna}/setting-ruangan/dt', [UserController::class, 'dtSettingRuangan'])->name('pengguna.setting-ruangan.dt');
         Route::post('pengguna/{pengguna}/setting-ruangan', [UserController::class, 'storeSettingRuangan'])->name('pengguna.setting-ruangan.store');
+        Route::post('pengguna/dokter-external', [UserController::class, 'storeDokterExternal'])->name('pengguna.dokter-external.store');
 
         Route::get('departemen/dt', [DepartemenController::class, 'dt'])->name('departemen.dt');
         Route::get('ruangan/dt', [RuanganController::class, 'dt'])->name('ruangan.dt');

@@ -89,6 +89,142 @@ class UserController extends Controller
         }
     }
 
+    public function storeDokterExternal(Request $request)
+    {
+        return response()->json([
+            "code" => 200,
+            "message" => "Dokter External berhasil disimpan.",
+            "data" => [
+                "dokter_external" => [
+                    "name" => "xxx",
+                    "username" => "dokter_external_692148cf71e8b",
+                    "role" => "dokter",
+                    "id" => "019aaa04-6b45-71dd-a088-0bfef3a0608d",
+                    "updated_at" => "2025-11-22T05:23:27.000000Z",
+                    "created_at" => "2025-11-22T05:23:27.000000Z",
+                    "name_plain" => "xxx",
+                ],
+                "options_dokter" => [
+                    [
+                        "id" => "019a2bf3-b112-7346-8be2-dead8037ebc3",
+                        "name" => "dr. Alexander",
+                        "avatar" => "019a2bf3-b112-7346-8be2-dead8037ebc3.png",
+                        "username" => "dokter",
+                        "role" => "dokter",
+                        "nik" => "7209061211900001",
+                        "ihs_id" => "10009880728",
+                        "created_at" => "2025-10-28T17:53:02.000000Z",
+                        "updated_at" => "2025-11-11T23:06:13.000000Z",
+                        "deleted_at" => null,
+                        "name_plain" => "Alexander",
+                    ],
+                    [
+                        "id" => "019a7d9f-1f4b-72b8-bd4b-af7ca39f7e00",
+                        "name" => "Dokter B",
+                        "avatar" => null,
+                        "username" => "dokterb",
+                        "role" => "dokter",
+                        "nik" => "-",
+                        "ihs_id" => null,
+                        "created_at" => "2025-11-13T14:29:31.000000Z",
+                        "updated_at" => "2025-11-13T14:29:31.000000Z",
+                        "deleted_at" => null,
+                        "name_plain" => "Dokter B",
+                    ],
+                    [
+                        "id" => "019aaa04-6b45-71dd-a088-0bfef3a0608d",
+                        "name" => "IHIRR",
+                        "avatar" => null,
+                        "username" => "dokter_external_692148cf71e8b",
+                        "role" => "dokter",
+                        "nik" => null,
+                        "ihs_id" => null,
+                        "created_at" => "2025-11-22T05:23:27.000000Z",
+                        "updated_at" => "2025-11-22T05:23:27.000000Z",
+                        "deleted_at" => null,
+                        "name_plain" => "xxx",
+                    ],
+                ],
+            ],
+        ]);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'username' => 'dokter_external_' . uniqid(),
+            'password' => bcrypt(str()->random(16)),
+            'role' => 'dokter',
+            'dokter_external' => 'Y',
+        ]);
+
+        $dokter = User::dokter('Y')->get();
+
+        return response()->json([
+            "code" => 200,
+            "message" => "Dokter External berhasil disimpan.",
+            "data" => [
+                "dokter_external" => [
+                    "name" => "xxx",
+                    "username" => "dokter_external_692148cf71e8b",
+                    "role" => "dokter",
+                    "id" => "019aaa04-6b45-71dd-a088-0bfef3a0608d",
+                    "updated_at" => "2025-11-22T05:23:27.000000Z",
+                    "created_at" => "2025-11-22T05:23:27.000000Z",
+                    "name_plain" => "xxx",
+                ],
+                "options_dokter" => [
+                    [
+                        "id" => "019a2bf3-b112-7346-8be2-dead8037ebc3",
+                        "name" => "dr. Alexander",
+                        "avatar" => "019a2bf3-b112-7346-8be2-dead8037ebc3.png",
+                        "username" => "dokter",
+                        "role" => "dokter",
+                        "nik" => "7209061211900001",
+                        "ihs_id" => "10009880728",
+                        "created_at" => "2025-10-28T17:53:02.000000Z",
+                        "updated_at" => "2025-11-11T23:06:13.000000Z",
+                        "deleted_at" => null,
+                        "name_plain" => "Alexander",
+                    ],
+                    [
+                        "id" => "019a7d9f-1f4b-72b8-bd4b-af7ca39f7e00",
+                        "name" => "Dokter B",
+                        "avatar" => null,
+                        "username" => "dokterb",
+                        "role" => "dokter",
+                        "nik" => "-",
+                        "ihs_id" => null,
+                        "created_at" => "2025-11-13T14:29:31.000000Z",
+                        "updated_at" => "2025-11-13T14:29:31.000000Z",
+                        "deleted_at" => null,
+                        "name_plain" => "Dokter B",
+                    ],
+                    [
+                        "id" => "019aaa04-6b45-71dd-a088-0bfef3a0608d",
+                        "name" => "xxx",
+                        "avatar" => null,
+                        "username" => "dokter_external_692148cf71e8b",
+                        "role" => "dokter",
+                        "nik" => null,
+                        "ihs_id" => null,
+                        "created_at" => "2025-11-22T05:23:27.000000Z",
+                        "updated_at" => "2025-11-22T05:23:27.000000Z",
+                        "deleted_at" => null,
+                        "name_plain" => "xxx",
+                    ],
+                ],
+            ],
+        ]);
+
+        return $this->sendResponse(message: __('http-response.success.store', ['Attribute' => 'Dokter External']), data: [
+            'dokter_external' => $user,
+            'options_dokter' => $dokter,
+        ]);
+    }
+
     public function setting(User $pengguna)
     {
         $ruangan = Ruangan::all();

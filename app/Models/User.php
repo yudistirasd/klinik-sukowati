@@ -31,6 +31,7 @@ class User extends Authenticatable
         'role',
         'nik',
         'ihs_id',
+        'dokter_external',
     ];
 
     /**
@@ -86,9 +87,10 @@ class User extends Authenticatable
         return $this->role === $roles;
     }
 
-    public function scopeDokter($query)
+    public function scopeDokter($query, $external = 'N')
     {
-        return $query->where('role', 'dokter');
+        return $query->where('role', 'dokter')
+            ->where('dokter_external', $external);
     }
 
     /**
