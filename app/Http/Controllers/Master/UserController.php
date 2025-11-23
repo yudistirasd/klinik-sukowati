@@ -17,7 +17,8 @@ class UserController extends Controller
     public function dt()
     {
 
-        $user = User::query();
+        $user = User::query()
+            ->where('dokter_external', 'N');
 
         return DataTables::of($user)
             ->addIndexColumn()
