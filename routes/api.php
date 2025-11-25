@@ -140,5 +140,6 @@ Route::group(['as' => 'api.', 'middleware' => ['web', 'auth']], function () {
         Route::get('resep-pasien/{resep}/obat', [ResepPasienController::class, 'obat'])->name('resep-pasien.obat');
         Route::post('resep-pasien/{resep}/verifikasi', [ResepPasienController::class, 'verifikasi'])->name('resep-pasien.verifikasi');
         Route::post('resep-pasien/{resep}/jasa-resep/{receipt_number}', [ResepPasienController::class, 'jasaResep'])->name('resep-pasien.jasa-resep');
+        Route::post('resep-pasien-external', [ResepPasienController::class, 'storeResepExternal'])->name('resep-pasien.external.store');
     });
 });

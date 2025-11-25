@@ -94,6 +94,8 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'nohp' => 'required',
+            'nosip' => 'nullable'
         ]);
 
         $user = User::create([

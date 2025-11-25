@@ -212,7 +212,7 @@ class ResepPasienController extends Controller
             'kelurahan',
         ]);
 
-        $dokter = User::dokter()->get();
+        $dokter = User::dokter('Y')->get();
 
         return view('farmasi.resep-pasien.create', compact(['pasien', 'dokter']));
     }
@@ -222,6 +222,24 @@ class ResepPasienController extends Controller
         $pasien = Pasien::find($resep->pasien_id);
         $kunjungan = Kunjungan::find($resep->kunjungan_id);
         return view('farmasi.resep-pasien.show', compact(['pasien', 'kunjungan', 'resep']));
+    }
+
+    public function storeResepExternal(Request $request)
+    {
+        $request->validate([
+            'tanggal' => 'required',
+            'pasien_id' => 'required',
+            'dokter_id' => 'required'
+        ]);
+
+        $resep = Resep::create([
+            'tanggal' => $request->tanggal,
+            'pasien_id' => $request->pasien_id,
+            'dokter_id' => $request->dokter_id,
+            'asal_resep' => 'EX',
+        ]);
+
+        return $this->sendResponse(data: $resep, message: __('http-response.success.store', ['Attribute' => 'Resep External']));
     }
 
     public function verifikasi(Resep $resep)

@@ -30,11 +30,6 @@
                 <div class="datagrid-content">{{ $pasien->norm }}</div>
               </div>
               <div class="datagrid-item">
-                <div class="datagrid-title">No Registrasi</div>
-                <div class="datagrid-content">{{ $kunjungan->noregistrasi }}</div>
-              </div>
-
-              <div class="datagrid-item">
                 <div class="datagrid-title">Nama</div>
                 <div class="datagrid-content">{{ $pasien->nama }}</div>
               </div>
@@ -74,16 +69,27 @@
                   {{ $pasien->alamat }}, {{ $pasien->kelurahan->name }}, {{ $pasien->kecamatan->name }}, {{ $pasien->kabupaten->name }}, {{ $pasien->provinsi->name }}
                 </div>
               </div>
-              <div class="datagrid-item">
-                <div class="datagrid-title">Ruang/Klinik</div>
-                <div class="datagrid-content">
-                  {{ $kunjungan->ruangan->name }}
+              @if ($resep->asal_resep == 'IN')
+                <div class="datagrid-item">
+                  <div class="datagrid-title">No Registrasi</div>
+                  <div class="datagrid-content">{{ $kunjungan->tanggal_registrasi }}</div>
                 </div>
-              </div>
+                <div class="datagrid-item">
+                  <div class="datagrid-title">No Registrasi</div>
+                  <div class="datagrid-content">{{ $kunjungan->noregistrasi }}</div>
+                </div>
+
+                <div class="datagrid-item">
+                  <div class="datagrid-title">Ruang/Klinik</div>
+                  <div class="datagrid-content">
+                    {{ $kunjungan->ruangan->name }}
+                  </div>
+                </div>
+              @endif
               <div class="datagrid-item">
                 <div class="datagrid-title">Dokter</div>
                 <div class="datagrid-content">
-                  {{ $kunjungan->dokter->name }}
+                  {{ $resep->dokter->name }}
                 </div>
               </div>
             </div>
@@ -400,10 +406,11 @@
         form: {
           id: '',
           nomor: '',
-          tanggal: kunjungan.tanggal_registrasi,
+          tanggal: resep.tanggal,
+          asal_resep: resep.asal_resep,
           pasien_id: pasien.id,
-          kunjungan_id: kunjungan.id,
-          dokter_id: kunjungan.dokter_id,
+          kunjungan_id: null,
+          dokter_id: resep.dokter_id,
           produk_id: '',
           signa: '',
           unit_dosis: '',
@@ -619,9 +626,10 @@
             id: '',
             nomor: '',
             tanggal: '',
+            asal_resep: resep.asal_resep,
             pasien_id: pasien.id,
-            kunjungan_id: kunjungan.id,
-            dokter_id: kunjungan.dokter_id,
+            kunjungan_id: kunjungan ? kunjungan.id : null,
+            dokter_id: resep.dokter_id,
             produk_id: '',
             signa: '',
             unit_dosis: '',
@@ -650,7 +658,7 @@
         init() {
           this.tambahKomposisi();
           resepObat();
-          this.dokter = kunjungan.dokter.name;
+          this.dokter = resep.dokter.name;
 
           let selectProduk = $('#obat').select2({
             theme: 'bootstrap-5',

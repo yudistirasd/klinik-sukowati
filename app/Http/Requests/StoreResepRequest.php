@@ -86,7 +86,7 @@ class StoreResepRequest extends FormRequest
             'tanggal' => 'required',
             'dokter_id' => 'required',
             'pasien_id' => 'required',
-            'kunjungan_id' => 'required',
+            'kunjungan_id' => 'required_if:asal_resep,IN',
             'embalase' => 'nullable',
             'jasa_resep' => 'nullable',
             'waktu_pemberian_obat' => 'required',

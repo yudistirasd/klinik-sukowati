@@ -249,6 +249,7 @@
         form: {
           id: '',
           nomor: '',
+          asal_resep: 'EX',
           tanggal: kunjungan.tanggal_registrasi,
           pasien_id: pasien.id,
           kunjungan_id: kunjungan.id,
@@ -463,6 +464,7 @@
             id: '',
             nomor: '',
             tanggal: '',
+            asal_resep: 'EX',
             pasien_id: pasien.id,
             kunjungan_id: kunjungan.id,
             dokter_id: kunjungan.dokter_id,
