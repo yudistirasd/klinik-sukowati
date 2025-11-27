@@ -124,4 +124,10 @@ return [
     ],
 
     'version' => '2.0.0',
+
+    'company' => [
+        'name' => 'Apotek Athaya Farma',
+        'address' => 'Jl. HOS Cokroaminoto No. 38, Sragen',
+        'phone' => '0271 893322'
+    ]
 ];

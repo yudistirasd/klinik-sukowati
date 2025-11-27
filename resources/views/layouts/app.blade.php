@@ -166,8 +166,10 @@
         });
       }
 
-      const formatUang = (num) => {
-        return num.toLocaleString('en-US');
+      const formatUang = (num, digit = 2) => {
+        return num.toLocaleString('en-US', {
+          minimumFractionDigits: digit
+        });
       }
 
       const round = (value, digit = 2) => {

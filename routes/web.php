@@ -14,8 +14,10 @@ use App\Http\Controllers\Registrasi\PasienController;
 use App\Http\Controllers\Registrasi\KunjunganController;
 use App\Http\Controllers\Farmasi\ProdukStokController;
 use App\Http\Controllers\Farmasi\PembelianController;
+use App\Http\Controllers\Farmasi\PenjualanController;
 use App\Http\Controllers\Farmasi\ResepPasienController;
 use App\Http\Controllers\Kasir\TagihanResepController;
+use App\Models\PenjualanDetail;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [AuthenticationController::class, 'showLoginForm'])
@@ -67,5 +69,8 @@ Route::middleware('auth')->group(function () {
         Route::get('resep-pasien', [ResepPasienController::class, 'index'])->name('resep-pasien.index');
         Route::get('resep-pasien/{resep}', [ResepPasienController::class, 'show'])->name('resep-pasien.show');
         Route::get('resep-pasien/create/{pasien}', [ResepPasienController::class, 'create'])->name('resep-pasien.create');
+
+        Route::get('penjualan', [PenjualanController::class, 'index'])->name('penjualan.index');
+        Route::get('penjualan/create', [PenjualanController::class, 'create'])->name('penjualan.create');
     });
 });

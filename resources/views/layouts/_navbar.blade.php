@@ -109,6 +109,16 @@
                 <a class="dropdown-item" href="{{ route('farmasi.pembelian.index') }}">
                   Pembelian Obat
                 </a>
+                <div class="dropend">
+                  <a class="dropdown-item dropdown-toggle" href="#sidebar-authentication" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false">
+                    Penjualan
+                  </a>
+                  <div class="dropdown-menu">
+                    <a href="{{ route('farmasi.penjualan.index') }}" class="dropdown-item"> Daftar Penjualan </a>
+                    <a href="{{ route('farmasi.penjualan.create', ['jenis' => 'bebas']) }}" class="dropdown-item"> Buat Penjualan Obat Bebas</a>
+                    <a href="{{ route('farmasi.penjualan.create', ['jenis' => 'apotek']) }}" class="dropdown-item"> Buat Penjualan Sesama Apotek</a>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

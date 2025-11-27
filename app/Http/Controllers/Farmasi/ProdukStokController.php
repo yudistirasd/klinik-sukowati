@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Farmasi;
 use App\Http\Controllers\Controller;
 use DataTables;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class ProdukStokController extends Controller
 {
@@ -47,6 +48,34 @@ class ProdukStokController extends Controller
             ->addIndexColumn()
             ->make(true);
     }
+
+    public function select2Bebas(Request $request)
+    {
+        $data = DB::table('produk_stok as ps')
+            ->join('produk as pr', 'pr.id', '=', 'ps.produk_id')
+            ->select([
+                'pr.id',
+                'pr.name',
+                'pr.dosis',
+                'pr.satuan',
+                'pr.sediaan',
+                DB::raw('coalesce(ps.harga_jual_bebas, 0) as harga_jual_bebas'),
+                DB::raw("coalesce(sum(ps.ready), 0) as ready"),
+            ])
+            ->groupBy(['pr.id', 'pr.name', 'pr.dosis', 'pr.satuan', 'pr.sediaan', 'ps.harga_jual_bebas'])
+            ->when($request->filled('keyword'), fn($q) => $q->where('pr.name', 'ilike', "{$request->keyword}%"))
+            ->orderBy('pr.name', 'asc')
+            ->limit(30)
+            ->get()
+            ->map(function ($row) {
+                $row->harga_jual_bebas_view =  formatUang($row->harga_jual_bebas);
+
+                return $row;
+            });
+
+        return $this->sendResponse(data: $data);
+    }
+
     public function index()
     {
         return view('farmasi.stok.index');

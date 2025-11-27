@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Cetak\PenjualanController as  CetakPenjualanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Kasir\TagihanTindakanPasienController;
 use App\Http\Controllers\Master\DepartemenController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\Registrasi\KunjunganController;
 use App\Http\Controllers\Registrasi\PasienController;
 use App\Http\Controllers\Farmasi\PembelianController;
 use App\Http\Controllers\Farmasi\PembelianDetailController;
+use App\Http\Controllers\Farmasi\PenjualanDetailController;
 use App\Http\Controllers\Farmasi\ProdukStokController;
 use App\Http\Controllers\Farmasi\ResepPasienController;
 use Illuminate\Http\Request;
@@ -136,11 +138,20 @@ Route::group(['as' => 'api.', 'middleware' => ['web', 'auth']], function () {
         Route::apiResource('pembelian.detail', PembelianDetailController::class)->only(['store', 'update', 'destroy']);
 
         Route::get('stok-obat/dt', [ProdukStokController::class, 'dt'])->name('stok-obat.dt');
+        Route::get('stok-obat/select2-bebas', [ProdukStokController::class, 'select2Bebas'])->name('stok-obat.select2-bebas');
         Route::get('resep-pasien/dt', [ResepPasienController::class, 'dt'])->name('resep-pasien.dt');
         Route::get('resep-pasien/{resep}/obat', [ResepPasienController::class, 'obat'])->name('resep-pasien.obat');
         Route::post('resep-pasien/{resep}/verifikasi', [ResepPasienController::class, 'verifikasi'])->name('resep-pasien.verifikasi');
         Route::post('resep-pasien/{resep}/jasa-resep/{receipt_number}', [ResepPasienController::class, 'jasaResep'])->name('resep-pasien.jasa-resep');
         Route::post('resep-pasien-external', [ResepPasienController::class, 'storeResepExternal'])->name('resep-pasien.external.store');
         Route::post('resep-pasien/{resep}/bayar', [ResepPasienController::class, 'bayarTagihan'])->name('resep-pasien.bayar-tagihan');
+
+        Route::get('penjualan/{penjualan}/dt', [PenjualanDetailController::class, 'dt'])->name('penjualan.detail.dt');
+        Route::post('penjualan/{penjualan}/detail', [PenjualanDetailController::class, 'store'])->name('penjualan.detail.store');
+        Route::delete('penjualan/{penjualan}/destroy/{produk}', [PenjualanDetailController::class, 'destroy'])->name('penjualan.detail.destroy');
+    });
+
+    Route::group(['prefix' => 'cetak', 'as' => 'cetak.'], function () {
+        Route::get('penjualan/print-test', [CetakPenjualanController::class, 'printTest'])->name('penjualan.print-test');
     });
 });

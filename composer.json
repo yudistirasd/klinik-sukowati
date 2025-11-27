@@ -16,6 +16,7 @@
         "laravel/telescope": "^5.14",
         "laravel/tinker": "^2.10.1",
         "laravolt/avatar": "^6.3",
+        "mike42/escpos-php": "^4.0",
         "staudenmeir/laravel-cte": "1.12",
         "tightenco/ziggy": "^2.6",
         "yajra/laravel-datatables-oracle": "12.0",
