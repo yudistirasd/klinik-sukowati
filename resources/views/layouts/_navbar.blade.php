@@ -152,7 +152,7 @@
                   Obat
                 </a>
                 <a class="dropdown-item" href="{{ route('master.suplier.index') }}">
-                  Suplier
+                  PBF / Suplier
                 </a>
               </div>
             </div>

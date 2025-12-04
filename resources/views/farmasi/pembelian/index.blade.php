@@ -29,7 +29,7 @@
               <th class="text-center">#</th>
               <th class="text-center">Nomor</th>
               <th class="text-center">Tanggal</th>
-              <th class="text-center">Suplier</th>
+              <th class="text-center">PBF / Suplier</th>
               <th class="text-center">No Faktur</th>
               <th class="text-center">Tgl Faktur</th>
               <th class="text-center">Ditambahkan Ke Stok</th>
@@ -63,7 +63,7 @@
                 <div class="invalid-feedback" x-text="errors.tanggal"></div>
               </div>
               <div class="mb-3">
-                <label class="form-label">Suplier</label>
+                <label class="form-label">PBF / Suplier</label>
                 <select class="form-control" id="suplier_id" :class="{ 'is-invalid': errors.suplier_id }">
                   <option value=""></option>
                 </select>
@@ -184,8 +184,8 @@
           let searchResultsSuplier = [];
           let selectSuplier = $('#suplier_id').select2({
             theme: 'bootstrap-5',
-            placeholder: "Pilih Suplier",
-            searchInputPlaceholder: 'Cari Suplier',
+            placeholder: "Pilih PBF / Suplier",
+            searchInputPlaceholder: 'Cari PBF / Suplier',
             allowClear: true,
             dropdownParent: $('#modal-pembelian'),
             tags: true,

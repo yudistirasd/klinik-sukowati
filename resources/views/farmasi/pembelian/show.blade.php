@@ -48,7 +48,7 @@
             </div>
             <div class="col-md-2 col-sm-12">
               <div class="mb-3">
-                <label class="form-label">Suplier</label>
+                <label class="form-label">PBF / Suplier</label>
                 <input type="text" disabled class="form-control" placeholder="Otomatis dari sistem" autocomplete="off" value="{{ $pembelian->suplier->name }}">
               </div>
             </div>

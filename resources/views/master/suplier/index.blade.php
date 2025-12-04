@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Suplier')
+@section('title', 'PBF / Suplier')
 @section('subtitle', 'Master Data')
 
 @push('css')
@@ -10,9 +10,9 @@
 @endpush
 
 @section('action-page')
-  <a href="#" class="btn btn-primary btn-5" onclick="handleModal('create', 'Tambah Suplier')">
+  <a href="#" class="btn btn-primary btn-5" onclick="handleModal('create', 'Tambah PBF / Suplier')">
     <div class="ti ti-plus me-1"></div>
-    Suplier
+    PBF / Suplier
   </a>
 @endsection
 
@@ -48,17 +48,17 @@
           <form @submit.prevent="handleSubmit" autocomplete="off">
             <div class="modal-body">
               <div class="mb-3">
-                <label class="form-label required">Nama Suplier</label>
+                <label class="form-label required">Nama PBF / Suplier</label>
                 <input type="text" class="form-control" autocomplete="off" x-model="form.name" :class="{ 'is-invalid': errors.name }">
                 <div class="invalid-feedback" x-text="errors.name"></div>
               </div>
               <div class="mb-3">
-                <label class="form-label required">Alamat Suplier</label>
+                <label class="form-label required">Alamat PBF / Suplier</label>
                 <input type="text" class="form-control" autocomplete="off" x-model="form.alamat" :class="{ 'is-invalid': errors.alamat }">
                 <div class="invalid-feedback" x-text="errors.alamat"></div>
               </div>
               <div class="mb-3">
-                <label class="form-label required">Telp Suplier</label>
+                <label class="form-label required">Telp PBF / Suplier</label>
                 <input type="text" class="form-control" autocomplete="off" x-model="form.telp" :class="{ 'is-invalid': errors.telp }">
                 <div class="invalid-feedback" x-text="errors.telp"></div>
               </div>
