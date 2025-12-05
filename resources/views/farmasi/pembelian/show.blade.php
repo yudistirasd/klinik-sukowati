@@ -18,7 +18,7 @@
 @endsection
 
 @section('content')
-  <div class="row" x-data="form">
+  <div class="row" x-data="form" x-cloak>
     <div class="col-md-12 col-sm-12">
       <!-- Table -->
       <div class="card">
@@ -134,18 +134,17 @@
                     <div class="invalid-feedback" x-text="errors.isi_per_kemasan"></div>
                   </div>
                 </div>
-                <div class="col-md-3 col-sm-12">
+                <div class="col-md-2 col-sm-12">
                   <div class="mb-3">
                     <label class="form-label">Total Stok</label>
-                    <div class="row g-2">
-                      <div class="col-7">
-                        <input type="text" min="1" disabled class="form-control form-control-sm" autocomplete="off" x-model="qty_view" :class="{ 'is-invalid': errors.qty }">
-                        <div class="invalid-feedback" x-text="errors.qty"></div>
-                      </div>
-                      <div class="col-5">
-                        <input type="text" min="1" disabled class="form-control form-control-sm fw-bold" autocomplete="off" x-model="sediaan">
-                      </div>
-                    </div>
+                    <input type="text" min="1" disabled class="form-control form-control-sm" autocomplete="off" x-model="qty_view" :class="{ 'is-invalid': errors.qty }">
+                    <div class="invalid-feedback" x-text="errors.qty"></div>
+                  </div>
+                </div>
+                <div class="col-md-1 col-sm-12">
+                  <div class="mb-3">
+                    <label class="form-label">Sediaan</label>
+                    <input type="text" min="1" disabled class="form-control form-control-sm fw-bold" autocomplete="off" x-model="sediaan">
                   </div>
                 </div>
                 <div class="col-md-2 col-sm-12">
@@ -172,8 +171,19 @@
                     </div>
                     <div class="card-body">
                       <div class="mb-3">
+                        <label class="form-label">Margin (%)</label>
+                        <input type="text" disabled class="form-control form-control-sm" x-model="form.margin_resep" autocomplete="off" :class="{ 'is-invalid': errors.margin_resep }">
+                        <div class="invalid-feedback" x-text="errors.margin_resep"></div>
+                      </div>
+
+                      <div class="mb-3">
                         <label class="form-label">Harga Jual - per satuan</label>
-                        <input type="text" class="form-control form-control-sm" x-on:input="hitungKeuntungan()" id="harga_jual_resep" autocomplete="off" :class="{ 'is-invalid': errors.harga_jual_resep }">
+                        <div class="input-icon mb-3">
+                          <input type="text" class="form-control form-control-sm" disabled id="harga_jual_resep" autocomplete="off" :class="{ 'is-invalid': errors.harga_jual_resep }">
+                          <span class="input-icon-addon" x-show="isLoadingHitungHargaJual">
+                            <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
+                          </span>
+                        </div>
                         <div class="invalid-feedback" x-text="errors.harga_jual_resep"></div>
                       </div>
 
@@ -181,12 +191,6 @@
                         <label class="form-label">Keuntungan - per satuan</label>
                         <input type="text" disabled class="form-control form-control-sm" x-model="keuntungan_resep_view" autocomplete="off" :class="{ 'is-invalid': errors.keuntungan_satuan }">
                         <div class="invalid-feedback" x-text="errors.keuntungan_satuan"></div>
-                      </div>
-
-                      <div class="mb-3">
-                        <label class="form-label">Margin (%)</label>
-                        <input type="text" disabled class="form-control form-control-sm" x-model="form.margin_resep" autocomplete="off" :class="{ 'is-invalid': errors.margin_resep }">
-                        <div class="invalid-feedback" x-text="errors.margin_resep"></div>
                       </div>
                     </div>
                   </div>
@@ -198,8 +202,19 @@
                     </div>
                     <div class="card-body">
                       <div class="mb-3">
+                        <label class="form-label">Margin (%)</label>
+                        <input type="text" disabled class="form-control form-control-sm" x-model="form.margin_bebas" autocomplete="off" :class="{ 'is-invalid': errors.margin_bebas }">
+                        <div class="invalid-feedback" x-text="errors.margin_bebas"></div>
+                      </div>
+
+                      <div class="mb-3">
                         <label class="form-label">Harga Jual - per satuan</label>
-                        <input type="text" class="form-control form-control-sm" x-on:input="hitungKeuntungan()" id="harga_jual_bebas" autocomplete="off" :class="{ 'is-invalid': errors.harga_jual_bebas }">
+                        <div class="input-icon mb-3">
+                          <input type="text" class="form-control form-control-sm" disabled id="harga_jual_bebas" autocomplete="off" :class="{ 'is-invalid': errors.harga_jual_bebas }">
+                          <span class="input-icon-addon" x-show="isLoadingHitungHargaJual">
+                            <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
+                          </span>
+                        </div>
                         <div class="invalid-feedback" x-text="errors.harga_jual_resep"></div>
                       </div>
 
@@ -207,12 +222,6 @@
                         <label class="form-label">Keuntungan - per satuan</label>
                         <input type="text" disabled class="form-control form-control-sm" x-model="keuntungan_bebas_view" autocomplete="off" :class="{ 'is-invalid': errors.keuntungan_satuan }">
                         <div class="invalid-feedback" x-text="errors.keuntungan_satuan"></div>
-                      </div>
-
-                      <div class="mb-3">
-                        <label class="form-label">Margin (%)</label>
-                        <input type="text" disabled class="form-control form-control-sm" x-model="form.margin_bebas" autocomplete="off" :class="{ 'is-invalid': errors.margin_bebas }">
-                        <div class="invalid-feedback" x-text="errors.margin_bebas"></div>
                       </div>
                     </div>
                   </div>
@@ -224,8 +233,19 @@
                     </div>
                     <div class="card-body">
                       <div class="mb-3">
+                        <label class="form-label">Margin (%)</label>
+                        <input type="text" disabled class="form-control form-control-sm" x-model="form.margin_apotek" autocomplete="off" :class="{ 'is-invalid': errors.margin_apotek }">
+                        <div class="invalid-feedback" x-text="errors.margin_apotek"></div>
+                      </div>
+
+                      <div class="mb-3">
                         <label class="form-label">Harga Jual - per satuan</label>
-                        <input type="text" class="form-control form-control-sm" x-on:input="hitungKeuntungan()" id="harga_jual_apotek" autocomplete="off" :class="{ 'is-invalid': errors.harga_jual_apotek }">
+                        <div class="input-icon mb-3">
+                          <input type="text" class="form-control form-control-sm" disabled id="harga_jual_apotek" autocomplete="off" :class="{ 'is-invalid': errors.harga_jual_apotek }">
+                          <span class="input-icon-addon" x-show="isLoadingHitungHargaJual">
+                            <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
+                          </span>
+                        </div>
                         <div class="invalid-feedback" x-text="errors.harga_jual_resep"></div>
                       </div>
 
@@ -235,11 +255,7 @@
                         <div class="invalid-feedback" x-text="errors.keuntungan_satuan"></div>
                       </div>
 
-                      <div class="mb-3">
-                        <label class="form-label">Margin (%)</label>
-                        <input type="text" disabled class="form-control form-control-sm" x-model="form.margin_apotek" autocomplete="off" :class="{ 'is-invalid': errors.margin_apotek }">
-                        <div class="invalid-feedback" x-text="errors.margin_apotek"></div>
-                      </div>
+
                     </div>
                   </div>
                 </div>
@@ -288,6 +304,8 @@
   <script src="{{ asset('libs/datatables/responsive.bootstrap5.js') }}?{{ config('app.version') }}"></script>
   <script>
     const pembelian = {!! $pembelian !!};
+    const hargaJual = @json(config('constant.harga_jual'));
+
     const table = new DataTable('#pembelian-detail-table', {
       dom: 'Brti',
       processing: true,
@@ -377,9 +395,9 @@
           harga_jual_resep: '',
           harga_jual_bebas: '',
           harga_jual_apotek: '',
-          margin_resep: '',
-          margin_bebas: '',
-          margin_apotek: '',
+          margin_resep: hargaJual.resep,
+          margin_bebas: hargaJual.bebas,
+          margin_apotek: hargaJual.apotek,
         },
         sediaan: '',
         mask_harga_beli_kemasan: {},
@@ -395,6 +413,7 @@
         errors: {},
         loading: false,
         pembelian: {},
+        isLoadingHitungHargaJual: false,
 
         init() {
           this.form.pembelian_id = pembelian.id;
@@ -607,53 +626,55 @@
           this.form.qty = this.form.jumlah_kemasan * this.form.isi_per_kemasan;
           this.qty_view = formatUang(this.form.qty);
           this.form.harga_beli_kemasan = Number(this.mask_harga_beli_kemasan.unmaskedValue);
-          this.form.harga_beli_satuan = round(this.form.harga_beli_kemasan / this.form.isi_per_kemasan);
-          this.harga_beli_satuan_view = formatUang(this.form.harga_beli_satuan)
+          this.form.harga_beli_satuan = ceil(this.form.harga_beli_kemasan / this.form.isi_per_kemasan);
+          this.harga_beli_satuan_view = formatUang(this.form.harga_beli_satuan);
+
+
+          if (this.form.harga_beli_satuan) {
+            this.isLoadingHitungHargaJual = true;
+
+            setTimeout(() => {
+              this.hitungHargaJual();
+            }, 700);
+          }
+
         },
 
-        hitungKeuntungan() {
-          if (!this.form.harga_beli_kemasan) {
-            this.mask_harga_jual_resep.value = '';
-            return Toast.fire({
-              icon: 'warning',
-              title: 'Harga beli kemasan tidak boleh kosong!'
-            })
-          }
+        hitungHargaJual() {
+          let keuntunganResep = ceil(this.form.harga_beli_satuan * this.form.margin_resep / 100);
+          let keuntunganBebas = ceil(this.form.harga_beli_satuan * this.form.margin_bebas / 100);
+          let keuntunganApotek = ceil(this.form.harga_beli_satuan * this.form.margin_apotek / 100);
+
+          let hargaJualResep = this.form.harga_beli_satuan + keuntunganResep;
+          let hargaJualBebas = this.form.harga_beli_satuan + keuntunganBebas;
+          let hargaJualApotek = this.form.harga_beli_satuan + keuntunganApotek;
 
 
-          if (this.mask_harga_jual_resep.unmaskedValue) {
-            this.form.harga_jual_resep = Number(this.mask_harga_jual_resep.unmaskedValue);
+          this.keuntungan_resep_view = formatUang(keuntunganResep);
+          this.keuntungan_bebas_view = formatUang(keuntunganBebas);
+          this.keuntungan_apotek_view = formatUang(keuntunganApotek);
 
-            let keuntungan = this.form.harga_jual_resep - this.form.harga_beli_satuan;
-            let margin = (this.form.harga_jual_resep - this.form.harga_beli_satuan) / this.form.harga_beli_satuan * 100;
+          this.form.harga_jual_resep = hargaJualResep;
+          this.form.harga_jual_bebas = hargaJualBebas;
+          this.form.harga_jual_apotek = hargaJualApotek;
 
-            this.keuntungan_resep_view = formatUang(keuntungan);
-            this.form.margin_resep = round(margin, 0);
+          console.log("Harga jual resep", hargaJualResep)
+          console.log("Harga jual bebas", hargaJualBebas)
+          console.log("Harga jual apotek", hargaJualApotek);
 
-          }
+          console.log("Harga jual resep view", formatUang(hargaJualResep))
+          console.log("Harga jual bebas view", formatUang(hargaJualBebas))
+          console.log("Harga jual apotek view", formatUang(hargaJualApotek))
+
+          this.mask_harga_jual_resep.value = formatUang(hargaJualResep, 0);
+          this.mask_harga_jual_bebas.value = formatUang(hargaJualBebas, 0);
+          this.mask_harga_jual_apotek.value = formatUang(hargaJualApotek, 0);
 
 
-          if (this.mask_harga_jual_bebas.unmaskedValue) {
-            this.form.harga_jual_bebas = Number(this.mask_harga_jual_bebas.unmaskedValue);
+          setTimeout(() => {
+            this.isLoadingHitungHargaJual = false
+          }, 500)
 
-            let keuntungan = this.form.harga_jual_bebas - this.form.harga_beli_satuan;
-            let margin = (this.form.harga_jual_bebas - this.form.harga_beli_satuan) / this.form.harga_beli_satuan * 100;
-
-            this.keuntungan_bebas_view = formatUang(keuntungan);
-            this.form.margin_bebas = round(margin, 0);
-
-          }
-
-          if (this.mask_harga_jual_apotek.unmaskedValue) {
-            this.form.harga_jual_apotek = Number(this.mask_harga_jual_apotek.unmaskedValue);
-
-            let keuntungan = this.form.harga_jual_apotek - this.form.harga_beli_satuan;
-            let margin = (this.form.harga_jual_apotek - this.form.harga_beli_satuan) / this.form.harga_beli_satuan * 100;
-
-            this.keuntungan_apotek_view = formatUang(keuntungan);
-            this.form.margin_apotek = round(margin, 0);
-
-          }
         },
 
         resetForm() {
@@ -671,9 +692,9 @@
             harga_jual_resep: '',
             harga_jual_bebas: '',
             harga_jual_apotek: '',
-            margin_resep: '',
-            margin_bebas: '',
-            margin_apotek: '',
+            margin_resep: hargaJual.resep,
+            margin_bebas: hargaJual.bebas,
+            margin_apotek: hargaJual.apotek,
           };
 
           this.sediaan = '';

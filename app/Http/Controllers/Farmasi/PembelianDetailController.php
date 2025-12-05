@@ -26,7 +26,7 @@ class PembelianDetailController extends Controller
                         <div class='col'>Barcode / Batch : {$row->barcode} </div>
                         <div class='col'>ED : " . ($row->expired_date ?? '-') . "</div>
                         <div class='col'>Jumlah : {$row->jumlah_kemasan} {$row->satuan_kemasan}</div>
-                        <div class='col'>Harga Beli : " . formatUang($row->harga_beli_kemasan) . "/{$row->satuan_kemasan}</div>
+                        <div class='col'>Harga Beli Kemasan: " . formatUang($row->harga_beli_kemasan) . "/{$row->satuan_kemasan}</div>
                     </div>
                 ";
             })

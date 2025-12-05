@@ -166,15 +166,23 @@
         });
       }
 
+
+      const toNumberSafe = (value) => {
+        const n = Number(value);
+        return isNaN(n) ? 0 : n;
+      }
+
       const formatUang = (num, digit = 2) => {
-        return num.toLocaleString('en-US', {
+        return toNumberSafe(num).toLocaleString('en-US', {
           minimumFractionDigits: digit
         });
       }
 
       const round = (value, digit = 2) => {
-        return Number((value).toFixed(digit));
+        return toNumberSafe((value).toFixed(digit));
       }
+
+      const ceil = (value) => Math.ceil(toNumberSafe(value));
     </script>
     @stack('js')
   </body>
