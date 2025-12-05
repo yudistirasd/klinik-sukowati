@@ -23,6 +23,7 @@ class StorePembelianRequest extends FormRequest
     {
         return [
             'tanggal' => 'required',
+            'tanggal_obat_datang' => 'required',
             'suplier_id' => 'required',
             'no_faktur' => 'required',
             'tgl_faktur' => 'required'

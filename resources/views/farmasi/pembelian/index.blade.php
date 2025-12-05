@@ -28,10 +28,11 @@
             <tr>
               <th class="text-center">#</th>
               <th class="text-center">Nomor</th>
-              <th class="text-center">Tanggal</th>
+              <th class="text-center">Tanggal Pembelian</th>
               <th class="text-center">PBF / Suplier</th>
               <th class="text-center">No Faktur</th>
               <th class="text-center">Tgl Faktur</th>
+              <th class="text-center">Tgl Obat Datang</th>
               <th class="text-center">Ditambahkan Ke Stok</th>
               <th class="text-center">Aksi</th>
             </tr>
@@ -57,11 +58,23 @@
                 <input type="text" disabled class="form-control" placeholder="Otomatis dari sistem" autocomplete="off" x-model="form.nomor" :class="{ 'is-invalid': errors.nomor }">
                 <div class="invalid-feedback" x-text="errors.nomor"></div>
               </div>
-              <div class="mb-3">
-                <label class="form-label required">Tanggal Pembelian</label>
-                <input type="date" class="form-control" autocomplete="off" x-model="form.tanggal" :class="{ 'is-invalid': errors.tanggal }">
-                <div class="invalid-feedback" x-text="errors.tanggal"></div>
+              <div class="row">
+                <div class="col-md-6 col-sm-12">
+                  <div class="mb-3">
+                    <label class="form-label required">Tanggal Pembelian</label>
+                    <input type="date" class="form-control" autocomplete="off" x-model="form.tanggal" :class="{ 'is-invalid': errors.tanggal }">
+                    <div class="invalid-feedback" x-text="errors.tanggal"></div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                  <div class="mb-3">
+                    <label class="form-label required">Tanggal Obat Datang</label>
+                    <input type="date" class="form-control" autocomplete="off" x-model="form.tanggal_obat_datang" :class="{ 'is-invalid': errors.tanggal_obat_datang }">
+                    <div class="invalid-feedback" x-text="errors.tanggal_obat_datang"></div>
+                  </div>
+                </div>
               </div>
+
               <div class="mb-3">
                 <label class="form-label">PBF / Suplier</label>
                 <select class="form-control" id="suplier_id" :class="{ 'is-invalid': errors.suplier_id }">
@@ -150,6 +163,11 @@
           sClass: 'text-center'
         },
         {
+          data: 'tanggal_obat_datang',
+          name: 'tanggal_obat_datang',
+          sClass: 'text-center'
+        },
+        {
           data: 'insert_stok',
           name: 'insert_stok',
           sClass: 'text-center'
@@ -170,6 +188,7 @@
           id: null,
           nomor: '',
           tanggal: '{{ date('Y-m-d') }}',
+          tanggal_obat_datang: '{{ date('Y-m-d') }}',
           suplier_id: '',
           no_faktur: '',
           tgl_faktur: '',
@@ -332,6 +351,7 @@
           this.form = {
             nomor: '',
             tanggal: '{{ date('Y-m-d') }}',
+            tanggal_obat_datang: '{{ date('Y-m-d') }}',
             suplier_id: '',
             no_faktur: '',
             tgl_faktur: ''

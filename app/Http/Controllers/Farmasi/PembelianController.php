@@ -67,7 +67,7 @@ class PembelianController extends Controller
     {
         $request->merge(['created_by' => Auth::id()]);
 
-        $pembelian = Pembelian::create($request->only(['tanggal', 'suplier_id', 'created_by', 'tgl_faktur', 'no_faktur']));
+        $pembelian = Pembelian::create($request->only(['tanggal', 'suplier_id', 'created_by', 'tgl_faktur', 'no_faktur', 'tanggal_obat_datang']));
 
         return $this->sendResponse(data: $pembelian, message: __('http-response.success.store', ['Attribute' => 'Pembelian']));
     }
@@ -198,7 +198,7 @@ class PembelianController extends Controller
     public function update(UpdatePembelianRequest $request, Pembelian $pembelian)
     {
 
-        Pembelian::find($pembelian->id)->update($request->only(['tanggal', 'suplier_id', 'tgl_faktur', 'no_faktur']));
+        Pembelian::find($pembelian->id)->update($request->only(['tanggal', 'suplier_id', 'tgl_faktur', 'no_faktur', 'tanggal_obat_datang']));
 
         return $this->sendResponse(data: $pembelian, message: __('http-response.success.update', ['Attribute' => 'Pembelian']));
     }
