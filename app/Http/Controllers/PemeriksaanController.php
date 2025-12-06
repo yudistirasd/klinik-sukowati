@@ -530,7 +530,7 @@ class PemeriksaanController extends Controller
                 ->delete();
 
             // force delete resep if resep_detail = 0
-            if (ResepDetail::where('resep_id', $resep->id)->count() == 0) {
+            if ($resep->asal_resep == 'IN' && ResepDetail::where('resep_id', $resep->id)->count() == 0) {
                 $resep->delete();
             }
 
