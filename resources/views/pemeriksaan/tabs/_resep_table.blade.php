@@ -134,7 +134,20 @@
         <div class="card-body p-0 border-top">
           @if ($row->metode_penulisan == 'manual')
             <div class="m-3">
-              <label for="" class="form-label">Resep Manual Dokter</label>
+              <div class="d-flex align-items-center justify-content-between mb-3">
+                <label for="" class="form-label">Resep Manual Dokter</label>
+                <div>
+                  @if ($row->status == 'ORDER')
+                    <button type="button" onclick="editResep({{ json_encode($row) }})" class="btn btn-2 btn-icon" aria-label="Button">
+                      <i class="ti ti-edit"></i>
+                    </button>
+                    <button type='button' class='btn btn-danger btn-icon' onclick="confirmDelete(`{{ route('api.pemeriksaan.destroy.resep-manual', ['resep' => $row->id]) }}`, resepObat)">
+                      <i class='ti ti-trash'></i>
+                    </button>
+                  @endif
+                </div>
+
+              </div>
               <fieldset class="form-fieldset">
                 {!! $row->resep_detail_manual !!}
               </fieldset>

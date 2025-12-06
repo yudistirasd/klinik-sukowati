@@ -502,6 +502,17 @@ class PemeriksaanController extends Controller
         }
     }
 
+    public function destroyResepManual(Resep $resep)
+    {
+        if ($resep->status == 'VERIFIED') {
+            return $this->sendError(message: 'Resep ' . $resep->nomor . '  sudah diverifikasi oleh apoteker tidak dapat dihapus');
+        }
+
+        $resep->delete();
+
+        return $this->sendResponse(message: __('http-response.success.delete', ['Attribute' => 'Obat']));
+    }
+
     public function destroyResepDetail(Resep $resep, $receiptNumber)
     {
 

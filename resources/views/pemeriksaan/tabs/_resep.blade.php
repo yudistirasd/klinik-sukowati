@@ -259,6 +259,11 @@
       })
     };
 
+    const editResep = (resep) => {
+      const alpineComponent = Alpine.$data(document.querySelector('[x-data="Resep"]'));
+      alpineComponent.handleEditResep(resep);
+    }
+
     document.addEventListener('alpine:init', () => {
       Alpine.data('Resep', () => ({
         datePicker: {},
@@ -436,7 +441,6 @@
           this.loading = true;
           this.errors = {};
 
-
           $.ajax({
             url: route('api.pemeriksaan.store.resep'),
             method: 'POST',
@@ -516,6 +520,18 @@
           $('#obat').val(null).trigger('change');
 
           this.getCurrentMetodePenulisanResep();
+
+          if (this.isManual) {
+            let editorInstance = hugerte.get('resep_detail_manual');
+
+            if (editorInstance) {
+
+              editorInstance.setContent('');
+              editorInstance.undoManager.clear(); // Opsional: Hapus history undo agar dianggap state awal
+            } else {
+              console.log("Editor belum siap, menunggu proses init...");
+            }
+          }
         },
 
         init() {
@@ -788,13 +804,7 @@
               '';
           });
 
-          if (resep) {
-            this.form.tanggal = resep.tanggal;
-            this.form.nomor = resep.nomor;
-          } else {
-            this.form.nomor = '';
-            this.form.tanggal = kunjungan.tanggal_registrasi;
-          }
+
           this.datePicker.dates.setValue(new tempusDominus.DateTime(this.form.tanggal));
 
           // metode penulisan resep
@@ -910,8 +920,34 @@
 
           this.isManual = metodePenulisan == 'master_obat' ? false : true;
           this.form.metode_penulisan = metodePenulisan;
-        }
+        },
 
+        handleEditResep(resep) {
+          this.$nextTick(() => {
+            $.each(this.form, (key, value) => {
+              if (key == 'metode_penulisan') {
+                if (resep[key] == 'manual') {
+                  this.isManual = true;
+                } else {
+                  this.isManual = false;
+                }
+              }
+              this.form[key] = resep[key];
+            })
+
+            if (this.isManual) {
+              let editorInstance = hugerte.get('resep_detail_manual');
+
+              if (editorInstance) {
+
+                editorInstance.setContent(resep.resep_detail_manual || '');
+                editorInstance.undoManager.clear(); // Opsional: Hapus history undo agar dianggap state awal
+              } else {
+                console.log("Editor belum siap, menunggu proses init...");
+              }
+            }
+          });
+        }
       }))
     })
   </script>
