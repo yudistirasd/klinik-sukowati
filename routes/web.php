@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\Cetak\LabelPasienController;
 use App\Http\Controllers\Cetak\TagihanTindakanPasienController as CetakTagihanTindakanPasienController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Kasir\TagihanTindakanPasienController;
@@ -48,6 +49,7 @@ Route::middleware('auth')->group(function () {
         Route::get('kunjungan', [KunjunganController::class, 'index'])->name('kunjungan.index');
         Route::get('kunjungan/{pasien}', [KunjunganController::class, 'create'])->name('kunjungan.create');
         Route::get('kunjungan/edit/{kunjungan}', [KunjunganController::class, 'edit'])->name('kunjungan.edit');
+        Route::get('kunjungan/{kunjungan}/cetak-label-pasien', [LabelPasienController::class, 'index'])->name('kunjungan.cetak-label');
     });
 
     Route::group(['prefix' => 'pemeriksaan', 'as' => 'pemeriksaan.'], function () {

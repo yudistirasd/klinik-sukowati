@@ -46,6 +46,9 @@ class KunjunganController extends Controller
 
         return DataTables::of($data)
             ->addIndexColumn()
+            ->editColumn('pasien.norm', function ($row) {
+                return "<a href='" . route('registrasi.kunjungan.cetak-label', $row->id) . "' target='_blank'>{$row->pasien->norm}</a>";
+            })
             ->editColumn('noregistrasi', function ($row) {
                 return "<a href='" . route('pemeriksaan.index', $row->id) . "'>{$row->noregistrasi}</a>";
             })
@@ -66,7 +69,7 @@ class KunjunganController extends Controller
                 return "{$asmed} {$askep}";
             })
             ->addColumn('action', function ($row) use ($currentUser) {
-                if ($currentUser->role != 'admin') {
+                if ($currentUser->hasRole(['dokter', 'apoteker', 'perawat'])) {
                     return "";
                 }
 
@@ -82,7 +85,8 @@ class KunjunganController extends Controller
             ->rawColumns([
                 'status',
                 'action',
-                'noregistrasi'
+                'noregistrasi',
+                'pasien.norm'
             ])
             ->make(true);
     }

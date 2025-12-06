@@ -38,16 +38,16 @@ class Pasien extends Model
         // --- LOGIKA BARU ---
         // 1. ≥ 1 tahun → tampil TAHUN saja
         if ($diff->y >= 1) {
-            return "{$diff->y} tahun";
+            return "{$diff->y} th";
         }
 
         // 2. < 1 tahun, tetapi ≥ 1 bulan → tampil BULAN saja
         if ($diff->m >= 1) {
-            return "{$diff->m} bulan";
+            return "{$diff->m} bln";
         }
 
         // 3. < 1 bulan → tampil HARI saja
-        return "{$diff->d} hari";
+        return "{$diff->d} hr";
     }
 
     /**
