@@ -1,7 +1,7 @@
 <div x-data="Resep" x-cloak>
 
   @if (Auth::user()->hasRole('dokter'))
-    <form @submit.prevent="handleSubmit" autocomplete="off" id="resep" x-show="isUserDokter">
+    <form @submit.prevent="handleSubmit" autocomplete="off" id="form-resep" x-show="isUserDokter">
       <div class="row">
         <div class="col-md-2 col-sm-12">
           <div class="mb-3">
@@ -48,8 +48,8 @@
           <div class="mb-3" x-ignore>
             <label class="form-label">Resep Manual</label>
             <textarea class="form-control" x-ref="wysiwyg" id="resep_detail_manual" x-model="form.resep_detail_manual" rows='1' placeholder="Tulis resep manual (auto resize)" :class="{ 'is-invalid': errors.resep_detail_manual }"></textarea>
-            <div class="invalid-feedback" x-text="errors.resep_detail_manual"></div>
           </div>
+          <div class="invalid-feedback d-block" x-text="errors.resep_detail_manual"></div>
         </div>
       </div>
       <div class="row">
@@ -94,7 +94,7 @@
             @foreach (waktuPemberianObat() as $item)
               <div class="col">
                 <label class="form-check fs-5">
-                  <input class="form-check-input" x-on:change="hitungSigna" x-model="form.waktu_pemberian_obat" :class="{ 'is-invalid': errors.waktu_pemberian_obat }" type="checkbox" value="{{ $item }}">
+                  <input class="form-check-input" x-on:change="hitungSigna" name="{{ $item }}" x-model="form.waktu_pemberian_obat" :class="{ 'is-invalid': errors.waktu_pemberian_obat }" type="checkbox" value="{{ $item }}">
                   <span class="form-check-label fw-bolder">{{ $item }}</span>
                 </label>
               </div>
@@ -946,6 +946,12 @@
                 console.log("Editor belum siap, menunggu proses init...");
               }
             }
+
+            setTimeout(() => {
+              document.getElementById('form-resep').scrollIntoView({
+                behavior: 'smooth',
+              })
+            })
           });
         }
       }))

@@ -96,7 +96,7 @@
         </div>
         <div class="col" data-bs-toggle="collapse" data-bs-target="#resep1">
           <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
-            <span class="resep-number"><i class="bi bi-file-earmark-medical me-1"></i>{{ $resep->nomor }}</span>
+            <span class="badge bg-dark text-dark-fg px-2 py-1"><i class="ti ti-prescription"></i>{{ $resep->nomor }}</span>
             @if ($resep->status == 'VERIFIED')
               <span class="badge badge-verified rounded-pill px-2 py-1">
                 <i class="ti ti-circle-check me-1"></i>Verified
@@ -110,7 +110,9 @@
           <div class="d-flex flex-wrap gap-3 text-muted">
             <span><i class="ti ti-user me-1"></i>{{ $resep->dokter->name }}</span>
             <span><i class="ti ti-calendar me-1"></i>{{ $resep->tanggal }}</span>
-            <span><i class="ti ti-pill me-1"></i>{{ count($resep->items) }} Item</span>
+            @if ($resep->metode_penulisan == 'master_obat')
+              <span><i class="ti ti-pill me-1"></i>{{ count($resep->items) }} Item</span>
+            @endif
           </div>
         </div>
         <div class="col-auto d-flex gap-2">

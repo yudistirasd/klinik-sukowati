@@ -23,8 +23,8 @@
     <div class="card-body">
       <div class="badges-list mb-3">
         <span>Keterangan : </span>
-        <span class="badge bg-blue text-blue-fg">Resep Internal</span>
-        <span class="badge bg-dark text-dark-fg">Resep Luar</span>
+        <span class="badge bg-blue-lt text-blue-lt-fg">Resep Internal</span>
+        <span class="badge bg-dark-lt text-dark-lt-fg">Resep Luar</span>
       </div>
       <div class="table-responsive">
         <table class="table dataTable table-bordered table-hover" id="pasien-table">
@@ -39,8 +39,9 @@
               <th class="text-center text-wrap">Alamat Pasien</th>
               <th class="text-center text-wrap">Jenis Kelamin</th>
               <th class="text-center text-wrap">Usia</th>
+              <th class="text-center text-wrap">Penulisan Resep</th>
               <th class="text-center text-wrap">Status Resep</th>
-              <th class="text-center text-wrap">Tagihan Resep</th>
+              <th class="text-center text-wrap">Biaya</th>
               <th class="text-center text-wrap">Status Pembayaran</th>
               <th class="text-center text-wrap">Aksi</th>
             </tr>
@@ -206,6 +207,13 @@
           sClass: 'text-center'
         },
         {
+          data: 'metode_penulisan',
+          name: 'metode_penulisan',
+          sClass: 'text-center',
+          searchable: false,
+          orderable: false
+        },
+        {
           data: 'status',
           name: 'status',
           sClass: 'text-center'
@@ -214,7 +222,9 @@
           data: 'total_akhir',
           name: 'total_akhir',
           sClass: 'text-end',
-          width: "10%"
+          width: "10%",
+          searchable: false,
+          orderable: false
         },
         {
           data: 'status_bayar',

@@ -148,7 +148,7 @@
                 </div>
 
               </div>
-              <fieldset class="form-fieldset">
+              <fieldset class="form-fieldset font-monospace">
                 {!! $row->resep_detail_manual !!}
               </fieldset>
             </div>

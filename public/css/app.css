@@ -109,6 +109,22 @@ input[type="number"] {
     -moz-appearance: textfield;
 }
 
+.badge {
+    user-select: text !important;
+}
+
+/* Atur warna highlight saat teks di-blok */
+.badge::selection {
+    background-color: #0054a6; /* Warna biru gelap (bisa diganti sesuai tema) */
+    color: #ffffff; /* Warna teks jadi putih saat di-blok */
+}
+
+/* Support untuk browser Firefox (terkadang perlu ini) */
+.badge::-moz-selection {
+    background-color: #0054a6;
+    color: #ffffff;
+}
+
 .badge-verified {
     background-color: #d1fae5;
     color: #047857;

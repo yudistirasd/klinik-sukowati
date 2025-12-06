@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AsesmenKeperawatanRequest;
+use App\Http\Requests\StoreResepDokterRequest;
 use App\Http\Requests\StoreResepRequest;
 use App\Models\AsesmenKeperawatan;
 use App\Models\AsesmenMedis;
@@ -390,7 +391,7 @@ class PemeriksaanController extends Controller
         return $this->sendResponse(message: __('http-response.success.delete', ['Attribute' => 'Tindakan']));
     }
 
-    public function storeResep(StoreResepRequest $request)
+    public function storeResep(StoreResepDokterRequest $request)
     {
         DB::beginTransaction();
 
@@ -419,7 +420,7 @@ class PemeriksaanController extends Controller
                 $resep = Resep::create($request->only($data));
             }
 
-            if ($request->metode_penulisan == 'manual') {
+            if (Auth::user()->hasRole('dokter') && $request->metode_penulisan == 'manual') {
                 Resep::where('id', $resep->id)->update(['resep_detail_manual' => $request->resep_detail_manual]);
             }
 

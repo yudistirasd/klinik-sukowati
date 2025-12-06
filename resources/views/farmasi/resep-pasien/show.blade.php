@@ -99,249 +99,272 @@
       </div>
     </div>
 
-    <div class="card mb-3">
-      <div class="card-body">
-        @if (Auth::user()->hasRole('apoteker'))
-          <form @submit.prevent="handleSubmit" autocomplete="off" id="resep">
-            <div class="row">
-              <div class="col-md-3 col-sm-12">
-                <div class="mb-3">
-                  <label class="form-label">Tgl Resep</label>
-                  <input type="text" class="form-control" autocomplete="off" id="tanggal" x-model="form.tanggal">
-                </div>
-              </div>
-              <div class="col-md-3 col-sm-12">
-                <div class="mb-3">
-                  <label class="form-label">Jenis Resep</label>
-                  <select name="jenis_kemasan" x-model="form.jenis_resep" id="" class="form-control" :class="{ 'is-invalid': errors.jenis_resep }">
-                    <option value="">-- Pilih --</option>
-                    <option value="non_racikan">Non Racikan</option>
-                    <option value="racikan">Racikan</option>
-                  </select>
-                  <div class="invalid-feedback" x-text="errors.jenis_resep"></div>
-                </div>
-              </div>
-              <div class="col-md-3 col-sm-12">
-                <div class="mb-3">
-                  <label class="form-label">No Resep</label>
-                  <input type="text" disabled class="form-control" autocomplete="off" placeholder="Otomatis dari sistem" x-model="form.nomor" :class="{ 'is-invalid': errors.nomor }">
-                  <div class="invalid-feedback" x-text="errors.nomor"></div>
-                </div>
-              </div>
-              <div class="col-md-3 col-sm-12">
-                <div class="mb-3">
-                  <label class="form-label">DPJP</label>
-                  <input type="text" disabled class="form-control" autocomplete="off" x-model="dokter">
-                </div>
-              </div>
+
+    <div class="row">
+      @if ($resep->metode_penulisan == 'manual')
+        <div class="col-md-4 col-sm-12">
+          <div class="card mb-3">
+            <div class="card-header">
+              <h3 class="card-title">
+                <i class="ti ti-writing me-2 text-warning"></i>
+                Resep Manual <span class="text-muted fw-normal">#25120600028</span>
+              </h3>
             </div>
-            <div class="row">
-              <div class="col-md-3 col-sm-12" x-show="form.jenis_resep == 'racikan'">
-                <div class="mb-3">
-                  <label class="form-label">Tipe Racikan</label>
-                  <select class="form-select" x-model="form.tipe_racikan" x-on:change="resetKomposisi()" :class="{ 'is-invalid': errors.tipe_racikan }">
-                    <option value="">-- Pilih Tipe Racikan --</option>
-                    <option value="dtd">DTD</option>
-                    <option value="non_dtd">Non DTD</option>
-                  </select>
-                  <div class="invalid-feedback" x-text="errors.tipe_racikan"></div>
-                </div>
-              </div>
-              <div class="col-md-3 col-sm-12" x-show="form.jenis_resep == 'racikan'">
-                <div class="mb-3">
-                  <label class="form-label">Kemasan Racikan</label>
-                  <select class="form-select" x-model="form.kemasan_racikan" :class="{ 'is-invalid': errors.kemasan_racikan }">
-                    <option value="">-- Pilih Racikan --</option>
-                    <option value="puyer">Puyer (Serbuk)</option>
-                    <option value="kapsul">Kapsul</option>
-                    <option value="tube">Tube (Salep)</option>
-                    <option value="pot">Pot (Krim)</option>
-                    <option value="botol">Botol (Sirup)</option>
-                  </select>
-                  <div class="invalid-feedback" x-text="errors.kemasan_racikan"></div>
-                </div>
-              </div>
-
-              <div class="col-md-12 col-sm-12" x-show="form.jenis_resep == 'non_racikan'">
-                <div class="mb-3">
-                  <label class="form-label">Obat</label>
-                  <select class="form-control" id="obat" name="obat_id" :class="{ 'is-invalid': errors.produk_id }" style="width: 100%">
-                    <option value=""></option>
-                  </select>
-                  <div class="invalid-feedback" x-text="errors.produk_id"></div>
-                </div>
-              </div>
-              <div class="col-md-2 col-sm-12" x-show="form.jenis_resep">
-                <div class="form-label">Waktu Pemberian</div>
-                <div class="row row-cols-2">
-                  @foreach (waktuPemberianObat() as $item)
-                    <div class="col">
-                      <label class="form-check fs-5">
-                        <input class="form-check-input" x-on:change="hitungSigna" x-model="form.waktu_pemberian_obat" :class="{ 'is-invalid': errors.waktu_pemberian_obat }" type="checkbox" value="{{ $item }}">
-                        <span class="form-check-label fw-bolder">{{ $item }}</span>
-                      </label>
-                    </div>
-                  @endforeach
-                  <div class="invalid-feedback d-block" x-text="errors.waktu_pemberian_obat"></div>
-                </div>
-              </div>
-              <div class="col-md-1 col-sm-12" x-show="form.jenis_resep">
-                <div class="mb-3">
-                  <label class="form-label">Signa</label>
-                  <input type="text" id="frekuensi" class="form-control p-2 text-center" x-on:input="hitungJumlahObat" autocomplete="off" :class="{ 'is-invalid': errors.signa }">
-                  <div class="invalid-feedback" x-text="errors.signa"></div>
-                </div>
-              </div>
-              <div class="col-md-1 col-sm-12" x-show="form.jenis_resep && form.tipe_racikan != 'dtd'">
-                <div class="mb-3">
-                  <label class="form-label">Lama Hari</label>
-                  <input type="number" min="1" class="form-control" x-on:input="hitungJumlahObat" autocomplete="off" x-model="form.lama_hari" :class="{ 'is-invalid': errors.lama_hari }">
-                  <div class="invalid-feedback" x-text="errors.lama_hari"></div>
-                </div>
-              </div>
-              <div class="col-md-2 col-sm-12" x-show="form.jenis_resep == 'racikan'">
-                <label class="form-label">Jumlah Racikan</label>
-                <div class="input-group mb-2">
-                  <input type="number" class="form-control" autocomplete="off" x-model="form.jumlah_racikan" :class="{ 'is-invalid': errors.jumlah_racikan }" :disabled="form.tipe_racikan == 'non_dtd'">
-                  <span class="input-group-text" x-text="getJumlahRacikan()"></span>
-                </div>
-                <div class="invalid-feedback d-block" x-text="errors.jumlah_racikan"></div>
-              </div>
-              <div class="col-md-2 col-sm-12" x-show="form.jenis_resep == 'non_racikan'">
-                <div class="mb-3">
-                  <label class="form-label">Jumlah Obat</label>
-                  <div class="input-group mb-2">
-                    <input type="number" disabled class="form-control" autocomplete="off" x-model="form.qty" :class="{ 'is-invalid': errors.qty }">
-                    <span class="input-group-text" x-text="sediaan"></span>
-                  </div>
-                  <div class="invalid-feedback" x-text="errors.qty"></div>
-                </div>
-              </div>
-
-              <div class="col-md-3 col-sm-12" x-show="form.jenis_resep">
-                <div class="mb-3">
-                  <label class="form-label">Cara Pakai</label>
-                  <select class="form-control" id="aturan_pakai_id" :class="{ 'is-invalid': errors.aturan_pakai_id }" style="width: 100%">
-                    <option value=""></option>
-                  </select>
-                  <div class="invalid-feedback" x-text="errors.aturan_pakai_id"></div>
-                </div>
-              </div>
-
-              <div class="col-md-3 col-sm-12" x-show="form.jenis_resep">
-                <div class="mb-3">
-                  <label class="form-label">Kondisi Pemberian Obat</label>
-                  <select class="form-control" id="kondisi_pemberian_obat_id" :class="{ 'is-invalid': errors.kondisi_pemberian_obat_id }" style="width: 100%">
-                    <option value=""></option>
-                  </select>
-                  <div class="invalid-feedback" x-text="errors.kondisi_pemberian_obat_id"></div>
-                </div>
-              </div>
-
-              <div class="col-md-3 col-sm-12" x-show="form.jenis_resep">
-                <div class="mb-3">
-                  <label class="form-label">Keterangan : </label>
-                  <textarea class="form-control" data-bs-toggle="autosize" x-model="form.catatan" rows='1' placeholder="Type something…"></textarea>
-                </div>
-              </div>
-
-              <div class="col-md-3 col-sm-12" x-show="form.jenis_resep != ''">
-                <div class="d-flex flex-row gap-3">
-                  <div class="mb-3">
-                    <label class="form-label">Embalase</label>
-                    <input type="number" min="0" class="form-control" x-on:input="hitungJumlahObat" autocomplete="off" x-model="form.embalase" :class="{ 'is-invalid': errors.embalase }">
-                    <div class="invalid-feedback" x-text="errors.embalase"></div>
-                  </div>
-
-                  <div class="mb-3">
-                    <label class="form-label">Jasa Resep</label>
-                    <input type="number" min="0" class="form-control" x-on:input="hitungJumlahObat" autocomplete="off" x-model="form.jasa_resep" :class="{ 'is-invalid': errors.jasa_resep }">
-                    <div class="invalid-feedback" x-text="errors.jasa_resep"></div>
-                  </div>
-                </div>
-              </div>
-
+            <div class="card-body font-monospace">
+              <fieldset class="form-fieldset">
+                {!! $resep->resep_detail_manual !!}
+              </fieldset>
             </div>
-
-
-            <div class="row" x-show="form.jenis_resep === 'racikan' && form.tipe_racikan">
-              <div class="col-md-12 col-sm-12">
-                <label class="form-label fw-bold">Komposisi Obat Racikan <span x-text="getTipeRacikan()"></span> </label>
-                <div class="table-responsive komposisi-table">
-                  <table class="table table-bordered mb-0">
-                    <thead class="table-light">
-                      <tr>
-                        <th class="text-center" style="width: 5%">No</th>
-                        <th class="text-center" style="width: 35%">Nama Obat</th>
-                        <th class="text-center" style="width: 15%">Dosis per Satuan</th>
-                        <th class="text-center" style="width: 15%" x-show="form.tipe_racikan === 'non_dtd'">Total Dosis Diberikan</th>
-                        <th class="text-center" style="width: 15%" x-show="form.tipe_racikan === 'dtd'">Dosis Dibutuhkan</th>
-                        <th class="text-center" style="width: 20%">Qty</th>
-                        <th class="text-center" style="width: 5%"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <template x-for="(komposisi, index) in form.komposisi_racikan" :key="index">
-                        <tr>
-                          <td class="text-center" x-text="index + 1"></td>
-                          <td>
-                            <select class="form-select form-select-sm" :class="{ 'is-invalid': errors[`komposisi_racikan.${index}.produk_id`] }" x-model="komposisi.produk_id" x-init="initSelect2($el, index)" :id="'komposisi-racikan-' + index" style="width: 100%">
-                              <option value=""></option>
-                            </select>
-                            <div class="invalid-feedback" x-text="errors[`komposisi_racikan.${index}.produk_id`]"></div>
-                          </td>
-                          <td>
-                            <div class="input-group input-group-sm">
-                              <input type="number" step="any" class="form-control" x-model="komposisi.dosis_per_satuan" x-on:input="hitungQtyKomposisi(index)" :class="{ 'is-invalid': errors[`komposisi_racikan.${index}.dosis_per_satuan`] }">
-                              <span class="input-group-text" x-text="komposisi.satuan_dosis_obat"></span>
-                            </div>
-                            <div class="invalid-feedback d-block" x-text="errors[`komposisi_racikan.${index}.dosis_per_satuan`]"></div>
-                          </td>
-                          <td x-show="form.tipe_racikan === 'non_dtd'">
-                            <div class="input-group input-group-sm">
-                              <input type="number" step="any" class="form-control" x-model="komposisi.total_dosis_obat" x-on:input="hitungQtyKomposisi(index)" :class="{ 'is-invalid': errors[`komposisi_racikan.${index}.total_dosis_obat`] }">
-                              <span class="input-group-text" x-text="komposisi.satuan_dosis_obat"></span>
-                            </div>
-                            <div class="invalid-feedback d-block" x-text="errors[`komposisi_racikan.${index}.total_dosis_obat`]"></div>
-                          </td>
-                          <td x-show="form.tipe_racikan === 'dtd'">
-                            <div class="input-group input-group-sm">
-                              <input type="number" step="any" class="form-control" x-model="komposisi.dosis_per_racikan" x-on:input="hitungQtyKomposisi(index)" :class="{ 'is-invalid': errors[`komposisi_racikan.${index}.dosis_per_racikan`] }">
-                              <span class="input-group-text" x-text="komposisi.satuan_dosis_obat"></span>
-                            </div>
-                            <div class="invalid-feedback d-block" x-text="errors[`komposisi_racikan.${index}.dosis_per_racikan`]"></div>
-                          </td>
-                          <td>
-                            <div class="input-group input-group-sm">
-                              <input type="number" step="any" class="form-control" x-model="komposisi.qty" :class="{ 'is-invalid': errors[`komposisi_racikan.${index}.qty`] }">
-                              <span class="input-group-text" x-text="komposisi.sediaan_obat"></span>
-                            </div>
-                            <div class="invalid-feedback d-block" x-text="errors[`komposisi_racikan.${index}.qty`]"></div>
-                          </td>
-                          <td class="text-center">
-                            <button type="button" class="btn btn-sm btn-danger" x-on:click="hapusKomposisi(index)">X</button>
-                          </td>
-                        </tr>
-                      </template>
-                    </tbody>
-                  </table>
-                </div>
-                <button type="button" class="btn btn-sm btn-outline-primary btn-add-bahan mt-2" x-on:click="tambahKomposisi()">
-                  + Tambah Komposisi Obat
-                </button>
-              </div>
-            </div>
-            <div class="mb-3 text-end">
-              <button type="submit" class="btn btn-primary ms-auto" x-bind:disabled="loading">
-                <span x-show="loading" class="spinner-border spinner-border-sm me-2"></span>
-                Simpan
-              </button>
-            </div>
-          </form>
-        @endif
-        <div id="resep-container">
-
+          </div>
         </div>
+      @endif
+      <div class="col-md-{{ $resep->metode_penulisan == 'manual' ? 8 : 12 }} col-sm-12">
+        <div class="card mb-3">
+          <div class="card-body">
+            @if (Auth::user()->hasRole('apoteker'))
+              <form @submit.prevent="handleSubmit" autocomplete="off" id="resep">
+                <div class="row">
+                  <div class="col-md-3 col-sm-12">
+                    <div class="mb-3">
+                      <label class="form-label">Tgl Resep</label>
+                      <input type="text" class="form-control" autocomplete="off" id="tanggal" x-model="form.tanggal">
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-sm-12">
+                    <div class="mb-3">
+                      <label class="form-label">Jenis Resep</label>
+                      <select name="jenis_kemasan" x-model="form.jenis_resep" id="" class="form-control" :class="{ 'is-invalid': errors.jenis_resep }">
+                        <option value="">-- Pilih --</option>
+                        <option value="non_racikan">Non Racikan</option>
+                        <option value="racikan">Racikan</option>
+                      </select>
+                      <div class="invalid-feedback" x-text="errors.jenis_resep"></div>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-sm-12">
+                    <div class="mb-3">
+                      <label class="form-label">No Resep</label>
+                      <input type="text" disabled class="form-control" autocomplete="off" placeholder="Otomatis dari sistem" x-model="form.nomor" :class="{ 'is-invalid': errors.nomor }">
+                      <div class="invalid-feedback" x-text="errors.nomor"></div>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-sm-12">
+                    <div class="mb-3">
+                      <label class="form-label">DPJP</label>
+                      <input type="text" disabled class="form-control" autocomplete="off" x-model="dokter">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-3 col-sm-12" x-show="form.jenis_resep == 'racikan'">
+                    <div class="mb-3">
+                      <label class="form-label">Tipe Racikan</label>
+                      <select class="form-select" x-model="form.tipe_racikan" x-on:change="resetKomposisi()" :class="{ 'is-invalid': errors.tipe_racikan }">
+                        <option value="">-- Pilih Tipe Racikan --</option>
+                        <option value="dtd">DTD</option>
+                        <option value="non_dtd">Non DTD</option>
+                      </select>
+                      <div class="invalid-feedback" x-text="errors.tipe_racikan"></div>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-sm-12" x-show="form.jenis_resep == 'racikan'">
+                    <div class="mb-3">
+                      <label class="form-label">Kemasan Racikan</label>
+                      <select class="form-select" x-model="form.kemasan_racikan" :class="{ 'is-invalid': errors.kemasan_racikan }">
+                        <option value="">-- Pilih Racikan --</option>
+                        <option value="puyer">Puyer (Serbuk)</option>
+                        <option value="kapsul">Kapsul</option>
+                        <option value="tube">Tube (Salep)</option>
+                        <option value="pot">Pot (Krim)</option>
+                        <option value="botol">Botol (Sirup)</option>
+                      </select>
+                      <div class="invalid-feedback" x-text="errors.kemasan_racikan"></div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-12 col-sm-12" x-show="form.jenis_resep == 'non_racikan'">
+                    <div class="mb-3">
+                      <label class="form-label">Obat</label>
+                      <select class="form-control" id="obat" name="obat_id" :class="{ 'is-invalid': errors.produk_id }" style="width: 100%">
+                        <option value=""></option>
+                      </select>
+                      <div class="invalid-feedback" x-text="errors.produk_id"></div>
+                    </div>
+                  </div>
+                  <div class="col-md-2 col-sm-12" x-show="form.jenis_resep">
+                    <div class="form-label">Waktu Pemberian</div>
+                    <div class="row row-cols-2">
+                      @foreach (waktuPemberianObat() as $item)
+                        <div class="col">
+                          <label class="form-check fs-5">
+                            <input class="form-check-input" x-on:change="hitungSigna" x-model="form.waktu_pemberian_obat" :class="{ 'is-invalid': errors.waktu_pemberian_obat }" type="checkbox" value="{{ $item }}">
+                            <span class="form-check-label fw-bolder">{{ $item }}</span>
+                          </label>
+                        </div>
+                      @endforeach
+                      <div class="invalid-feedback d-block" x-text="errors.waktu_pemberian_obat"></div>
+                    </div>
+                  </div>
+                  <div class="col-md-1 col-sm-12" x-show="form.jenis_resep">
+                    <div class="mb-3">
+                      <label class="form-label">Signa</label>
+                      <input type="text" id="frekuensi" class="form-control p-2 text-center" x-on:input="hitungJumlahObat" autocomplete="off" :class="{ 'is-invalid': errors.signa }">
+                      <div class="invalid-feedback" x-text="errors.signa"></div>
+                    </div>
+                  </div>
+                  <div class="col-md-1 col-sm-12" x-show="form.jenis_resep && form.tipe_racikan != 'dtd'">
+                    <div class="mb-3">
+                      <label class="form-label">Lama Hari</label>
+                      <input type="number" min="1" class="form-control" x-on:input="hitungJumlahObat" autocomplete="off" x-model="form.lama_hari" :class="{ 'is-invalid': errors.lama_hari }">
+                      <div class="invalid-feedback" x-text="errors.lama_hari"></div>
+                    </div>
+                  </div>
+                  <div class="col-md-2 col-sm-12" x-show="form.jenis_resep == 'racikan'">
+                    <label class="form-label">Jumlah Racikan</label>
+                    <div class="input-group mb-2">
+                      <input type="number" class="form-control" autocomplete="off" x-model="form.jumlah_racikan" :class="{ 'is-invalid': errors.jumlah_racikan }" :disabled="form.tipe_racikan == 'non_dtd'">
+                      <span class="input-group-text" x-text="getJumlahRacikan()"></span>
+                    </div>
+                    <div class="invalid-feedback d-block" x-text="errors.jumlah_racikan"></div>
+                  </div>
+                  <div class="col-md-2 col-sm-12" x-show="form.jenis_resep == 'non_racikan'">
+                    <div class="mb-3">
+                      <label class="form-label">Jumlah Obat</label>
+                      <div class="input-group mb-2">
+                        <input type="number" disabled class="form-control" autocomplete="off" x-model="form.qty" :class="{ 'is-invalid': errors.qty }">
+                        <span class="input-group-text" x-text="sediaan"></span>
+                      </div>
+                      <div class="invalid-feedback" x-text="errors.qty"></div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-3 col-sm-12" x-show="form.jenis_resep">
+                    <div class="mb-3">
+                      <label class="form-label">Cara Pakai</label>
+                      <select class="form-control" id="aturan_pakai_id" :class="{ 'is-invalid': errors.aturan_pakai_id }" style="width: 100%">
+                        <option value=""></option>
+                      </select>
+                      <div class="invalid-feedback" x-text="errors.aturan_pakai_id"></div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-3 col-sm-12" x-show="form.jenis_resep">
+                    <div class="mb-3">
+                      <label class="form-label">Kondisi Pemberian Obat</label>
+                      <select class="form-control" id="kondisi_pemberian_obat_id" :class="{ 'is-invalid': errors.kondisi_pemberian_obat_id }" style="width: 100%">
+                        <option value=""></option>
+                      </select>
+                      <div class="invalid-feedback" x-text="errors.kondisi_pemberian_obat_id"></div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-3 col-sm-12" x-show="form.jenis_resep">
+                    <div class="mb-3">
+                      <label class="form-label">Keterangan : </label>
+                      <textarea class="form-control" data-bs-toggle="autosize" x-model="form.catatan" rows='1' placeholder="Type something…"></textarea>
+                    </div>
+                  </div>
+
+                  <div class="col-md-3 col-sm-12" x-show="form.jenis_resep != ''">
+                    <div class="d-flex flex-row gap-3">
+                      <div class="mb-3">
+                        <label class="form-label">Embalase</label>
+                        <input type="number" min="0" class="form-control" x-on:input="hitungJumlahObat" autocomplete="off" x-model="form.embalase" :class="{ 'is-invalid': errors.embalase }">
+                        <div class="invalid-feedback" x-text="errors.embalase"></div>
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label">Jasa Resep</label>
+                        <input type="number" min="0" class="form-control" x-on:input="hitungJumlahObat" autocomplete="off" x-model="form.jasa_resep" :class="{ 'is-invalid': errors.jasa_resep }">
+                        <div class="invalid-feedback" x-text="errors.jasa_resep"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+
+                <div class="row" x-show="form.jenis_resep === 'racikan' && form.tipe_racikan">
+                  <div class="col-md-12 col-sm-12">
+                    <label class="form-label fw-bold">Komposisi Obat Racikan <span x-text="getTipeRacikan()"></span> </label>
+                    <div class="table-responsive komposisi-table">
+                      <table class="table table-bordered mb-0">
+                        <thead class="table-light">
+                          <tr>
+                            <th class="text-center" style="width: 5%">No</th>
+                            <th class="text-center" style="width: 35%">Nama Obat</th>
+                            <th class="text-center" style="width: 15%">Dosis per Satuan</th>
+                            <th class="text-center" style="width: 15%" x-show="form.tipe_racikan === 'non_dtd'">Total Dosis Diberikan</th>
+                            <th class="text-center" style="width: 15%" x-show="form.tipe_racikan === 'dtd'">Dosis Dibutuhkan</th>
+                            <th class="text-center" style="width: 20%">Qty</th>
+                            <th class="text-center" style="width: 5%"></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <template x-for="(komposisi, index) in form.komposisi_racikan" :key="index">
+                            <tr>
+                              <td class="text-center" x-text="index + 1"></td>
+                              <td>
+                                <select class="form-select form-select-sm" :class="{ 'is-invalid': errors[`komposisi_racikan.${index}.produk_id`] }" x-model="komposisi.produk_id" x-init="initSelect2($el, index)" :id="'komposisi-racikan-' + index" style="width: 100%">
+                                  <option value=""></option>
+                                </select>
+                                <div class="invalid-feedback" x-text="errors[`komposisi_racikan.${index}.produk_id`]"></div>
+                              </td>
+                              <td>
+                                <div class="input-group input-group-sm">
+                                  <input type="number" step="any" class="form-control" x-model="komposisi.dosis_per_satuan" x-on:input="hitungQtyKomposisi(index)" :class="{ 'is-invalid': errors[`komposisi_racikan.${index}.dosis_per_satuan`] }">
+                                  <span class="input-group-text" x-text="komposisi.satuan_dosis_obat"></span>
+                                </div>
+                                <div class="invalid-feedback d-block" x-text="errors[`komposisi_racikan.${index}.dosis_per_satuan`]"></div>
+                              </td>
+                              <td x-show="form.tipe_racikan === 'non_dtd'">
+                                <div class="input-group input-group-sm">
+                                  <input type="number" step="any" class="form-control" x-model="komposisi.total_dosis_obat" x-on:input="hitungQtyKomposisi(index)" :class="{ 'is-invalid': errors[`komposisi_racikan.${index}.total_dosis_obat`] }">
+                                  <span class="input-group-text" x-text="komposisi.satuan_dosis_obat"></span>
+                                </div>
+                                <div class="invalid-feedback d-block" x-text="errors[`komposisi_racikan.${index}.total_dosis_obat`]"></div>
+                              </td>
+                              <td x-show="form.tipe_racikan === 'dtd'">
+                                <div class="input-group input-group-sm">
+                                  <input type="number" step="any" class="form-control" x-model="komposisi.dosis_per_racikan" x-on:input="hitungQtyKomposisi(index)" :class="{ 'is-invalid': errors[`komposisi_racikan.${index}.dosis_per_racikan`] }">
+                                  <span class="input-group-text" x-text="komposisi.satuan_dosis_obat"></span>
+                                </div>
+                                <div class="invalid-feedback d-block" x-text="errors[`komposisi_racikan.${index}.dosis_per_racikan`]"></div>
+                              </td>
+                              <td>
+                                <div class="input-group input-group-sm">
+                                  <input type="number" step="any" class="form-control" x-model="komposisi.qty" :class="{ 'is-invalid': errors[`komposisi_racikan.${index}.qty`] }">
+                                  <span class="input-group-text" x-text="komposisi.sediaan_obat"></span>
+                                </div>
+                                <div class="invalid-feedback d-block" x-text="errors[`komposisi_racikan.${index}.qty`]"></div>
+                              </td>
+                              <td class="text-center">
+                                <button type="button" class="btn btn-sm btn-danger" x-on:click="hapusKomposisi(index)">X</button>
+                              </td>
+                            </tr>
+                          </template>
+                        </tbody>
+                      </table>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-primary btn-add-bahan mt-2" x-on:click="tambahKomposisi()">
+                      + Tambah Komposisi Obat
+                    </button>
+                  </div>
+                </div>
+                <div class="mb-3 text-end">
+                  <button type="submit" class="btn btn-primary ms-auto" x-bind:disabled="loading">
+                    <span x-show="loading" class="spinner-border spinner-border-sm me-2"></span>
+                    Simpan
+                  </button>
+                </div>
+              </form>
+            @endif
+            <div id="resep-container">
+
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -725,16 +748,13 @@
 
 
           $.ajax({
-            url: route('api.pemeriksaan.store.resep'),
+            url: route('api.farmasi.resep-pasien.detail.store', resep.id),
             method: 'POST',
             data: this.form,
             dataType: 'json',
             headers: {
               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            complete: () => {
-              this.loading = false;
-            }
           }).done((response) => {
             Toast.fire({
               icon: 'success',
@@ -764,6 +784,8 @@
                 text: error.responseJSON.message
               });
             }
+          }).always(() => {
+            this.loading = false;
           })
         },
 
@@ -774,7 +796,7 @@
             tanggal: '',
             asal_resep: resep.asal_resep,
             pasien_id: pasien.id,
-            kunjungan_id: kunjungan ? kunjungan.id : null,
+            kunjungan_id: null,
             dokter_id: resep.dokter_id,
             produk_id: '',
             signa: '',
@@ -793,17 +815,23 @@
             jumlah_racikan: 0,
             komposisi_racikan: []
           };
+
           this.errors = {};
 
           this.mask.value = '';
           $('#aturan_pakai_id').val(null).trigger('change');
           $('#takaran_id').val(null).trigger('change');
           $('#obat').val(null).trigger('change');
+
+          if (resep.asal_resep == 'IN') {
+            this.form.kunjungan_id = resep.kunjungan_id;
+          }
+          this.form.metode_penulisan = resep.metode_penulisan;
         },
 
         init() {
-          this.tambahKomposisi();
           resepObat();
+          this.tambahKomposisi();
           this.dokter = resep.dokter.name;
 
           let selectProduk = $('#obat').select2({
@@ -1071,6 +1099,10 @@
           });
 
           if (resep) {
+            if (resep.asal_resep == 'IN') {
+              this.form.kunjungan_id = resep.kunjungan_id;
+            }
+            this.form.metode_penulisan = resep.metode_penulisan;
             this.form.tanggal = resep.tanggal;
             this.form.nomor = resep.nomor;
           } else {

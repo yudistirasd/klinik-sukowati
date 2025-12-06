@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Farmasi;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreResepApotekerRequest;
 use App\Models\Kunjungan;
 use App\Models\Pasien;
 use App\Models\Penjualan;
@@ -142,10 +143,21 @@ class ResepPasienController extends Controller
             // })
             ->addIndexColumn()
             ->editColumn('nomor', function ($row) {
-                $color = $row->asal_resep == 'IN' ? 'bg-blue text-blue-fg' : 'bg-dark text-dark-fg';
-                return "<span class='badge {$color}'>{$row->nomor}</span>";
+                $color = $row->asal_resep == 'IN' ? 'bg-blue-lt text-blue-lt-fg' : 'bg-dark-lt text-dark-lt-fg';
+                $badgeNomor =  "<span class='badge {$color}'>{$row->nomor}</span>";
+
+                return "{$badgeNomor}";
             })
             ->addColumn('usia', fn($row) => hitungUsiaPasien($row->tanggal_lahir, $row->tanggal_registrasi ?? null))
+            ->editColumn('metode_penulisan', function ($row) {
+                $colorMetode = $row->metode_penulisan == 'manual' ? 'bg-warning text-warning-fg' : 'bg-success text-success-fg';
+                $iconMetode = $row->metode_penulisan == 'manual' ? 'writing' : 'pill';
+                $textMode = $row->metode_penulisan == 'manual' ? 'Tulis Manual' : 'Pilih Obat';
+
+                return "<span class='badge badge-sm {$colorMetode}'>
+                  <i class='ti ti-{$iconMetode}'></i>{$textMode}
+                </span>";
+            })
             ->editColumn('total_akhir', fn($row) => formatUang($row->total_akhir))
             ->editColumn('status_bayar', function ($row) {
                 $color = $row->status_pembayaran == 'lunas' ? 'bg-green text-green-fg' : 'bg-yellow text-yellow-fg';
@@ -166,6 +178,7 @@ class ResepPasienController extends Controller
                 'nomor',
                 'action',
                 'status',
+                'metode_penulisan',
                 'status_bayar'
             ])
             ->make(true);
@@ -358,13 +371,104 @@ class ResepPasienController extends Controller
         return $this->sendResponse(data: $resep, message: __('http-response.success.store', ['Attribute' => 'Resep External']));
     }
 
+
+    public function storeResepDetail(Resep $resep, StoreResepApotekerRequest $request)
+    {
+        DB::beginTransaction();
+
+        try {
+
+            if ($request->jenis_resep == 'non_racikan') {
+                ResepDetail::create([
+                    'resep_id' => $resep->id,
+                    'produk_id' => $request->produk_id,
+                    'signa' => $request->signa,
+                    'frekuensi' => $request->frekuensi,
+                    'unit_dosis' => $request->unit_dosis,
+                    'lama_hari' => $request->lama_hari,
+                    'qty' => $request->qty,
+                    'aturan_pakai_id' => $request->aturan_pakai_id,
+                    'embalase' => $request->embalase ?? null,
+                    'jasa_resep' => $request->jasa_resep ?? null,
+                    'catatan' => $request->catatan,
+                    'waktu_pemberian_obat' => $request->waktu_pemberian_obat,
+                    'kondisi_pemberian_obat_id' => $request->kondisi_pemberian_obat_id
+                ]);
+            }
+
+            if ($request->jenis_resep == 'racikan') {
+                $receipt_number = ResepDetail::where('resep_id', $resep->id)
+                    ->max('receipt_number') + 1;
+
+                $komposisiRacikan = $request->komposisi_racikan;
+
+                foreach ($komposisiRacikan as $komposisi) {
+                    $komposisi = (object) $komposisi;
+
+                    // hitung qty berdasarkan total_dosis_obat dan jumlah_racikan
+                    if ($request->tipe_racikan == 'non_dtd') {
+                        // dibulatkan keatas 2 desimal
+                        $dosis_per_racikan = ceil($komposisi->total_dosis_obat / $request->jumlah_racikan * 100) / 100;
+                        $qty = ceil($komposisi->total_dosis_obat / $komposisi->dosis_per_satuan);
+                    }
+
+                    if ($request->tipe_racikan == 'dtd') {
+                        $dosis_per_racikan = $komposisi->dosis_per_racikan;
+                        $qty = ceil($komposisi->dosis_per_racikan / $komposisi->dosis_per_satuan * $request->jumlah_racikan);
+                    }
+
+                    $data = [
+                        'jenis_resep' => $request->jenis_resep,
+                        'receipt_number' => $receipt_number,
+                        'resep_id' => $resep->id,
+                        'produk_id' => $komposisi->produk_id,
+                        'signa' => $request->signa,
+                        'frekuensi' => $request->frekuensi,
+                        'unit_dosis' => $request->unit_dosis,
+                        'aturan_pakai_id' => $request->aturan_pakai_id,
+                        'tipe_racikan' => $request->tipe_racikan,
+                        'jumlah_racikan' => $request->jumlah_racikan,
+                        'kemasan_racikan' => $request->kemasan_racikan,
+                        'total_dosis_obat' => $komposisi->total_dosis_obat,
+                        'dosis_per_racikan' => $dosis_per_racikan,
+                        'dosis_per_satuan' => $komposisi->dosis_per_satuan,
+                        'qty' => $qty,
+                        'embalase' => $request->embalase,
+                        'jasa_resep' => $request->jasa_resep,
+                        'catatan' => $request->catatan,
+                        'waktu_pemberian_obat' => $request->waktu_pemberian_obat,
+                        'kondisi_pemberian_obat_id' => $request->kondisi_pemberian_obat_id
+                    ];
+
+                    ResepDetail::create($data);
+                }
+            }
+
+
+            $resep = $resep->refresh();
+
+            DB::commit();
+
+            return $this->sendResponse(message: __('http-response.success.store', ['Attribute' => 'Obat']), data: $resep);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            return $this->sendError(message: __('http-response.error.store', ['Attribute' => 'Obat']), errors: $th->getMessage(), traces: $th->getTrace());
+        }
+    }
+
     public function verifikasi(Resep $resep)
     {
+
+        $details = ResepDetail::where('resep_id', $resep->id)->get();
+
+        if ($resep->metode_penulisan == 'manual' && $details->count() == 0) {
+            return $this->sendError(message: 'Resep ini masih berupa instruksi manual dari dokter. Mohon input item obat ke dalam sistem terlebih dahulu agar stok dan harga dapat dihitung');
+        }
 
         DB::beginTransaction();
 
         try {
-            $details = ResepDetail::where('resep_id', $resep->id)->get();
 
             $penjualan = Penjualan::where('resep_id', $resep->id)
                 ->where('kunjungan_id', $resep->kunjungan_id)
