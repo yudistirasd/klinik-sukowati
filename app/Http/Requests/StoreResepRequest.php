@@ -82,20 +82,28 @@ class StoreResepRequest extends FormRequest
             ],
         ];
 
-        $rule = [
+        $mandatoryRules = [
             'tanggal' => 'required',
             'dokter_id' => 'required',
             'pasien_id' => 'required',
             'kunjungan_id' => 'required_if:asal_resep,IN',
+            'metode_penulisan' => 'required|in:manual,master_obat',
+            'resep_detail_manual' => 'required_if:metode_penulisan,manual',
             'embalase' => 'nullable',
             'jasa_resep' => 'nullable',
-            'waktu_pemberian_obat' => 'required',
+            'waktu_pemberian_obat' => 'required_if:metode_penulisan,master_obat',
             'catatan' => 'nullable'
         ];
 
-        $ruleResep = $ruleSets[$this->getRuleGroupName()];
+        if ($this->metode_penulisan == 'master_obat') {
+            $ruleResep = $ruleSets[$this->getRuleGroupName()];
 
-        return array_merge($rule, $ruleResep);
+            $rules =  array_merge($mandatoryRules, $ruleResep);
+        } else {
+            $rules = $mandatoryRules;
+        }
+
+        return $rules;
     }
 
     private function getRuleGroupName()
@@ -113,6 +121,13 @@ class StoreResepRequest extends FormRequest
         }
     }
 
+    public function messages()
+    {
+        return [
+            'waktu_pemberian_obat.required_if' => 'Waktu pemberian obat wajib diisi jika metode penulisan adalah Pilih Obat.',
+        ];
+    }
+
     public function attributes()
     {
         return [
@@ -121,6 +136,7 @@ class StoreResepRequest extends FormRequest
             'qty' => 'jumlah obat',
             'takaran_id' => 'takaran',
             'aturan_pakai_id' => 'cara pakai',
+            'resep_detail_manual' => 'resep manual',
 
             'komposisi_racikan'                                => 'komposisi racikan',
             'komposisi_racikan.*.produk_id'                    => 'nama obat',

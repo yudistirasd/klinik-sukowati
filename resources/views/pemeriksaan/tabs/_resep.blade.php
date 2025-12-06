@@ -3,13 +3,22 @@
   @if (Auth::user()->hasRole('dokter'))
     <form @submit.prevent="handleSubmit" autocomplete="off" id="resep" x-show="isUserDokter">
       <div class="row">
+        <div class="col-md-2 col-sm-12">
+          <div class="mb-3">
+            <div class="form-label">Metode Penulisan</div>
+            <label class="form-check form-switch form-switch-3">
+              <input class="form-check-input" type="checkbox" x-model="isManual">
+              <span class="form-check-label" x-text="isManual ? 'Tulis Manual' : 'Pilih Obat'"></span>
+            </label>
+          </div>
+        </div>
         <div class="col-md-3 col-sm-12">
           <div class="mb-3">
             <label class="form-label">Tgl Resep</label>
             <input type="text" class="form-control" autocomplete="off" id="tanggal" x-model="form.tanggal">
           </div>
         </div>
-        <div class="col-md-3 col-sm-12">
+        <div class="col-md-2 col-sm-12" x-show="!isManual">
           <div class="mb-3">
             <label class="form-label">Jenis Resep</label>
             <select name="jenis_kemasan" x-model="form.jenis_resep" id="" class="form-control" :class="{ 'is-invalid': errors.jenis_resep }">
@@ -20,7 +29,7 @@
             <div class="invalid-feedback" x-text="errors.jenis_resep"></div>
           </div>
         </div>
-        <div class="col-md-3 col-sm-12">
+        <div class="col-md-2 col-sm-12">
           <div class="mb-3">
             <label class="form-label">No Resep</label>
             <input type="text" disabled class="form-control" autocomplete="off" placeholder="Otomatis dari sistem" x-model="form.nomor" :class="{ 'is-invalid': errors.nomor }">
@@ -31,6 +40,15 @@
           <div class="mb-3">
             <label class="form-label">DPJP</label>
             <input type="text" disabled class="form-control" autocomplete="off" x-model="dokter">
+          </div>
+        </div>
+      </div>
+      <div class="row" x-show="isManual">
+        <div class="col-md-12 col-sm-12">
+          <div class="mb-3" x-ignore>
+            <label class="form-label">Resep Manual</label>
+            <textarea class="form-control" x-ref="wysiwyg" id="resep_detail_manual" x-model="form.resep_detail_manual" rows='1' placeholder="Tulis resep manual (auto resize)" :class="{ 'is-invalid': errors.resep_detail_manual }"></textarea>
+            <div class="invalid-feedback" x-text="errors.resep_detail_manual"></div>
           </div>
         </div>
       </div>
@@ -250,6 +268,8 @@
           id: '',
           nomor: '',
           asal_resep: 'EX',
+          metode_penulisan: 'master_obat',
+          resep_detail_manual: null,
           tanggal: kunjungan.tanggal_registrasi,
           pasien_id: pasien.id,
           kunjungan_id: kunjungan.id,
@@ -278,6 +298,7 @@
         errors: {},
         loading: false,
         isUserDokter: currentUser.role == 'dokter',
+        isManual: false,
 
         // untuk hitung jumlah obat non racikan & racikan non dtd
         hitungJumlahObat() {
@@ -398,14 +419,14 @@
 
         handleSubmit() {
 
-          if (!this.form.jenis_resep) {
+          if (this.form.metode_penulisan == 'master_obat' && !this.form.jenis_resep) {
             return Toast.fire({
               icon: 'error',
               title: 'Jenis resep tidak boleh kosong'
             });
           }
 
-          if (this.form.jenis_resep == 'racikan' && !this.form.tipe_racikan) {
+          if (this.form.metode_penulisan == 'master_obat' && this.form.jenis_resep == 'racikan' && !this.form.tipe_racikan) {
             return Toast.fire({
               icon: 'error',
               title: 'Tipe racikan tidak boleh kosong'
@@ -463,8 +484,10 @@
           this.form = {
             id: '',
             nomor: '',
-            tanggal: '',
+            tanggal: kunjungan.tanggal_registrasi,
             asal_resep: 'EX',
+            metode_penulisan: 'master_obat',
+            resep_detail_manual: null,
             pasien_id: pasien.id,
             kunjungan_id: kunjungan.id,
             dokter_id: kunjungan.dokter_id,
@@ -491,11 +514,14 @@
           $('#aturan_pakai_id').val(null).trigger('change');
           $('#takaran_id').val(null).trigger('change');
           $('#obat').val(null).trigger('change');
+
+          this.getCurrentMetodePenulisanResep();
         },
 
         init() {
-          this.tambahKomposisi();
           resepObat();
+          this.tambahKomposisi();
+          this.getCurrentMetodePenulisanResep();
           this.dokter = kunjungan.dokter.name;
 
           let selectProduk = $('#obat').select2({
@@ -770,6 +796,38 @@
             this.form.tanggal = kunjungan.tanggal_registrasi;
           }
           this.datePicker.dates.setValue(new tempusDominus.DateTime(this.form.tanggal));
+
+          // metode penulisan resep
+          this.$watch('isManual', (value) => {
+            if (value) {
+              store.set('metode_penulisan', 'manual')
+            } else {
+              store.set('metode_penulisan', 'master_obat')
+            }
+
+            this.resetForm();
+          });
+
+          hugerte.init({
+            selector: 'textarea#resep_detail_manual',
+            menubar: false,
+            plugins: ['autoresize', 'save', 'lists'],
+            forced_root_block: 'div',
+            branding: false,
+            toolbar: 'undo redo | bold italic underline | numlist',
+            setup: (editor) => {
+              console.log('Setup ', editor)
+              // 1. Saat editor pertama kali load, isi variable 'content'
+              editor.on('init', () => {
+                this.form.resep_detail_manual = editor.getContent();
+              });
+
+              // 2. Setiap kali user ngetik atau ubah format, update variable 'content'
+              editor.on('keyup change input', () => {
+                this.form.resep_detail_manual = editor.getContent();
+              });
+            }
+          });
         },
 
         initSelect2(element, index) {
@@ -845,6 +903,13 @@
             'non_dtd': 'Non DTD'
           };
           return tipe[this.form.tipe_racikan] || '-';
+        },
+
+        getCurrentMetodePenulisanResep() {
+          let metodePenulisan = store.get('metode_penulisan', 'master_obat');
+
+          this.isManual = metodePenulisan == 'master_obat' ? false : true;
+          this.form.metode_penulisan = metodePenulisan;
         }
 
       }))

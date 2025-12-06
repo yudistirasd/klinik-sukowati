@@ -108,3 +108,39 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
     -moz-appearance: textfield;
 }
+
+.badge-verified {
+    background-color: #d1fae5;
+    color: #047857;
+    font-weight: 600;
+}
+
+.badge-order {
+    background-color: #fef3c7;
+    color: #b45309;
+    font-weight: 600;
+}
+
+.badge-racikan {
+    background-color: #ede9fe;
+    color: #7c3aed;
+    font-weight: 600;
+}
+
+.badge-non-racikan {
+    background-color: #dbeafe;
+    color: #2563eb;
+    font-weight: 600;
+}
+
+.badge-manual {
+    background-color: #f3e8ff; /* purple-100 */
+    color: #7c3aed; /* purple-600 */
+    font-weight: 600;
+}
+
+.badge-master {
+    background-color: #dbeafe; /* blue-100 */
+    color: #1d4ed8; /* blue-700 */
+    font-weight: 600;
+}

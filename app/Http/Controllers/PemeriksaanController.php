@@ -400,18 +400,30 @@ class PemeriksaanController extends Controller
                 ->where('pasien_id', $request->pasien_id)
                 ->where('dokter_id', $request->dokter_id)
                 ->where('status', 'ORDER')
+                ->where('metode_penulisan', $request->metode_penulisan)
                 ->first();
 
             if (empty($resep)) {
-                $resep = Resep::create([
-                    'tanggal' => $request->tanggal,
-                    'pasien_id' => $request->pasien_id,
-                    'kunjungan_id' => $request->kunjungan_id,
-                    'dokter_id' => $request->dokter_id
-                ]);
+                $data = [
+                    'tanggal',
+                    'pasien_id',
+                    'kunjungan_id',
+                    'dokter_id',
+                    'metode_penulisan',
+                ];
+
+                if ($request->metode_penulisan == 'manual') {
+                    $data[] = 'resep_detail_manual';
+                }
+
+                $resep = Resep::create($request->only($data));
             }
 
-            if ($request->jenis_resep == 'non_racikan') {
+            if ($request->metode_penulisan == 'manual') {
+                Resep::where('id', $resep->id)->update(['resep_detail_manual' => $request->resep_detail_manual]);
+            }
+
+            if ($request->metode_penulisan == 'master_obat' && $request->jenis_resep == 'non_racikan') {
                 ResepDetail::create([
                     'resep_id' => $resep->id,
                     'produk_id' => $request->produk_id,
@@ -429,13 +441,13 @@ class PemeriksaanController extends Controller
                 ]);
             }
 
-            if ($request->jenis_resep == 'racikan') {
+            if ($request->metode_penulisan == 'master_obat' && $request->jenis_resep == 'racikan') {
                 $receipt_number = ResepDetail::where('resep_id', $resep->id)
                     ->max('receipt_number') + 1;
 
                 $komposisiRacikan = $request->komposisi_racikan;
 
-                foreach ($komposisiRacikan as $key => $komposisi) {
+                foreach ($komposisiRacikan as $komposisi) {
                     $komposisi = (object) $komposisi;
 
                     // hitung qty berdasarkan total_dosis_obat dan jumlah_racikan
@@ -493,10 +505,31 @@ class PemeriksaanController extends Controller
     public function destroyResepDetail(Resep $resep, $receiptNumber)
     {
 
-        ResepDetail::where('resep_id', $resep->id)
-            ->where('receipt_number', $receiptNumber)
-            ->delete();
+        if ($resep->status == 'VERIFIED') {
+            return $this->sendError(message: 'Resep ' . $resep->nomor . '  sudah diverifikasi oleh apoteker tidak dapat dihapus');
+        }
 
-        return $this->sendResponse(message: __('http-response.success.delete', ['Attribute' => 'Obat']));
+        DB::beginTransaction();
+
+
+        try {
+            ResepDetail::where('resep_id', $resep->id)
+                ->where('receipt_number', $receiptNumber)
+                ->delete();
+
+            // force delete resep if resep_detail = 0
+            if (ResepDetail::where('resep_id', $resep->id)->count() == 0) {
+                $resep->delete();
+            }
+
+            DB::commit();
+
+
+            return $this->sendResponse(message: __('http-response.success.delete', ['Attribute' => 'Obat']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            return $this->sendError(message: __('http-response.error.delete', ['Attribute' => 'Obat']), errors: $th->getMessage(), traces: $th->getTrace());
+        }
     }
 }

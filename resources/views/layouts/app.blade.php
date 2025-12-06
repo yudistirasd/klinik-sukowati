@@ -95,7 +95,7 @@
     <script src="{{ asset('libs/sweetalert2/sweetalert2.all.min.js') }}?{{ config('app.version') }}"></script>
     <script src="{{ asset('libs/imask/dist/imask.min.js') }}?{{ config('app.version') }}"></script>
     <script src="{{ asset('libs/tempus-dominus/tempus-dominus.min.js') }}?{{ config('app.version') }}"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/hugerte@1/hugerte.min.js"></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
     <script>
       const Toast = Swal.mixin({
@@ -183,6 +183,30 @@
       }
 
       const ceil = (value) => Math.ceil(toNumberSafe(value));
+
+      // ----- Global LocalStorage Helper -----
+      window.store = {
+        set(key, value) {
+          localStorage.setItem('sim_klinik_' + key, JSON.stringify(value));
+        },
+
+        get(key, defaultValue = null) {
+          const item = localStorage.getItem('sim_klinik_' + key);
+          try {
+            return item ? JSON.parse(item) : defaultValue;
+          } catch (e) {
+            return defaultValue;
+          }
+        },
+
+        remove(key) {
+          localStorage.removeItem('sim_klinik_' + key);
+        },
+
+        clear() {
+          localStorage.clear();
+        }
+      };
     </script>
     @stack('js')
   </body>

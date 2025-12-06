@@ -37,28 +37,6 @@
       transition: transform 0.2s;
     }
 
-    .badge-verified {
-      background-color: #d1fae5;
-      color: #047857;
-      font-weight: 500;
-    }
-
-    .badge-order {
-      background-color: #fef3c7;
-      color: #b45309;
-      font-weight: 500;
-    }
-
-    .badge-racikan {
-      background-color: #ede9fe;
-      color: #7c3aed;
-    }
-
-    .badge-non-racikan {
-      background-color: #dbeafe;
-      color: #2563eb;
-    }
-
     .table-obat {
       font-size: 0.875rem;
       margin-bottom: 0;
@@ -121,27 +99,47 @@
           </div>
           <div class="col">
             <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
-              <span class="resep-number"><i class="bi bi-file-earmark-medical me-1"></i>{{ $row->nomor }}</span>
+              <span class="badge bg-dark text-dark-fg px-2 py-1"><i class="ti ti-prescription"></i>{{ $row->nomor }}</span>
+              @if ($row->metode_penulisan == 'manual')
+                {{-- Manual: Warna Warning (Kuning/Oranye) menandakan perlu perhatian khusus saat dibaca --}}
+                <span class="badge bg-warning-subtle text-warning rounded-pill px-2 py-1">
+                  <i class="ti ti-writing me-1"></i>Tulis Manual
+                </span>
+              @else
+                <span class="badge bg-success-subtle text-success rounded-pill px-2 py-1">
+                  <i class="ti ti-pill me-1"></i>Pilih Obat
+                </span>
+              @endif
               @if ($row->status == 'VERIFIED')
                 <span class="badge badge-verified rounded-pill px-2 py-1">
-                  <i class="ti ti-circle-check me-1"></i>Verified
+                  <i class="ti ti-circle-check"></i>Verified
                 </span>
               @else
                 <span class="badge badge-order rounded-pill px-2 py-1">
-                  <i class="ti ti-clock me-1"></i>Order
+                  <i class="ti ti-clock"></i>Order
                 </span>
               @endif
             </div>
             <div class="d-flex flex-wrap gap-3 text-muted">
               <span><i class="ti ti-user me-1"></i>{{ $row->dokter->name }}</span>
               <span><i class="ti ti-calendar me-1"></i>{{ $row->tanggal }}</span>
-              <span><i class="ti ti-pill me-1"></i>{{ $row->items->count() }} Item</span>
+              @if ($row->metode_penulisan == 'master_obat')
+                <span><i class="ti ti-pill me-1"></i>{{ $row->items->count() }} Item</span>
+              @endif
             </div>
           </div>
         </div>
       </div>
       <div class="collapse {{ $key > 0 && $row->status == 'VERIFIED' ? '' : 'show' }}" id="{{ $row->id }}">
         <div class="card-body p-0 border-top">
+          @if ($row->metode_penulisan == 'manual')
+            <div class="m-3">
+              <label for="" class="form-label">Resep Manual Dokter</label>
+              <fieldset class="form-fieldset">
+                {!! $row->resep_detail_manual !!}
+              </fieldset>
+            </div>
+          @endif
           <table class="table table-obat">
             <thead>
               <tr>

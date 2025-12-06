@@ -35,28 +35,6 @@
       transition: transform 0.2s;
     }
 
-    .badge-verified {
-      background-color: #d1fae5;
-      color: #047857;
-      font-weight: 500;
-    }
-
-    .badge-order {
-      background-color: #fef3c7;
-      color: #b45309;
-      font-weight: 500;
-    }
-
-    .badge-racikan {
-      background-color: #ede9fe;
-      color: #7c3aed;
-    }
-
-    .badge-non-racikan {
-      background-color: #dbeafe;
-      color: #2563eb;
-    }
-
     .table-obat {
       font-size: 0.875rem;
       margin-bottom: 0;
