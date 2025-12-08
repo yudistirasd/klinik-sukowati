@@ -19,6 +19,7 @@ use App\Http\Controllers\Farmasi\PembelianDetailController;
 use App\Http\Controllers\Farmasi\PenjualanDetailController;
 use App\Http\Controllers\Farmasi\ProdukStokController;
 use App\Http\Controllers\Farmasi\ResepPasienController;
+use App\Http\Controllers\Farmasi\StokOpnameController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -151,6 +152,9 @@ Route::group(['as' => 'api.', 'middleware' => ['web', 'auth']], function () {
         Route::get('penjualan/{penjualan}/dt', [PenjualanDetailController::class, 'dt'])->name('penjualan.detail.dt');
         Route::post('penjualan/{penjualan}/detail', [PenjualanDetailController::class, 'store'])->name('penjualan.detail.store');
         Route::delete('penjualan/{penjualan}/destroy/{produk}', [PenjualanDetailController::class, 'destroy'])->name('penjualan.detail.destroy');
+
+        Route::get('stok-opname/dt', [StokOpnameController::class, 'dt'])->name('stok-opname.dt');
+        Route::apiResource('stok-opname', StokOpnameController::class)->only(['store', 'update', 'destroy']);
     });
 
     Route::group(['prefix' => 'cetak', 'as' => 'cetak.'], function () {

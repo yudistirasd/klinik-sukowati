@@ -106,6 +106,9 @@
                 <a class="dropdown-item" href="{{ route('farmasi.stok-obat.index') }}">
                   Stok Obat
                 </a>
+                <a class="dropdown-item" href="{{ route('farmasi.stok-opname.index') }}">
+                  Stok Opname
+                </a>
                 <a class="dropdown-item" href="{{ route('farmasi.pembelian.index') }}">
                   Pembelian Obat
                 </a>

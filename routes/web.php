@@ -17,6 +17,7 @@ use App\Http\Controllers\Farmasi\ProdukStokController;
 use App\Http\Controllers\Farmasi\PembelianController;
 use App\Http\Controllers\Farmasi\PenjualanController;
 use App\Http\Controllers\Farmasi\ResepPasienController;
+use App\Http\Controllers\Farmasi\StokOpnameController;
 use App\Http\Controllers\Kasir\TagihanResepController;
 use App\Models\PenjualanDetail;
 use Illuminate\Support\Facades\Route;
@@ -74,5 +75,8 @@ Route::middleware('auth')->group(function () {
 
         Route::get('penjualan', [PenjualanController::class, 'index'])->name('penjualan.index');
         Route::get('penjualan/create', [PenjualanController::class, 'create'])->name('penjualan.create');
+
+        Route::get('stok-opname', [StokOpnameController::class, 'index'])->name('stok-opname.index');
+        Route::get('stok-opname/{stok_opname}', [StokOpnameController::class, 'show'])->name('stok-opname.show');
     });
 });
