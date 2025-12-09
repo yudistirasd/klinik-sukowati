@@ -53,6 +53,7 @@ class RuanganController extends Controller
         try {
             $data = $request->only([
                 'name',
+                'layanan',
                 'departemen_id'
             ]);
 
@@ -99,6 +100,7 @@ class RuanganController extends Controller
         try {
             $data = $request->only([
                 'name',
+                'layanan',
                 'departemen_id'
             ]);
 

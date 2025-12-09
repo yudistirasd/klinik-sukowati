@@ -23,6 +23,7 @@ class UpdateRuanganRequest extends FormRequest
     {
         return [
             'name' => 'required',
+            'layanan' => 'required',
             'departemen_id' => 'required'
         ];
     }

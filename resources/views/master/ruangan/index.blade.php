@@ -26,6 +26,7 @@
             <tr>
               <th class="text-center">#</th>
               <th class="text-center">Nama Ruang</th>
+              <th class="text-center">Layanan</th>
               <th class="text-center">Departemen</th>
               <th class="text-center" style="width: 24%">IHS ID</th>
               <th class="text-center">Aksi</th>
@@ -37,7 +38,7 @@
   </div>
 
   <!-- Modal Form -->
-  <div x-data="form">
+  <div x-data="form" x-cloak>
     <div class="modal modal-blur fade" id="modal-ruangan" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -56,6 +57,21 @@
                   @endforeach
                 </select>
                 <div class="invalid-feedback" x-text="errors.departemen_id"></div>
+              </div>
+              <div class="mb-3">
+                <div class="form-label">Layanan</div>
+                <div>
+                  <label class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" x-model="form.layanan" name="radios-inline" value="RJ" :class="{ 'is-invalid': errors.layanan }">
+                    <span class="form-check-label">Rawat Jalan</span>
+                  </label>
+                  <label class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" x-model="form.layanan" name="radios-inline" value="RI" :class="{ 'is-invalid': errors.layanan }">
+                    <span class="form-check-label">Rawat Inap</span>
+                  </label>
+                  <div class="invalid-feedback d-block" x-text="errors.layanan"></div>
+
+                </div>
               </div>
               <div class="mb-3">
                 <label class="form-label required">Nama Ruangan</label>
@@ -111,9 +127,14 @@
           sClass: 'text-start'
         },
         {
+          data: 'layanan',
+          name: 'layanan',
+          sClass: 'text-center'
+        },
+        {
           data: 'departemen.name',
           name: 'departemen.name',
-          sClass: 'text-start'
+          sClass: 'text-center'
         },
         {
           data: 'ihs_id',
@@ -135,6 +156,7 @@
         form: {
           id: null,
           name: '',
+          layanan: '',
           ihs_id: '',
           departemen_id: '',
         },
@@ -203,6 +225,7 @@
         resetForm() {
           this.form = {
             name: '',
+            layanan: '',
             ihs_id: '',
             departemen_id: '',
           };
