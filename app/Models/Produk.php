@@ -23,4 +23,9 @@ class Produk extends Model
     {
         return $query->where('jenis', 'obat');
     }
+
+    public function scopeLaborat($query)
+    {
+        return $query->where('jenis', 'laborat');
+    }
 }

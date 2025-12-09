@@ -31,6 +31,12 @@ class UpdateProdukRequest extends FormRequest
                 'dosis' => 'required',
                 'satuan' => 'required',
                 'sediaan' => 'required'
+            ],
+            'laborat' => [
+                'name' => 'required',
+                'tarif' => 'required',
+                'nilai_normal_laki_laki' => 'required',
+                'nilai_normal_perempuan' => 'required',
             ]
         ];
 

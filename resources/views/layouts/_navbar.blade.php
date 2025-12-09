@@ -154,6 +154,9 @@
                 <a class="dropdown-item" href="{{ route('master.produk.index', ['jenis' => 'tindakan']) }}">
                   Tindakan
                 </a>
+                <a class="dropdown-item" href="{{ route('master.produk.index', ['jenis' => 'laborat']) }}">
+                  Pemeriksaan Lab
+                </a>
                 <a class="dropdown-item" href="{{ route('master.produk.index', ['jenis' => 'obat']) }}">
                   Obat
                 </a>
