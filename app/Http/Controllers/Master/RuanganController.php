@@ -22,6 +22,8 @@ class RuanganController extends Controller
 
         return DataTables::of($ruangan)
             ->addIndexColumn()
+            ->editColumn('tarif_inap', fn($row) => $row->layanan == 'RI' ? formatUang($row->tarif_inap) : '-')
+            ->editColumn('kelas', fn($row) => $row->layanan == 'RI' ? $row->kelas : '-')
             ->addColumn('action', function ($row) {
                 return "
                                 <button class='btn btn-warning btn-icon' onclick='handleModal(`edit`, `Ubah Ruangan`, " . json_encode($row) . ")'>
@@ -51,11 +53,18 @@ class RuanganController extends Controller
         DB::beginTransaction();
 
         try {
-            $data = $request->only([
+
+            $column = [
                 'name',
                 'layanan',
                 'departemen_id'
-            ]);
+            ];
+
+            if ($request->layanan == 'RI') {
+                $column = array_merge($column, ['kelas', 'tarif_inap']);
+            }
+
+            $data = $request->only($column);
 
             $data['id'] = Str::uuid();
 
@@ -98,11 +107,18 @@ class RuanganController extends Controller
         DB::beginTransaction();
 
         try {
-            $data = $request->only([
+
+            $column = [
                 'name',
                 'layanan',
                 'departemen_id'
-            ]);
+            ];
+
+            if ($request->layanan == 'RI') {
+                $column = array_merge($column, ['kelas', 'tarif_inap']);
+            }
+
+            $data = $request->only($column);
 
             $departemen = Departemen::find($request->departemen_id);
 

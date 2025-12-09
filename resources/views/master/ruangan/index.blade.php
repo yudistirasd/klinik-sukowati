@@ -25,9 +25,11 @@
           <thead>
             <tr>
               <th class="text-center">#</th>
+              <th class="text-center">Departemen</th>
               <th class="text-center">Nama Ruang</th>
               <th class="text-center">Layanan</th>
-              <th class="text-center">Departemen</th>
+              <th class="text-center">Tarif Inap</th>
+              <th class="text-center">Kelas</th>
               <th class="text-center" style="width: 24%">IHS ID</th>
               <th class="text-center">Aksi</th>
             </tr>
@@ -70,13 +72,33 @@
                     <span class="form-check-label">Rawat Inap</span>
                   </label>
                   <div class="invalid-feedback d-block" x-text="errors.layanan"></div>
-
                 </div>
               </div>
               <div class="mb-3">
                 <label class="form-label required">Nama Ruangan</label>
                 <input type="text" class="form-control" autocomplete="off" x-model="form.name" :class="{ 'is-invalid': errors.name }">
                 <div class="invalid-feedback" x-text="errors.name"></div>
+              </div>
+              <div class="row" x-show="form.layanan == 'RI'">
+                <div class="col-md-6 col-sm-12">
+                  <div class="mb-3">
+                    <label class="form-label required">Kelas</label>
+                    <select x-model="form.kelas" id="" class="form-select" :class="{ 'is-invalid': errors.kelas }">
+                      <option value=""></option>
+                      @foreach (kelasRawat() as $kelas)
+                        <option value="{{ $kelas }}">{{ $kelas }}</option>
+                      @endforeach
+                    </select>
+                    <div class="invalid-feedback" x-text="errors.kelas"></div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                  <div class="mb-3">
+                    <label class="form-label required">Tarif Inap</label>
+                    <input type="text" class="form-control" autocomplete="off" x-model="form.tarif_inap" :class="{ 'is-invalid': errors.tarif_inap }">
+                    <div class="invalid-feedback" x-text="errors.tarif_inap"></div>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="modal-footer">
@@ -110,7 +132,7 @@
       ajax: route('api.master.ruangan.dt'),
       order: [
         [
-          1, 'asc'
+          2, 'asc'
         ]
       ],
       columns: [{
@@ -120,6 +142,11 @@
           searchable: false,
           sClass: 'text-center',
           width: '5%'
+        },
+        {
+          data: 'departemen.name',
+          name: 'departemen.name',
+          sClass: 'text-center'
         },
         {
           data: 'name',
@@ -132,8 +159,13 @@
           sClass: 'text-center'
         },
         {
-          data: 'departemen.name',
-          name: 'departemen.name',
+          data: 'tarif_inap',
+          name: 'tarif_inap',
+          sClass: 'text-end'
+        },
+        {
+          data: 'kelas',
+          name: 'kelas',
           sClass: 'text-center'
         },
         {
@@ -159,6 +191,8 @@
           layanan: '',
           ihs_id: '',
           departemen_id: '',
+          kelas: '',
+          tarif_inap: ''
         },
         endPoint: '',
         errors: {},
@@ -228,6 +262,8 @@
             layanan: '',
             ihs_id: '',
             departemen_id: '',
+            kelas: '',
+            tarif_inap: ''
           };
           this.errors = {};
         }

@@ -24,7 +24,9 @@ class StoreRuanganRequest extends FormRequest
         return [
             'name' => 'required',
             'layanan' => 'required',
-            'departemen_id' => 'required'
+            'departemen_id' => 'required',
+            'kelas' => 'required_if:layanan,RI',
+            'tarif_inap' => 'required_if:layanan,RI'
         ];
     }
 

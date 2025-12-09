@@ -180,3 +180,15 @@ if (! function_exists('metodePembayaran')) {
         ]);
     }
 }
+
+if (! function_exists('kelasRawat')) {
+    function kelasRawat(): Collection
+    {
+        return collect([
+            'Kelas VIP',
+            'Kelas Utama',
+            'Kelas 1',
+            'Kelas 2'
+        ]);
+    }
+}
