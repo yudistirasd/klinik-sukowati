@@ -18,10 +18,10 @@
   <body>
     <div class="page page-center">
       <div class="container container-tight py-4">
-        <div class="text-center mb-4">
+        <div class="text-center mb-3">
           <!-- BEGIN NAVBAR LOGO -->
           <a href="." aria-label="Tabler" class="navbar-brand navbar-brand-autodark">
-            <img src="{{ asset('logo.png') }}" height="36" alt="">
+            <img src="{{ asset('logo_klinik.webp') }}" height="36" alt="">
           </a><!-- END NAVBAR LOGO -->
         </div>
         <div class="card card-md">
@@ -67,6 +67,9 @@
             <div class="row">
               <div class="col">
                 <img src="{{ asset('img/logo-pse-small.png') }}" alt="" style="height: 55%">
+              </div>
+              <div class="col">
+                <img src="{{ asset('start_klinik_logo.webp') }}" alt="" style="height: 75%">
               </div>
             </div>
           </div>
