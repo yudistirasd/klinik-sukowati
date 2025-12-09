@@ -21,6 +21,7 @@ use App\Http\Controllers\Farmasi\ProdukStokController;
 use App\Http\Controllers\Farmasi\ResepPasienController;
 use App\Http\Controllers\Farmasi\StokOpnameController;
 use App\Http\Controllers\Farmasi\StokOpnameDetailController;
+use App\Http\Controllers\Master\TempatTidurController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -38,6 +39,7 @@ Route::group(['as' => 'api.', 'middleware' => ['web', 'auth']], function () {
 
         Route::get('departemen/dt', [DepartemenController::class, 'dt'])->name('departemen.dt');
         Route::get('ruangan/dt', [RuanganController::class, 'dt'])->name('ruangan.dt');
+        Route::get('ruangan/{ruangan}/tempat-tidur/dt', [TempatTidurController::class, 'dt'])->name('ruangan.tempat-tidur.dt');
         Route::get('produk/{jenis}', [ProdukController::class, 'dt'])->name('produk.dt');
         Route::get('produk/json/{jenis}', [ProdukController::class, 'json'])->name('produk.json');
         Route::get('suplier/dt', [SuplierController::class, 'dt'])->name('suplier.dt');
@@ -63,6 +65,8 @@ Route::group(['as' => 'api.', 'middleware' => ['web', 'auth']], function () {
         Route::post('farmasi/satuan-kemasan-obat', [FarmasiController::class, 'storeSatuanKemasan'])->name('farmasi.satuan-kemasan.store');
         Route::get('farmasi/kondisi-pemberian-obat', [FarmasiController::class, 'kondisiPemberianObat'])->name('farmasi.kondisi-pemberian-obat.get');
         Route::post('farmasi/kondisi-pemberian-obat', [FarmasiController::class, 'storeKondisiPemberianObat'])->name('farmasi.kondisi-pemberian-obat.store');
+
+        Route::apiResource('ruangan.tempat-tidur', TempatTidurController::class)->only(['store', 'destroy']);
 
         Route::apiResources([
             'pengguna' => UserController::class,

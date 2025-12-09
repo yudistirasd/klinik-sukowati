@@ -177,7 +177,7 @@
           data: 'action',
           name: 'action',
           sClass: 'text-center',
-          width: "10%"
+          width: "20%"
         },
       ]
     });

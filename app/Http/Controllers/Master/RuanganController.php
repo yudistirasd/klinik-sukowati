@@ -25,7 +25,16 @@ class RuanganController extends Controller
             ->editColumn('tarif_inap', fn($row) => $row->layanan == 'RI' ? formatUang($row->tarif_inap) : '-')
             ->editColumn('kelas', fn($row) => $row->layanan == 'RI' ? $row->kelas : '-')
             ->addColumn('action', function ($row) {
-                return "
+
+                $btn = null;
+
+                if ($row->layanan == 'RI') {
+                    $btn .= "<a class='btn btn-primary btn-icon' href=" . route('master.ruangan.tempat-tidur.index', $row->id) . ">
+                                    <i class='ti ti-bed'></i>
+                            </a>";
+                }
+
+                $btn .= "
                                 <button class='btn btn-warning btn-icon' onclick='handleModal(`edit`, `Ubah Ruangan`, " . json_encode($row) . ")'>
                                     <i class='ti ti-edit'></i>
                                 </button>
@@ -33,6 +42,7 @@ class RuanganController extends Controller
                                     <i class='ti ti-trash'></i>
                                 </button>
                             ";
+                return $btn;
             })
             ->rawColumns([
                 'action',

@@ -19,6 +19,7 @@ use App\Http\Controllers\Farmasi\PenjualanController;
 use App\Http\Controllers\Farmasi\ResepPasienController;
 use App\Http\Controllers\Farmasi\StokOpnameController;
 use App\Http\Controllers\Kasir\TagihanResepController;
+use App\Http\Controllers\Master\TempatTidurController;
 use App\Models\PenjualanDetail;
 use Illuminate\Support\Facades\Route;
 
@@ -37,6 +38,7 @@ Route::middleware('auth')->group(function () {
         Route::get('pengguna/{pengguna}/setting', [UserController::class, 'setting'])->name('pengguna.setting');
         Route::get('departemen', [DepartemenController::class, 'index'])->name('departemen.index');
         Route::get('ruangan', [RuanganController::class, 'index'])->name('ruangan.index');
+        Route::get('ruangan/{ruangan}/tempat-tidur', [TempatTidurController::class, 'index'])->name('ruangan.tempat-tidur.index');
         Route::get('produk/{jenis}', [ProdukController::class, 'index'])->name('produk.index');
         Route::get('suplier', [SuplierController::class, 'index'])->name('suplier.index');
     });
