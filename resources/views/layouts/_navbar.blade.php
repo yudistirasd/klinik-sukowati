@@ -103,12 +103,15 @@
                 <a class="dropdown-item" href="{{ route('farmasi.resep-pasien.index') }}">
                   Resep Pasien
                 </a>
-                <a class="dropdown-item" href="{{ route('farmasi.stok-obat.index') }}">
-                  Stok Obat
-                </a>
-                <a class="dropdown-item" href="{{ route('farmasi.stok-opname.index') }}">
-                  Stok Opname
-                </a>
+                <div class="dropend">
+                  <a class="dropdown-item dropdown-toggle" href="#sidebar-authentication" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false">
+                    Stok Obat
+                  </a>
+                  <div class="dropdown-menu">
+                    <a href="{{ route('farmasi.stok-obat.index') }}" class="dropdown-item"> Daftar Stok </a>
+                    <a href="{{ route('farmasi.stok-opname.index') }}" class="dropdown-item"> Stok Opname</a>
+                  </div>
+                </div>
                 <a class="dropdown-item" href="{{ route('farmasi.pembelian.index') }}">
                   Pembelian Obat
                 </a>

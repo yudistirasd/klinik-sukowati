@@ -20,6 +20,7 @@ use App\Http\Controllers\Farmasi\PenjualanDetailController;
 use App\Http\Controllers\Farmasi\ProdukStokController;
 use App\Http\Controllers\Farmasi\ResepPasienController;
 use App\Http\Controllers\Farmasi\StokOpnameController;
+use App\Http\Controllers\Farmasi\StokOpnameDetailController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -141,6 +142,7 @@ Route::group(['as' => 'api.', 'middleware' => ['web', 'auth']], function () {
 
         Route::get('stok-obat/dt', [ProdukStokController::class, 'dt'])->name('stok-obat.dt');
         Route::get('stok-obat/select2-bebas', [ProdukStokController::class, 'select2Bebas'])->name('stok-obat.select2-bebas');
+        Route::get('stok-obat/select2-stok-opname', [ProdukStokController::class, 'select2StokOpname'])->name('stok-obat.select2-stok-opname');
         Route::get('resep-pasien/dt', [ResepPasienController::class, 'dt'])->name('resep-pasien.dt');
         Route::get('resep-pasien/{resep}/obat', [ResepPasienController::class, 'obat'])->name('resep-pasien.obat');
         Route::post('resep-pasien/{resep}/verifikasi', [ResepPasienController::class, 'verifikasi'])->name('resep-pasien.verifikasi');
@@ -154,7 +156,11 @@ Route::group(['as' => 'api.', 'middleware' => ['web', 'auth']], function () {
         Route::delete('penjualan/{penjualan}/destroy/{produk}', [PenjualanDetailController::class, 'destroy'])->name('penjualan.detail.destroy');
 
         Route::get('stok-opname/dt', [StokOpnameController::class, 'dt'])->name('stok-opname.dt');
+        Route::post('stok-opname/{stok_opname}/toggle-status', [StokOpnameController::class, 'toggleStatus'])->name('stok-opname.toggle-status');
         Route::apiResource('stok-opname', StokOpnameController::class)->only(['store', 'update', 'destroy']);
+
+        Route::get('stok-opname/{stok_opname}/detail/dt', [StokOpnameDetailController::class, 'dt'])->name('stok-opname.detail.dt');
+        Route::apiResource('stok-opname.detail', StokOpnameDetailController::class)->only(['store', 'update', 'destroy']);
     });
 
     Route::group(['prefix' => 'cetak', 'as' => 'cetak.'], function () {

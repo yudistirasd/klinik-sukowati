@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nomor');
             $table->date('tanggal');
             $table->foreignUuid('created_by');
-            $table->enum('status', ['process', 'DONE'])->default('process');
+            $table->enum('status', ['process', 'done'])->default('process');
             $table->timestamps();
             $table->softDeletes();
         });

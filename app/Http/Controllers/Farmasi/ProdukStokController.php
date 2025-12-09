@@ -76,6 +76,45 @@ class ProdukStokController extends Controller
         return $this->sendResponse(data: $data);
     }
 
+    public function select2StokOpname(Request $request)
+    {
+        $data = DB::table('produk as pro')
+            ->join('produk_stok as pso', 'pso.produk_id', '=', 'pro.id')
+            ->select(
+                'pro.id as produk_id',
+                'pro.sediaan',
+                'pso.barcode',
+                'pso.harga_beli',
+                'pso.harga_jual_bebas',
+                'pso.harga_jual_resep',
+                'pso.harga_jual_apotek',
+                DB::raw("coalesce(pso.expired_date::text, 'ED Kosong') as expired_date"),
+                DB::raw("pro.name || ' ' || pro.dosis || ' ' || pro.satuan || ' ' || pro.sediaan as obat"),
+                DB::raw("sum(pso.ready) as ready")
+            )
+            ->where('jenis', 'obat')
+            ->whereNull('deleted_at')
+            ->where('pso.ready', '>', '0')
+            ->when($request->filled('keyword'), fn($query) => $query->whereRaw("pro.name || ' ' || pro.dosis || ' ' || pro.satuan || ' ' || pro.sediaan ilike ?", [$request->keyword . '%']))
+            ->groupBy(
+                'pro.id',
+                'pro.name',
+                'pro.dosis',
+                'pro.satuan',
+                'pro.sediaan',
+                'pso.barcode',
+                'pso.expired_date',
+                'pso.harga_beli',
+                'pso.harga_jual_bebas',
+                'pso.harga_jual_resep',
+                'pso.harga_jual_apotek'
+            )
+            ->get();
+
+        return $this->sendResponse(data: $data);
+    }
+
+
     public function index()
     {
         return view('farmasi.stok.index');

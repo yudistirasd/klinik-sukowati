@@ -67,11 +67,21 @@ class StokOpnameController extends Controller
         return $this->sendResponse(data: $stokOpname, message: __('http-response.success.store', ['Attribute' => 'Stok Opname']));
     }
 
+    public function toggleStatus(StokOpname $stokOpname)
+    {
+        $stokOpname->status = 'done';
+        $stokOpname->save();
+
+        return $this->sendResponse(message: 'Status berhasil diubah');
+    }
+
     /**
      * Display the specified resource.
      */
     public function show(StokOpname $stokOpname)
     {
+        $stokOpname->load(['user']);
+
         return view('farmasi.stok-opname.show', compact('stokOpname'));
     }
 
