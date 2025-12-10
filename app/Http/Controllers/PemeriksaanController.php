@@ -11,6 +11,7 @@ use App\Models\CPPT;
 use App\Models\DiagnosaPasien;
 use App\Models\Kunjungan;
 use App\Models\PelayananPasien;
+use App\Models\Produk;
 use App\Models\ProsedurePasien;
 use App\Models\Resep;
 use App\Models\ResepDetail;
@@ -371,14 +372,20 @@ class PemeriksaanController extends Controller
         return $this->sendResponse(message: __('http-response.success.delete', ['Attribute' => 'CPPT']));
     }
 
-    public function storeTindakan(Request $request)
+    public function storeTindakan(Kunjungan $kunjungan, Request $request)
     {
+        $produk = Produk::find($request->produk_id);
+
+        if ($kunjungan->jenis_layanan == 'RJ') {
+            $harga = $produk->tarif;
+        }
+
         PelayananPasien::updateOrCreate([
             'pasien_id' => $request->pasien_id,
             'kunjungan_id' => $request->kunjungan_id,
             'produk_id' => $request->produk_id,
         ], [
-            'harga' => $request->tarif
+            'harga' => $harga
         ]);
 
         return $this->sendResponse(message: __('http-response.success.store', ['Attribute' => 'Tindakan']));

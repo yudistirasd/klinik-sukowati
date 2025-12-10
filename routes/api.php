@@ -119,7 +119,7 @@ Route::group(['as' => 'api.', 'middleware' => ['web', 'auth']], function () {
         Route::delete('cppt/{cppt}', [PemeriksaanController::class, 'destroyCppt'])->name('destroy.cppt');
 
         Route::get('tindakan', [PemeriksaanController::class, 'dtTindakan'])->name('get.tindakan');
-        Route::post('tindakan', [PemeriksaanController::class, 'storeTindakan'])->name('store.tindakan');
+        Route::post('tindakan/{kunjungan}', [PemeriksaanController::class, 'storeTindakan'])->name('store.tindakan');
         Route::delete('tindakan/{tindakan}', [PemeriksaanController::class, 'destroyTindakan'])->name('destroy.tindakan');
 
         Route::get('resep', [PemeriksaanController::class, 'dtResep'])->name('get.resep');
