@@ -21,15 +21,20 @@
   <div class="card">
     <div class="card-body">
       <div class="table-responsive">
-        <table class="table table-bordered table-hover" id="tindakan-table">
+        <table class="table table-bordered table-hover table-sm" id="tindakan-table">
           <thead>
             <tr>
-              <th class="text-center">#</th>
-              <th class="text-center">Nama</th>
-              <th class="text-center">Tarif RJ</th>
-              <th class="text-center">Nilai Normal Laki Laki</th>
-              <th class="text-center">Nilai Normal Perempuan</th>
-              <th class="text-center">Aksi</th>
+              <td class="text-center" rowspan="2">#</td>
+              <td class="text-center" rowspan="2">Nama</td>
+              <td class="text-center" colspan="2">Nilai Normal</td>
+              <td class="text-center" colspan="2">Tarif</td>
+              <td class="text-center" rowspan="2">Aksi</td>
+            </tr>
+            <tr>
+              <th class="text-center">Laki Laki</th>
+              <th class="text-center">Perempuan</th>
+              <th class="text-center">RJ</th>
+              <th class="text-center">RI</th>
             </tr>
           </thead>
         </table>
@@ -120,17 +125,12 @@
           orderable: false,
           searchable: false,
           sClass: 'text-center',
-          width: '5%'
+          width: '2%'
         },
         {
           data: 'name',
           name: 'name',
           sClass: 'text-start'
-        },
-        {
-          data: 'tarif',
-          name: 'tarif',
-          sClass: 'text-end'
         },
         {
           data: 'nilai_normal_laki_laki',
@@ -143,10 +143,26 @@
           sClass: 'text-center'
         },
         {
+          data: 'tarif',
+          name: 'tarif',
+          sClass: 'text-end',
+          width: "15%",
+          orderable: false,
+          searchable: false,
+        },
+        {
+          data: 'tarif_rawat_inap',
+          name: 'tarif_rawat_inap',
+          sClass: 'text-start',
+          width: "15%",
+          orderable: false,
+          searchable: false,
+        },
+        {
           data: 'action',
           name: 'action',
           sClass: 'text-center',
-          width: "10%"
+          width: "15%"
         },
       ]
     });

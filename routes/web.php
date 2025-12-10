@@ -40,6 +40,7 @@ Route::middleware('auth')->group(function () {
         Route::get('ruangan', [RuanganController::class, 'index'])->name('ruangan.index');
         Route::get('ruangan/{ruangan}/tempat-tidur', [TempatTidurController::class, 'index'])->name('ruangan.tempat-tidur.index');
         Route::get('produk/{jenis}', [ProdukController::class, 'index'])->name('produk.index');
+        Route::get('produk/tarif-inap/{produk}', [ProdukController::class, 'tarifInap'])->name('produk.tarif-inap');
         Route::get('suplier', [SuplierController::class, 'index'])->name('suplier.index');
     });
 

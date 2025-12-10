@@ -24,10 +24,14 @@
         <table class="table table-bordered table-hover" id="tindakan-table">
           <thead>
             <tr>
-              <th class="text-center">#</th>
-              <th class="text-center">Nama</th>
-              <th class="text-center">Tarif Rawat Jalan</th>
-              <th class="text-center">Aksi</th>
+              <td class="text-center" rowspan="2">#</td>
+              <td class="text-center" rowspan="2">Nama</td>
+              <td class="text-center" colspan="2">Tarif</td>
+              <td class="text-center" rowspan="2">Aksi</td>
+            </tr>
+            <tr>
+              <th class="text-center">RJ</th>
+              <th class="text-center">RI</th>
             </tr>
           </thead>
         </table>
@@ -56,7 +60,6 @@
                 <label class="form-label required">Tarif Tindakan Rawat Jalan</label>
                 <input type="text" x-model="tarif_view" x-bind:input="formatUangTindakan()" class="form-control" autocomplete="off" :class="{ 'is-invalid': errors.tarif }" placeholder="0">
                 <div class="invalid-feedback" x-text="errors.tarif"></div>
-
               </div>
             </div>
             <div class="modal-footer">
@@ -103,7 +106,7 @@
           orderable: false,
           searchable: false,
           sClass: 'text-center',
-          width: '5%'
+          width: '2%'
         },
         {
           data: 'name',
@@ -113,13 +116,24 @@
         {
           data: 'tarif',
           name: 'tarif',
-          sClass: 'text-end'
+          sClass: 'text-end',
+          width: "15%",
+          orderable: false,
+          searchable: false,
+        },
+        {
+          data: 'tarif_rawat_inap',
+          name: 'tarif_rawat_inap',
+          sClass: 'text-start',
+          width: "15%",
+          orderable: false,
+          searchable: false,
         },
         {
           data: 'action',
           name: 'action',
           sClass: 'text-center',
-          width: "10%"
+          width: "15%"
         },
       ]
     });

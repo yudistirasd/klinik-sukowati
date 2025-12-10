@@ -44,6 +44,9 @@ Route::group(['as' => 'api.', 'middleware' => ['web', 'auth']], function () {
         Route::get('ruangan/{ruangan}/tempat-tidur/dt', [TempatTidurController::class, 'dt'])->name('ruangan.tempat-tidur.dt');
         Route::get('produk/{jenis}', [ProdukController::class, 'dt'])->name('produk.dt');
         Route::get('produk/json/{jenis}', [ProdukController::class, 'json'])->name('produk.json');
+        Route::get('produk/tarif-inap/{produk}', [ProdukController::class, 'getTarifInap'])->name('produk.tarif-inap.get');
+        Route::post('produk/tarif-inap/{produk}', [ProdukController::class, 'storeTarifInap'])->name('produk.tarif-inap.store');
+        Route::delete('produk/tarif-inap/{produk}/ruangan/{ruangan}', [ProdukController::class, 'destroyTarifInap'])->name('produk.tarif-inap.destroy');
         Route::get('suplier/dt', [SuplierController::class, 'dt'])->name('suplier.dt');
         Route::get('suplier/json', [SuplierController::class, 'json'])->name('suplier.json');
 
