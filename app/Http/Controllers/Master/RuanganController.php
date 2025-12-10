@@ -8,6 +8,7 @@ use App\Models\Ruangan;
 use App\Http\Requests\StoreRuanganRequest;
 use App\Http\Requests\UpdateRuanganRequest;
 use App\Models\Departemen;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Satusehat\Integration\FHIR\Location;
@@ -48,6 +49,19 @@ class RuanganController extends Controller
                 'action',
             ])
             ->make(true);
+    }
+
+    public function select2(Request $request)
+    {
+        $data = Ruangan::select([
+            'id as value',
+            'name as text',
+            '*'
+        ])
+            ->where('layanan', $request->layanan)
+            ->get();
+
+        return $this->sendResponse(data: $data);
     }
 
     public function index()

@@ -9,11 +9,15 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Models\Kunjungan;
 use App\Models\Pasien;
 use App\Models\Resep;
+use App\Models\RiwayatKamar;
 use App\Models\Ruangan;
+use App\Models\TempatTidur;
 use App\Models\User;
 use Auth;
+use Carbon\Carbon;
 use DataTables;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class KunjunganController extends Controller
 {
@@ -113,9 +117,42 @@ class KunjunganController extends Controller
 
     public function store(StoreKunjunganRequest $request)
     {
-        Kunjungan::create($request->except(['id']));
 
-        return $this->sendResponse(message: 'Registrasi kunjungan pasien berhasil');
+        DB::beginTransaction();
+
+        try {
+
+            $request->merge(['ruangan_last_id' => $request->ruangan_id]);
+
+            $kunjungan = Kunjungan::create($request->except(['id']));
+
+            if ($kunjungan->jenis_layanan == 'RI') {
+                $ruangan = Ruangan::find($request->ruangan_id);
+
+                $tt = TempatTidur::find($request->tempat_tidur_last_id);
+
+                RiwayatKamar::create([
+                    'kunjungan_id' => $kunjungan->id,
+                    'ruangan_id' => $ruangan->id,
+                    'tempat_tidur_id' => $tt->id,
+                    'tgl_masuk' => Carbon::now(),
+                    'tarif' => $ruangan->tarif_inap
+                ]);
+
+                $tt->status = 'isi';
+                $tt->save();
+            }
+
+            DB::commit();
+
+
+            return $this->sendResponse(message: 'Registrasi kunjungan pasien berhasil');
+        } catch (\Exception $ex) {
+            DB::rollback();
+            \Log::error($ex);
+
+            return $this->sendError(message: 'Registrasi kunjungan pasien gagal !', errors: $ex->getMessage(), traces: $ex->getTrace());
+        }
     }
 
     public function edit(Kunjungan $kunjungan)

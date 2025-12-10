@@ -39,6 +39,8 @@ Route::group(['as' => 'api.', 'middleware' => ['web', 'auth']], function () {
 
         Route::get('departemen/dt', [DepartemenController::class, 'dt'])->name('departemen.dt');
         Route::get('ruangan/dt', [RuanganController::class, 'dt'])->name('ruangan.dt');
+        Route::get('ruangan/select2', [RuanganController::class, 'select2'])->name('ruangan.select2');
+        Route::get('ruangan/select2-tt', [TempatTidurController::class, 'select2'])->name('tempat-tidur.select2');
         Route::get('ruangan/{ruangan}/tempat-tidur/dt', [TempatTidurController::class, 'dt'])->name('ruangan.tempat-tidur.dt');
         Route::get('produk/{jenis}', [ProdukController::class, 'dt'])->name('produk.dt');
         Route::get('produk/json/{jenis}', [ProdukController::class, 'json'])->name('produk.json');

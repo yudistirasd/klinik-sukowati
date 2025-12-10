@@ -89,7 +89,7 @@
     </div>
   </div>
 
-  <div class="card" x-data="form" x-init="init()">
+  <div class="card" x-data="form" x-cloak>
     <form @submit.prevent="handleSubmit" autocomplete="off">
       <div class="card-header">
         <h3 class="card-title">Kunjungan Pasien</h3>
@@ -109,6 +109,18 @@
               <label class="form-label">Tanggal Registrasi</label>
               <input type="text" class="form-control" id="tanggal-registrasi" x-model="form.tanggal_registrasi" :class="{ 'is-invalid': errors.tanggal_registrasi }">
               <div class="invalid-feedback" x-text="errors.tanggal_registrasi"></div>
+            </div>
+          </div>
+          <div class="col-md-2 col-sm-12">
+            <div class="mb-3">
+              <label class="form-label">Dokter</label>
+              <select x-model="form.dokter_id" id="" class="form-select" :class="{ 'is-invalid': errors.dokter_id }">
+                <option value=""></option>
+                @foreach ($dokter as $item)
+                  <option value="{{ $item->id }}">{{ $item->name }}</option>
+                @endforeach
+              </select>
+              <div class="invalid-feedback" x-text="errors.dokter_id"></div>
             </div>
           </div>
           <div class="col-md-2 col-sm-12">
@@ -138,30 +150,21 @@
           <div class="col-md-2 col-sm-12">
             <div class="mb-3">
               <label class="form-label">Ruang / Klinik</label>
-              <select x-model="form.ruangan_id" id="" class="form-select" :class="{ 'is-invalid': errors.ruangan_id }">
+              <select x-model="form.ruangan_id" id="ruangan_id" class="form-select" :class="{ 'is-invalid': errors.ruangan_id }">
                 <option value=""></option>
-                @foreach ($ruangan as $item)
-                  <option value="{{ $item->id }}">{{ $item->name }}</option>
-                @endforeach
               </select>
               <div class="invalid-feedback" x-text="errors.ruangan_id"></div>
             </div>
           </div>
-          <div class="col-md-2 col-sm-12">
+          <div class="col-md-2 col-sm-12" x-show="form.jenis_layanan == 'RI'">
             <div class="mb-3">
-              <label class="form-label">Dokter</label>
-              <select x-model="form.dokter_id" id="" class="form-select" :class="{ 'is-invalid': errors.dokter_id }">
+              <label class="form-label">Tempat Tidur</label>
+              <select x-model="form.tempat_tidur_last_id" id="tempat_tidur_last_id" class="form-select" :class="{ 'is-invalid': errors.tempat_tidur_last_id }">
                 <option value=""></option>
-                @foreach ($dokter as $item)
-                  <option value="{{ $item->id }}">{{ $item->name }}</option>
-                @endforeach
               </select>
-              <div class="invalid-feedback" x-text="errors.dokter_id"></div>
+              <div class="invalid-feedback" x-text="errors.tempat_tidur_last_id"></div>
             </div>
           </div>
-        </div>
-
-        <div class="row">
           <div class="col-md-4 col-sm-12">
             <div class="mb-3">
               <label class="form-label">Jenis Penyakit</label>
@@ -180,6 +183,10 @@
               </div>
             </div>
           </div>
+
+        </div>
+        <div class="row">
+
 
           <div class="col-md-2 col-sm-12">
             <label for="" class="form-label text-white">x</label>
@@ -280,15 +287,19 @@
           icd10_id: '',
           tanggal_registrasi: '{{ date('Y-m-d h:i') }}',
           jenis_pembayaran: 'UMUM',
-          jenis_layanan: 'RJ',
+          jenis_layanan: '',
           dokter_id: '',
           ruangan_id: '',
+          tempat_tidur_last_id: '',
           created_by: '{{ Auth::id() }}'
-
         },
         endPoint: '',
         errors: {},
         loading: false,
+        selectRuangan: {},
+        initTempatTidur() {
+
+        },
 
         handleSubmit() {
           this.loading = true;
@@ -329,6 +340,7 @@
             }
           })
         },
+
 
         selectIcd10(row) {
           this.form.icd10_id = row.id;
@@ -378,8 +390,61 @@
               e.detail.date.format('yyyy-MM-dd HH:mm') :
               '';
           });
-        },
 
+          this.$watch('form.jenis_layanan', (value, oldValue) => {
+            this.form.ruangan_id = null;
+            $('#ruangan_id').val(null).trigger('change');
+          })
+
+          $('#ruangan_id').select2({
+            theme: 'bootstrap-5',
+            placeholder: "Pilih Ruangan/Klinik",
+            allowClear: true,
+            tags: true,
+            ajax: {
+              url: route('api.master.ruangan.select2'),
+              data: (params) => {
+                var query = {
+                  layanan: this.form.jenis_layanan,
+                }
+
+                return query;
+              },
+              processResults: function(response) {
+                return {
+                  results: response.data
+                }
+              }
+            },
+          }).on('change', (e) => {
+            let value = e.target.value;
+            this.form.ruangan_id = value;
+          })
+
+          $('#tempat_tidur_last_id').select2({
+            theme: 'bootstrap-5',
+            placeholder: "Pilih Tempat Tidur",
+            allowClear: true,
+            tags: true,
+            ajax: {
+              url: route('api.master.tempat-tidur.select2'),
+              data: (params) => {
+                var query = {
+                  ruangan_id: this.form.ruangan_id,
+                }
+                return query;
+              },
+              processResults: function(response) {
+                return {
+                  results: response.data
+                }
+              }
+            },
+          }).on('change', (e) => {
+            let value = e.target.value;
+            this.form.tempat_tidur_last_id = value;
+          })
+        },
 
 
         resetForm() {

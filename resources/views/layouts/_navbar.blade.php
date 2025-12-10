@@ -7,7 +7,7 @@
   <!-- BEGIN NAVBAR LOGO -->
   <div class="navbar-brand d-none-navbar-horizontal pe-0 pe-md-3">
     <a href="." aria-label="Tabler">
-      <img src="{{ asset('logo.png') }}" height="36" alt="" class="navbar-brand-image">
+      <img src="{{ asset('logo_navbar.webp') }}" height="36" alt="" class="navbar-brand-image">
     </a>
   </div>
   <!-- END NAVBAR LOGO -->

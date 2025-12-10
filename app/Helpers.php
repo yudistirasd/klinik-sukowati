@@ -49,6 +49,10 @@ if (! function_exists('jenisLayanan')) {
             (object) [
                 'id' => 'RJ',
                 'name' => 'Rawat Jalan'
+            ],
+            (object) [
+                'id' => 'RI',
+                'name' => 'Rawat Inap'
             ]
         ]);
     }

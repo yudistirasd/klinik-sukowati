@@ -28,6 +28,7 @@ class StoreKunjunganRequest extends FormRequest
             'ruangan_id' => 'required',
             'dokter_id' => 'required',
             'icd10_id' => 'required',
+            'tempat_tidur_last_id' => 'required_if:jenis_layanan,RI'
         ];
     }
 
@@ -36,6 +37,7 @@ class StoreKunjunganRequest extends FormRequest
         return [
             'dokter_id' => 'dokter',
             'ruangan_id' => 'ruangan',
+            'tempat_tidur_last_id' => 'tempat tidur',
             'icd10_id' => 'jenis penyakit'
         ];
     }

@@ -30,6 +30,20 @@ class TempatTidurController extends Controller
             ->make(true);
     }
 
+    public function select2(Request $request)
+    {
+        $data = TempatTidur::select([
+            'id as value',
+            'name as text',
+            '*'
+        ])
+            ->where('ruangan_id', $request->ruangan_id)
+            ->where('status', 'kosong')
+            ->get();
+
+        return $this->sendResponse(data: $data);
+    }
+
     public function index(Ruangan $ruangan)
     {
         return view('master.ruangan.tempat-tidur', compact('ruangan'));
