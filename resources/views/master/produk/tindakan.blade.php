@@ -26,7 +26,7 @@
             <tr>
               <th class="text-center">#</th>
               <th class="text-center">Nama</th>
-              <th class="text-center">Tarif</th>
+              <th class="text-center">Tarif Rawat Jalan</th>
               <th class="text-center">Aksi</th>
             </tr>
           </thead>
@@ -53,7 +53,7 @@
                 <div class="invalid-feedback" x-text="errors.name"></div>
               </div>
               <div class="mb-3">
-                <label class="form-label required">Tarif Tindakan</label>
+                <label class="form-label required">Tarif Tindakan Rawat Jalan</label>
                 <input type="text" x-model="tarif_view" x-bind:input="formatUangTindakan()" class="form-control" autocomplete="off" :class="{ 'is-invalid': errors.tarif }" placeholder="0">
                 <div class="invalid-feedback" x-text="errors.tarif"></div>
 
